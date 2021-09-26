@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "6766130793",
+    "project_id": "sync-note-40c64",
+    "storage_bucket": "sync-note-40c64.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:6766130793:android:5753ec3da4f1c09705d4f8",
+        "android_client_info": {
+          "package_name": "com.notesync.notes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "6766130793-rsuq26u56f59sqccc0vfs5nirhorimsa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.notesync.notes",
+            "certificate_hash": "ab5546b013d68047294795d2805d728932e314f1"
+          }
+        },
+        {
+          "client_id": "6766130793-7vipa6jg058armbhepk5ka7j91tqgud6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmeLRuR-zNRtJ31SMqQI4Kv7_7mBkig_4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "6766130793-7vipa6jg058armbhepk5ka7j91tqgud6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

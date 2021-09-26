@@ -1,0 +1,141 @@
+import dependencies.Versions
+import dependencies.Java
+import dependencies.Application
+import dependencies.AndroidTestDependencies
+import dependencies.SupportDependencies
+import dependencies.TestDependencies
+
+import dependencies.AnnotationProcessing
+import dependencies.Dependencies
+
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdk Versions.compilesdk
+
+    defaultConfig {
+        applicationId Application.id
+        minSdk Versions.minsdk
+        targetSdk Versions.targetsdk
+        versionCode Application.version_code
+        versionName Application.version_name
+
+        testInstrumentationRunner "com.notesync.notes.framework.presentation.MockTestRunner"
+    }
+
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
+    }
+   
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = Java.java_version
+    }
+    sourceSets {
+        test.resources.srcDirs += 'src/test/res'
+    }
+
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
+
+}
+
+
+dependencies {
+
+    //Kotlin
+    implementation Dependencies.ktx
+
+
+    //Support
+    implementation SupportDependencies.appcompat
+    implementation SupportDependencies.material_design
+    implementation SupportDependencies.constraintlayout
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.navigation:navigation-fragment:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
+//    implementation project(path: ':')
+
+    //Android Test
+    testImplementation 'junit:junit:4.13.2'
+
+    androidTestImplementation AndroidTestDependencies.kotlin_test
+    androidTestImplementation AndroidTestDependencies.coroutines_test
+    androidTestImplementation AndroidTestDependencies.espresso_core
+    androidTestImplementation (AndroidTestDependencies.espresso_contrib){
+        exclude module: "protobuf-lite"
+    }
+    androidTestImplementation AndroidTestDependencies.idling_resource
+    androidTestImplementation AndroidTestDependencies.mockk_android
+    androidTestImplementation AndroidTestDependencies.test_runner
+    androidTestImplementation AndroidTestDependencies.test_rules
+    androidTestImplementation AndroidTestDependencies.text_core_ktx
+    androidTestImplementation AndroidTestDependencies.navigation_testing
+    debugImplementation AndroidTestDependencies.fragment_testing
+    kaptAndroidTest (AnnotationProcessing.dagger_compiler)
+
+    //Dagger
+    implementation Dependencies.dagger
+    kapt(AnnotationProcessing.dagger_compiler)
+
+    //Firebase
+    implementation platform(Dependencies.firebase_bom)
+    implementation Dependencies.firebase_firestore
+    implementation Dependencies.firebase_auth
+    implementation Dependencies.firebase_analytics
+    implementation Dependencies.firebase_crashlytics
+
+    //Coroutines
+    implementation Dependencies.kotlin_coroutines
+    implementation Dependencies.kotlin_coroutines_android
+    implementation Dependencies.kotlin_coroutines_play_services
+
+    //Retrofit
+    implementation Dependencies.retrofit
+    implementation Dependencies.retrofit_gson
+
+    // Unit test
+
+    testImplementation TestDependencies.mockk
+    testImplementation TestDependencies.jupiter_api
+    testRuntimeOnly TestDependencies.jupiter_engine
+    testImplementation TestDependencies.jupiter_params
+    testImplementation Dependencies.retrofit_gson
+
+    //Room
+    implementation Dependencies.room_ktx
+    implementation Dependencies.room_runtime
+    kapt AnnotationProcessing.room_compiler
+
+    //Material Dialog
+    implementation 'com.afollestad.material-dialogs:core:3.3.0'
+    implementation 'com.afollestad.material-dialogs:input:3.3.0'
+
+    //Markdown edit text
+    implementation Dependencies.markdown_processor
+
+}
