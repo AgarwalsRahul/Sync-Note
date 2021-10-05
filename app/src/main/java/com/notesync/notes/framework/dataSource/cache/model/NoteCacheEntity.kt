@@ -21,7 +21,10 @@ data class NoteCacheEntity(
     var updated_at: String,
 
     @ColumnInfo(name = "created_at")
-    var created_at: String
+    var created_at: String,
+
+    @ColumnInfo(name = "device_id")
+    var device_id:String?
 
 ){
 

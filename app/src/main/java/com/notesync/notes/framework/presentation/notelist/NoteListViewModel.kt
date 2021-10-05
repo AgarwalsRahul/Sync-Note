@@ -2,12 +2,14 @@ package com.notesync.notes.framework.presentation.notelist
 
 import android.content.SharedPreferences
 import android.os.Parcelable
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.model.NoteFactory
 import com.notesync.notes.business.domain.state.*
 import com.notesync.notes.business.interactors.noteList.DeleteMultipleNotes.Companion.DELETE_NOTES_YOU_MUST_SELECT
 import com.notesync.notes.business.interactors.noteList.NoteListInteractors
+import com.notesync.notes.business.interactors.splash.SyncDeletedNotes
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_FILTER_DATE_CREATED
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_ORDER_DESC
 import com.notesync.notes.framework.dataSource.preferences.PreferenceKeys.Companion.NOTE_FILTER
@@ -18,8 +20,10 @@ import com.notesync.notes.framework.presentation.notelist.state.NoteListStateEve
 import com.notesync.notes.framework.presentation.notelist.state.NoteListToolbarState
 import com.notesync.notes.framework.presentation.notelist.state.NoteListViewState
 import com.notesync.notes.util.printLogD
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
 
@@ -28,13 +32,18 @@ const val NOTE_PENDING_DELETE_BUNDLE_KEY = "pending_delete"
 
 @ExperimentalCoroutinesApi
 @FlowPreview
+@ObsoleteCoroutinesApi
+@DelicateCoroutinesApi
 class NoteListViewModel
 constructor(
     private val noteListInteractors: NoteListInteractors,
     private val noteFactory: NoteFactory,
     private val editor: SharedPreferences.Editor,
-    private val sharedPreferences: SharedPreferences
-): BaseViewModel<NoteListViewState>(){
+    private val sharedPreferences: SharedPreferences,
+    private val sessionManager: SessionManager,
+    private val syncDeletedNotes: SyncDeletedNotes
+) : BaseViewModel<NoteListViewState>() {
+
 
     val noteListInteractionManager =
         NoteListInteractionManager()
@@ -55,6 +64,8 @@ constructor(
                 NOTE_ORDER_DESC
             )
         )
+
+
     }
 
     override fun handleNewData(data: NoteListViewState) {
@@ -83,67 +94,75 @@ constructor(
     }
 
     override fun setStateEvent(stateEvent: StateEvent) {
+        sessionManager.cachedUser.value?.let {
+            val job: Flow<DataState<NoteListViewState>?> = when (stateEvent) {
 
-        val job: Flow<DataState<NoteListViewState>?> = when(stateEvent){
-
-            is InsertNewNoteEvent -> {
-                noteListInteractors.insertNewNote.insertNewNote(
-                    title = stateEvent.title,
-                    stateEvent = stateEvent
-                )
-            }
-
-            is DeleteNoteEvent -> {
-                noteListInteractors.deleteNote.deleteNote(
-                    note = stateEvent.note,
-                    stateEvent = stateEvent
-                )
-            }
-
-            is DeleteMultipleNotesEvent -> {
-                noteListInteractors.deleteMultipleNotes.deleteNotes(
-                    notes = stateEvent.notes,
-                    stateEvent = stateEvent
-                )
-            }
-
-            is RestoreDeletedNoteEvent -> {
-                noteListInteractors.restoreDeletedNote.restoreDeleteNote(
-                    note = stateEvent.note,
-                    stateEvent = stateEvent
-                )
-            }
-
-            is SearchNotesEvent -> {
-                if(stateEvent.clearLayoutManagerState){
-                    clearLayoutManagerState()
+                is GetAllNotesFromNetwork -> {
+                    noteListInteractors.getAllNotesFromNetwork.getNotes(stateEvent, it)
                 }
-                noteListInteractors.searchNotes.searchNotes(
-                    query = getSearchQuery(),
-                    filterAndOrder = getOrder() + getFilter(),
-                    page = getPage(),
-                    stateEvent = stateEvent
-                )
-            }
 
-            is GetNumNotesInCacheEvent -> {
-                noteListInteractors.getNumNotes.getNumNotes(
-                    stateEvent = stateEvent
-                )
-            }
+                is InsertNewNoteEvent -> {
+                    Log.d("InsertNewNoteEvent","Inserting")
+                    noteListInteractors.insertNewNote.insertNewNote(
+                        title = stateEvent.title,
+                        stateEvent = stateEvent, user = it
+                    )
+                }
 
-            is CreateStateMessageEvent -> {
-                emitStateMessageEvent(
-                    stateMessage = stateEvent.stateMessage,
-                    stateEvent = stateEvent
-                )
-            }
+                is DeleteNoteEvent -> {
+                    noteListInteractors.deleteNote.deleteNote(
+                        note = stateEvent.note,
+                        stateEvent = stateEvent, it
+                    )
+                }
 
-            else -> {
-                emitInvalidStateEvent(stateEvent)
+                is DeleteMultipleNotesEvent -> {
+                    noteListInteractors.deleteMultipleNotes.deleteNotes(
+                        notes = stateEvent.notes,
+                        stateEvent = stateEvent, it
+                    )
+                }
+
+                is RestoreDeletedNoteEvent -> {
+                    noteListInteractors.restoreDeletedNote.restoreDeleteNote(
+                        note = stateEvent.note,
+                        stateEvent = stateEvent, it
+                    )
+                }
+
+                is SearchNotesEvent -> {
+                    if (stateEvent.clearLayoutManagerState) {
+                        clearLayoutManagerState()
+                    }
+                    noteListInteractors.searchNotes.searchNotes(
+                        query = getSearchQuery(),
+                        filterAndOrder = getOrder() + getFilter(),
+                        page = getPage(),
+                        stateEvent = stateEvent
+                    )
+
+
+                }
+
+                is GetNumNotesInCacheEvent -> {
+                    noteListInteractors.getNumNotes.getNumNotes(
+                        stateEvent = stateEvent
+                    )
+                }
+
+                is CreateStateMessageEvent -> {
+                    emitStateMessageEvent(
+                        stateMessage = stateEvent.stateMessage,
+                        stateEvent = stateEvent
+                    )
+                }
+
+                else -> {
+                    emitInvalidStateEvent(stateEvent)
+                }
             }
-        }
-        launchJob(stateEvent, job)
+            launchJob(stateEvent, job)
+        } ?: sessionManager.logout()
     }
 
     /*
@@ -151,17 +170,15 @@ constructor(
      */
     fun getSelectedNotes() = noteListInteractionManager.getSelectedNotes()
 
-    fun setToolbarState(state: NoteListToolbarState)
-            = noteListInteractionManager.setToolbarState(state)
+    fun setToolbarState(state: NoteListToolbarState) =
+        noteListInteractionManager.setToolbarState(state)
 
-    fun isMultiSelectionStateActive()
-            = noteListInteractionManager.isMultiSelectionStateActive()
+    fun isMultiSelectionStateActive() = noteListInteractionManager.isMultiSelectionStateActive()
 
-    fun addOrRemoveNoteFromSelectedList(note: Note)
-            = noteListInteractionManager.addOrRemoveNoteFromSelectedList(note)
+    fun addOrRemoveNoteFromSelectedList(note: Note) =
+        noteListInteractionManager.addOrRemoveNoteFromSelectedList(note)
 
-    fun isNoteSelected(note: Note): Boolean
-            = noteListInteractionManager.isNoteSelected(note)
+    fun isNoteSelected(note: Note): Boolean = noteListInteractionManager.isNoteSelected(note)
 
     fun clearSelectedNotes() = noteListInteractionManager.clearSelectedNotes()
 
@@ -183,14 +200,14 @@ constructor(
             ?: return ""
     }
 
-    private fun getPage(): Int{
+    private fun getPage(): Int {
         return getCurrentViewStateOrNew().page
             ?: return 1
     }
 
-    fun getNoteListSize() = getCurrentViewStateOrNew().noteList?.size?: 0
+    fun getNoteListSize() = getCurrentViewStateOrNew().noteList?.size ?: 0
 
-    private fun getNumNotesInCache() = getCurrentViewStateOrNew().numNotesInCache?: 0
+    private fun getNumNotesInCache() = getCurrentViewStateOrNew().numNotesInCache ?: 0
 
     // for debugging
     fun getActiveJobs() = dataChannelManager.getActiveJobs()
@@ -202,8 +219,8 @@ constructor(
     private fun findListPositionOfNote(note: Note?): Int {
         val viewState = getCurrentViewStateOrNew()
         viewState.noteList?.let { noteList ->
-            for((index, item) in noteList.withIndex()){
-                if(item.id == note?.id){
+            for ((index, item) in noteList.withIndex()) {
+                if (item.id == note?.id) {
                     return index
                 }
             }
@@ -213,10 +230,12 @@ constructor(
 
     fun isPaginationExhausted() = getNoteListSize() >= getNumNotesInCache()
 
-    fun isQueryExhausted(): Boolean{
-        printLogD("NoteListViewModel",
-            "is query exhasuted? ${getCurrentViewStateOrNew().isQueryExhausted?: true}")
-        return getCurrentViewStateOrNew().isQueryExhausted?: true
+    fun isQueryExhausted(): Boolean {
+        printLogD(
+            "NoteListViewModel",
+            "is query exhasuted? ${getCurrentViewStateOrNew().isQueryExhausted ?: true}"
+        )
+        return getCurrentViewStateOrNew().isQueryExhausted ?: true
     }
 
     override fun initNewViewState(): NoteListViewState {
@@ -226,27 +245,27 @@ constructor(
     /*
         Setters
      */
-    private fun setNoteListData(notesList: ArrayList<Note>){
+    private fun setNoteListData(notesList: ArrayList<Note>) {
         val update = getCurrentViewStateOrNew()
         update.noteList = notesList
         setViewState(update)
     }
 
-    fun setQueryExhausted(isExhausted: Boolean){
+    fun setQueryExhausted(isExhausted: Boolean) {
         val update = getCurrentViewStateOrNew()
         update.isQueryExhausted = isExhausted
         setViewState(update)
     }
 
     // can be selected from Recyclerview or created new from dialog
-    fun setNote(note: Note?){
+    fun setNote(note: Note?) {
         val update = getCurrentViewStateOrNew()
         update.newNote = note
         setViewState(update)
     }
 
-    fun setQuery(query: String?){
-        val update =  getCurrentViewStateOrNew()
+    fun setQuery(query: String?) {
+        val update = getCurrentViewStateOrNew()
         update.searchQuery = query
         setViewState(update)
     }
@@ -254,11 +273,11 @@ constructor(
 
     // if a note is deleted and then restored, the id will be incorrect.
     // So need to reset it here.
-    private fun setRestoredNoteId(restoredNote: Note){
+    private fun setRestoredNoteId(restoredNote: Note) {
         val update = getCurrentViewStateOrNew()
         update.noteList?.let { noteList ->
-            for((index, note) in noteList.withIndex()){
-                if(note.title.equals(restoredNote.title)){
+            for ((index, note) in noteList.withIndex()) {
+                if (note.title.equals(restoredNote.title)) {
                     noteList.remove(note)
                     noteList.add(index, restoredNote)
                     update.noteList = noteList
@@ -269,31 +288,30 @@ constructor(
         setViewState(update)
     }
 
-    private fun removePendingNoteFromList(note: Note?){
+    private fun removePendingNoteFromList(note: Note?) {
         val update = getCurrentViewStateOrNew()
         val list = update.noteList
-        if(list?.contains(note) == true){
+        if (list?.contains(note) == true) {
             list.remove(note)
             update.noteList = list
             setViewState(update)
         }
     }
 
-    fun setNotePendingDelete(note: Note?){
+    fun setNotePendingDelete(note: Note?) {
         val update = getCurrentViewStateOrNew()
-        if(note != null){
+        if (note != null) {
             update.notePendingDelete = NoteListViewState.NotePendingDelete(
                 note = note,
                 listPosition = findListPositionOfNote(note)
             )
-        }
-        else{
+        } else {
             update.notePendingDelete = null
         }
         setViewState(update)
     }
 
-    private fun setNumNotesInCache(numNotes: Int){
+    private fun setNumNotesInCache(numNotes: Int) {
         val update = getCurrentViewStateOrNew()
         update.numNotesInCache = numNotes
         setViewState(update)
@@ -305,13 +323,13 @@ constructor(
         body: String? = null
     ) = noteFactory.createSingleNote(id, title, body)
 
-    private fun resetPage(){
+    private fun resetPage() {
         val update = getCurrentViewStateOrNew()
         update.page = 1
         setViewState(update)
     }
 
-    fun clearList(){
+    fun clearList() {
         printLogD("ListViewModel", "clearList")
         val update = getCurrentViewStateOrNew()
         update.noteList = ArrayList()
@@ -320,46 +338,46 @@ constructor(
 
     // workaround for tests
     // can't submit an empty string because SearchViews SUCK
-    fun clearSearchQuery(){
+    fun clearSearchQuery() {
         setQuery("")
         clearList()
         loadFirstPage()
     }
 
-    private fun incrementPageNumber(){
+    private fun incrementPageNumber() {
         val update = getCurrentViewStateOrNew()
         val page = update.copy().page ?: 1
         update.page = page.plus(1)
         setViewState(update)
     }
 
-    fun setLayoutManagerState(layoutManagerState: Parcelable){
+    fun setLayoutManagerState(layoutManagerState: Parcelable) {
         val update = getCurrentViewStateOrNew()
         update.layoutManagerState = layoutManagerState
         setViewState(update)
     }
 
-    fun clearLayoutManagerState(){
+    fun clearLayoutManagerState() {
         val update = getCurrentViewStateOrNew()
         update.layoutManagerState = null
         setViewState(update)
     }
 
-    fun setNoteFilter(filter: String?){
-        filter?.let{
+    fun setNoteFilter(filter: String?) {
+        filter?.let {
             val update = getCurrentViewStateOrNew()
             update.filter = filter
             setViewState(update)
         }
     }
 
-    fun setNoteOrder(order: String?){
+    fun setNoteOrder(order: String?) {
         val update = getCurrentViewStateOrNew()
         update.order = order
         setViewState(update)
     }
 
-    fun saveFilterOptions(filter: String, order: String){
+    fun saveFilterOptions(filter: String, order: String) {
         editor.putString(NOTE_FILTER, filter)
         editor.apply()
 
@@ -367,7 +385,7 @@ constructor(
         editor.apply()
     }
 
-    private fun removeSelectedNotesFromList(){
+    private fun removeSelectedNotesFromList() {
         val update = getCurrentViewStateOrNew()
         update.noteList?.removeAll(getSelectedNotes())
         setViewState(update)
@@ -379,12 +397,11 @@ constructor(
      */
 
 
-    fun deleteNotes(){
-        if(getSelectedNotes().size > 0){
+    fun deleteNotes() {
+        if (getSelectedNotes().size > 0) {
             setStateEvent(DeleteMultipleNotesEvent(getSelectedNotes()))
             removeSelectedNotesFromList()
-        }
-        else{
+        } else {
             setStateEvent(
                 CreateStateMessageEvent(
                     stateMessage = StateMessage(
@@ -398,9 +415,10 @@ constructor(
             )
         }
     }
-    fun isDeletePending(): Boolean{
+
+    fun isDeletePending(): Boolean {
         val pendingNote = getCurrentViewStateOrNew().notePendingDelete
-        if(pendingNote != null){
+        if (pendingNote != null) {
             setStateEvent(
                 CreateStateMessageEvent(
                     stateMessage = StateMessage(
@@ -413,18 +431,17 @@ constructor(
                 )
             )
             return true
-        }
-        else{
+        } else {
             return false
         }
     }
 
 
-    fun undoDelete(){
+    fun undoDelete() {
         // replace note in viewstate
         val update = getCurrentViewStateOrNew()
         update.notePendingDelete?.let { note ->
-            if(note.listPosition != null && note.note != null){
+            if (note.listPosition != null && note.note != null) {
                 update.noteList?.add(
                     note.listPosition as Int,
                     note.note as Note
@@ -435,7 +452,7 @@ constructor(
         setViewState(update)
     }
 
-    fun beginPendingDelete(note: Note){
+    fun beginPendingDelete(note: Note) {
         setNotePendingDelete(note)
         removePendingNoteFromList(note)
         setStateEvent(
@@ -449,12 +466,14 @@ constructor(
         setQueryExhausted(false)
         resetPage()
         setStateEvent(SearchNotesEvent())
-        printLogD("NoteListViewModel",
-            "loadFirstPage: ${getCurrentViewStateOrNew().searchQuery}")
+        printLogD(
+            "NoteListViewModel",
+            "loadFirstPage: ${getCurrentViewStateOrNew().searchQuery}"
+        )
     }
 
-    fun nextPage(){
-        if(!isQueryExhausted()){
+    fun nextPage() {
+        if (!isQueryExhausted()) {
             printLogD("NoteListViewModel", "attempting to load next page...")
             clearLayoutManagerState()
             incrementPageNumber()
@@ -462,11 +481,11 @@ constructor(
         }
     }
 
-    fun retrieveNumNotesInCache(){
+    fun retrieveNumNotesInCache() {
         setStateEvent(GetNumNotesInCacheEvent())
     }
 
-    fun refreshSearchQuery(){
+    fun refreshSearchQuery() {
         setQueryExhausted(false)
         setStateEvent(SearchNotesEvent(false))
     }

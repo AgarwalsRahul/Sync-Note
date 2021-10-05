@@ -138,4 +138,8 @@ dependencies {
     //Markdown edit text
     implementation Dependencies.markdown_processor
 
+    //WorkManager
+    implementation Dependencies.work_manager
+    implementation "androidx.work:work-runtime:2.5.0"
+
 }

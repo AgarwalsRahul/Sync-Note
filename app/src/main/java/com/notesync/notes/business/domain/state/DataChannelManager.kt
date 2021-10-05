@@ -63,6 +63,7 @@ abstract class DataChannelManager<ViewState> {
         stateEvent: StateEvent,
         jobFunction: Flow<DataState<ViewState>?>
     ){
+        printLogD("DCM","Launching JOb.....")
         if(canExecuteNewStateEvent(stateEvent)){
             printLogD("DCM", "launching job: ${stateEvent.eventName()}")
             addStateEvent(stateEvent)

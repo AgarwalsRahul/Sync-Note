@@ -10,7 +10,8 @@ data class Note(
     val title: String,
     val body: String,
     val updated_at: String,
-    val created_at: String
+    val created_at: String,
+    val device_id:String?,
 ):Parcelable{
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

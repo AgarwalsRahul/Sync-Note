@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.notesync.notes.framework.dataSource.cache.model.NoteCacheEntity
+import kotlinx.coroutines.flow.Flow
 
 
 const val NOTE_ORDER_ASC: String = ""
@@ -22,7 +23,7 @@ const val NOTE_PAGINATION_PAGE_SIZE = 30
 @Dao
 interface NoteDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(note: NoteCacheEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -58,7 +59,7 @@ interface NoteDao {
     suspend fun deleteNote(primaryKey: String): Int
 
     @Query("SELECT * FROM notes")
-    suspend fun searchNotes(): List<NoteCacheEntity>
+    fun searchNotes(): Flow<List<NoteCacheEntity>>
 
     @Query(
         """
@@ -68,11 +69,11 @@ interface NoteDao {
         ORDER BY updated_at DESC LIMIT (:page * :pageSize)
         """
     )
-    suspend fun searchNotesOrderByDateDESC(
+     fun searchNotesOrderByDateDESC(
         query: String,
         page: Int,
         pageSize: Int = NOTE_PAGINATION_PAGE_SIZE
-    ): List<NoteCacheEntity>
+    ): Flow<List<NoteCacheEntity>>
 
     @Query(
         """
@@ -82,11 +83,11 @@ interface NoteDao {
         ORDER BY updated_at ASC LIMIT (:page * :pageSize)
         """
     )
-    suspend fun searchNotesOrderByDateASC(
+     fun searchNotesOrderByDateASC(
         query: String,
         page: Int,
         pageSize: Int = NOTE_PAGINATION_PAGE_SIZE
-    ): List<NoteCacheEntity>
+    ): Flow<List<NoteCacheEntity>>
 
     @Query(
         """
@@ -96,11 +97,11 @@ interface NoteDao {
         ORDER BY title DESC LIMIT (:page * :pageSize)
         """
     )
-    suspend fun searchNotesOrderByTitleDESC(
+     fun searchNotesOrderByTitleDESC(
         query: String,
         page: Int,
         pageSize: Int = NOTE_PAGINATION_PAGE_SIZE
-    ): List<NoteCacheEntity>
+    ): Flow<List<NoteCacheEntity>>
 
     @Query(
         """
@@ -110,11 +111,11 @@ interface NoteDao {
         ORDER BY title ASC LIMIT (:page * :pageSize)
         """
     )
-    suspend fun searchNotesOrderByTitleASC(
+     fun searchNotesOrderByTitleASC(
         query: String,
         page: Int,
         pageSize: Int = NOTE_PAGINATION_PAGE_SIZE
-    ): List<NoteCacheEntity>
+    ): Flow<List<NoteCacheEntity>>
 
 
     @Query("SELECT COUNT(*) FROM notes")
@@ -122,11 +123,11 @@ interface NoteDao {
 }
 
 
-suspend fun NoteDao.returnOrderedQuery(
+ fun NoteDao.returnOrderedQuery(
     query: String,
     filterAndOrder: String,
     page: Int
-): List<NoteCacheEntity> {
+): Flow<List<NoteCacheEntity>> {
 
     when {
 

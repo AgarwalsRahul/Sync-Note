@@ -3,6 +3,7 @@ package com.notesync.notes.business.data.cache.implementation
 import com.notesync.notes.business.data.cache.abstraction.NoteCacheDataSource
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.framework.dataSource.cache.abstraction.NoteDaoService
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -31,7 +32,7 @@ class NoteCacheDataSourceImpl
         return noteDaoService.updateNote(id, title, body, timestamp)
     }
 
-    override suspend fun searchNotes(query: String, filterAndOrder: String, page: Int): List<Note> {
+    override  fun searchNotes(query: String, filterAndOrder: String, page: Int): Flow<List<Note>> {
         return noteDaoService.returnOrderedQuery(query, filterAndOrder, page)
     }
 
@@ -47,7 +48,7 @@ class NoteCacheDataSourceImpl
         return noteDaoService.insertNotes(notes)
     }
 
-    override suspend fun getAllNotes(): List<Note> {
+    override fun getAllNotes(): Flow<List<Note>> {
         return noteDaoService.getAllNotes()
     }
 }

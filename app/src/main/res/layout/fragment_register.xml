@@ -13,39 +13,54 @@
         android:layout_width="match_parent"
         android:layout_height="0dp">
 
-
-        <EditText
-            android:id="@+id/register_email_address"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/register_email_address_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="120dp"
             android:layout_marginEnd="10dp"
-            android:ems="10"
-            android:hint="@string/email_address"
-            android:inputType="textEmailAddress"
             android:minHeight="48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/register_password"
+
+            <EditText
+                android:id="@+id/register_email_address"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:ems="10"
+                android:hint="@string/email_address"
+                android:inputType="textEmailAddress" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/register_password_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="68dp"
             android:layout_marginEnd="10dp"
-            android:ems="10"
-            android:hint="@string/password"
-            android:inputType="textPassword"
             android:minHeight="48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/register_email_address" />
+            app:layout_constraintTop_toBottomOf="@+id/register_email_address_layout">
 
+
+            <EditText
+                android:id="@+id/register_password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:hint="@string/password"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/register_button"
@@ -57,8 +72,7 @@
             app:layout_constraintEnd_toEndOf="parent"
 
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/register_password"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/register_password_layout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

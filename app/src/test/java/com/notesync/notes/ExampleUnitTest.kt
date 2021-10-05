@@ -1,8 +1,9 @@
 package com.notesync.notes
 
-import org.junit.Test
+import org.junit.jupiter.api.*
 
-import org.junit.Assert.*
+import org.junit.jupiter.api.Assertions.*
+import java.util.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -11,7 +12,17 @@ import org.junit.Assert.*
  */
 class ExampleUnitTest {
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun sameUiniqueSecretKeyForSameUserIdAndPassword() {
+        val password = "password"+"asdfjsahdasd15454c".toCharArray()
+        var sk :String=""
+        for(c in password){
+            sk += (c.code).toString()
+        }
+
+        val uuid =UUID(sk.substring(0,6).toLong(),sk.substring(20,24).toLong()).toString()
+        val uuid1 = UUID(sk.substring(0,6).toLong(),sk.substring(20,24).toLong()).toString()
+        print(uuid)
+        print(uuid1)
+        assertTrue(uuid == uuid1)
     }
 }

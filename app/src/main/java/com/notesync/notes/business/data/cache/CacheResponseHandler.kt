@@ -1,6 +1,7 @@
 package com.notesync.notes.business.data.cache
 
 import com.notesync.notes.business.domain.state.*
+import com.notesync.notes.util.printLogD
 
 
 abstract class CacheResponseHandler<ViewState, Data>(
@@ -11,6 +12,7 @@ abstract class CacheResponseHandler<ViewState, Data>(
     suspend fun getResult(): DataState<ViewState>? {
         return when (response) {
             is CacheResult.GenericError -> {
+
                 DataState.error<ViewState>(
                     response = Response(
                         "${stateEvent?.errorInfo()}\n\nReason: ${response.errorMessage}",

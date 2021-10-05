@@ -1,9 +1,14 @@
 package com.notesync.notes.di
 
+import com.notesync.notes.business.domain.state.SessionManager
+import com.notesync.notes.di.auth.AuthComponent
+import com.notesync.notes.di.main.MainComponent
+import com.notesync.notes.di.main.NoteFragmentFactoryModule
+import com.notesync.notes.di.main.NoteViewModelModule
+import com.notesync.notes.di.worker.WorkerBindingModule
+import com.notesync.notes.framework.presentation.BaseActivity
 import com.notesync.notes.framework.presentation.BaseApplication
-import com.notesync.notes.framework.presentation.MainActivity
-import com.notesync.notes.framework.presentation.notedetail.NoteDetailFragment
-import com.notesync.notes.framework.presentation.notelist.NoteListFragment
+import com.notesync.notes.framework.workers.CustomWorkerFactory
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,17 +21,25 @@ import javax.inject.Singleton
 @ObsoleteCoroutinesApi
 @Singleton
 @Component(
-    modules = [AppModule::class, ReleaseModule::class,
-        NoteViewModelModule::class, NoteFragmentFactoryModule::class]
+    modules = [AppModule::class, ReleaseModule::class, SubComponentsModule::class, WorkerBindingModule::class]
 )
 interface AppComponent {
+
+    val sessionManager: SessionManager
+
+    val workerFactory:CustomWorkerFactory
 
     @Component.Factory
     interface Factory {
         fun create(@BindsInstance app: BaseApplication): AppComponent
     }
 
-    fun inject(mainActivity: MainActivity)
+    fun inject(baseActivity: BaseActivity)
+
+
+    fun authComponent(): AuthComponent.Factory
+
+    fun mainComponent(): MainComponent.Factory
 
 
 }

@@ -1,60 +1,153 @@
 package com.notesync.notes.framework.presentation.auth
 
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.notesync.notes.R
+import com.notesync.notes.business.domain.state.StateMessageCallback
+import com.notesync.notes.business.interactors.auth.ForgotPassword.Companion.FORGOT_PASSWORD_SUCCESS
+import com.notesync.notes.framework.presentation.UIController
+import com.notesync.notes.framework.presentation.auth.state.AuthStateEvent
+import com.notesync.notes.framework.presentation.auth.state.ForgotPasswordFields
+import com.notesync.notes.framework.presentation.common.hideKeyboard
+import com.notesync.notes.framework.presentation.common.invisible
+import com.notesync.notes.framework.presentation.common.visible
+import kotlinx.android.synthetic.main.fragment_forgot_password.*
+import kotlinx.android.synthetic.main.fragment_forgot_password.email_address
+import kotlinx.android.synthetic.main.fragment_forgot_password.email_address_layout
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ForgotPasswordFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class ForgotPasswordFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+@FlowPreview
+@ExperimentalCoroutinesApi
+@ObsoleteCoroutinesApi
+class ForgotPasswordFragment(private val viewModelProvider: ViewModelProvider.Factory) :
+    Fragment(R.layout.fragment_forgot_password) {
+
+
+    private val viewModel: AuthViewModel by activityViewModels {
+        viewModelProvider
+    }
+    lateinit var uiController: UIController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+        viewModel.setupChannel()
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        reset_password_button.setOnClickListener {
+            view.hideKeyboard()
+            resetPassword()
+        }
+        initListener()
+        subscribeObserver()
+    }
+
+    private fun resetPassword() {
+        viewModel.setStateEvent(AuthStateEvent.ForgotPasswordEvent(email_address.text.toString()))
+    }
+
+    private fun subscribeObserver() {
+        viewModel.viewState.observe(viewLifecycleOwner, { viewState ->
+            viewState?.let { authViewState ->
+                authViewState.forgotPasswordFields?.let {
+                    email_address.setText(it.email)
+                }
+            }
+        }
+
+        )
+        lifecycleScope.launch {
+            viewModel.forgotPasswordEmail.collect { value ->
+                reset_password_button.isEnabled = viewModel.validateEmail(value)==null
+            }
+        }
+
+        viewModel.shouldDisplayProgressBar.observe(viewLifecycleOwner, Observer {
+            it?.let {
+
+                if (it) {
+                    reset_password_button.invisible()
+                } else {
+                    reset_password_button.visible()
+                }
+            }
+
+            uiController.displayProgressBar(it)
+        })
+
+        viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
+            stateMessage?.response?.let { response ->
+                if (response.message == FORGOT_PASSWORD_SUCCESS) {
+                    findNavController(this).popBackStack()
+                }
+                uiController.onResponseReceived(
+                    response = response,
+                    stateMessageCallback = object : StateMessageCallback {
+                        override fun removeMessageFromStack() {
+                            viewModel.clearStateMessage()
+                        }
+                    }
+                )
+
+            }
+        })
+    }
+
+    private fun initListener() {
+        emailTextListener()
+    }
+
+    private fun emailTextListener() {
+        email_address.apply {
+            addTextChangedListener {
+                viewModel.setForgotPasswordEmail(it.toString())
+                if (email_address_layout.isErrorEnabled
+                ) {
+
+                    email_address_layout.error =
+                        viewModel.validateEmail(this.text.toString())
+
+                }
+            }
+            onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    email_address_layout.isErrorEnabled = true
+                    email_address_layout.error =
+                        viewModel.validateEmail(this.text.toString())
+                }
+
+            }
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_forgot_password, container, false)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity?.let {
+            uiController = context as UIController
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ForgotPasswordFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ForgotPasswordFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onPause() {
+        super.onPause()
+        viewModel.setForgotPasswordFields(ForgotPasswordFields(email_address.text.toString()))
     }
+
 }
