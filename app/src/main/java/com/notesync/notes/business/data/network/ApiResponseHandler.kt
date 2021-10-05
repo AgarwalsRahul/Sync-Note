@@ -40,6 +40,16 @@ abstract class ApiResponseHandler<ViewState, Data>(
 
             }
 
+            is ApiResult.FirebaseError -> {
+                DataState.error(
+                    Response(
+                        response.errorMessage,
+                        UIComponentType.SnackBar(),
+                        MessageType.Error()
+                    ), stateEvent
+                )
+            }
+
             is ApiResult.NetworkError -> {
                 DataState.error<ViewState>(
                     response = Response(

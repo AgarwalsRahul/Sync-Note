@@ -3,6 +3,8 @@ package com.notesync.notes.framework.presentation.common
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
+import android.graphics.Color
+import android.graphics.ColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.View
@@ -120,7 +122,7 @@ fun Activity.displayToast(
     message:String,
     stateMessageCallback: StateMessageCallback
 ){
-    Log.d("MainActivity","$message")
+    Log.d("MainActivity", message)
     val toast = Toast.makeText(this,message, Toast.LENGTH_SHORT)
     toast.show()
 

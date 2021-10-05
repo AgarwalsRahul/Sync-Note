@@ -27,6 +27,7 @@ constructor(
         get() = _hasSyncBeenExecuted
 
     fun executeDataSync(coroutineScope: CoroutineScope){
+        printLogD("ExecuteDataSync","executing data syncing")
         if(_hasSyncBeenExecuted.value!!){
             return
         }
@@ -34,12 +35,12 @@ constructor(
         val syncJob = coroutineScope.launch {
             launch {
                 printLogD("SyncNotes", "syncing deleted notes.")
-                syncDeletedNotes.syncDeletedNotes()
+//                syncDeletedNotes.syncDeletedNotes()
             }.join()
 
             launch {
                 printLogD("SyncNotes", "syncing notes.")
-                syncNotes.syncNotes()
+//                syncNotes.syncNotes()
             }
         }
         syncJob.invokeOnCompletion {

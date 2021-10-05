@@ -3,27 +3,41 @@ package com.notesync.notes.di
 import android.content.SharedPreferences
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.notesync.notes.business.data.cache.abstraction.AuthCacheDataSource
 import com.notesync.notes.business.data.cache.abstraction.NoteCacheDataSource
+import com.notesync.notes.business.data.cache.implementation.AuthCacheDataSourceImpl
 import com.notesync.notes.business.data.cache.implementation.NoteCacheDataSourceImpl
+import com.notesync.notes.business.data.network.abstraction.AuthNetworkDataSource
 import com.notesync.notes.business.data.network.abstraction.NoteNetworkDataSource
+import com.notesync.notes.business.data.network.implementation.AuthNetworkDataSourceImpl
 import com.notesync.notes.business.data.network.implementation.NoteNetworkDataSourceImpl
 import com.notesync.notes.business.domain.model.NoteFactory
+import com.notesync.notes.business.domain.state.SessionManager
 import com.notesync.notes.business.domain.util.DateUtil
+import com.notesync.notes.business.interactors.auth.*
 import com.notesync.notes.business.interactors.common.DeleteNote
 import com.notesync.notes.business.interactors.noteDetail.NoteDetailInteractors
 import com.notesync.notes.business.interactors.noteDetail.UpdateNote
 import com.notesync.notes.business.interactors.noteList.*
 import com.notesync.notes.business.interactors.splash.SyncDeletedNotes
 import com.notesync.notes.business.interactors.splash.SyncNotes
+import com.notesync.notes.framework.dataSource.cache.abstraction.AuthDaoService
 import com.notesync.notes.framework.dataSource.cache.abstraction.NoteDaoService
+import com.notesync.notes.framework.dataSource.cache.database.AuthDao
 import com.notesync.notes.framework.dataSource.cache.database.NoteDao
 import com.notesync.notes.framework.dataSource.cache.database.NoteDatabase
+import com.notesync.notes.framework.dataSource.cache.implementation.AuthDaoServiceImpl
 import com.notesync.notes.framework.dataSource.cache.implementation.NoteDaoServiceImpl
 import com.notesync.notes.framework.dataSource.cache.mappers.CacheMapper
+import com.notesync.notes.framework.dataSource.cache.mappers.UserMapper
+import com.notesync.notes.framework.dataSource.network.abstraction.AuthFirestoreService
 import com.notesync.notes.framework.dataSource.network.abstraction.NoteFirestoreService
+import com.notesync.notes.framework.dataSource.network.implementation.AuthFirestoreServiceImpl
 import com.notesync.notes.framework.dataSource.network.implementation.NoteFirestoreServiceImpl
 import com.notesync.notes.framework.dataSource.network.mappers.NetworkMapper
+import com.notesync.notes.framework.presentation.BaseApplication
 import com.notesync.notes.framework.presentation.splash.NoteNetworkSyncManager
+import com.notesync.notes.util.NetworkStatusHelper
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -67,9 +81,10 @@ object AppModule {
     @JvmStatic
     @Singleton
     @Provides
-    fun provideNoteFactory(dateUtil: DateUtil): NoteFactory {
+    fun provideNoteFactory(dateUtil: DateUtil, sessionManager: SessionManager): NoteFactory {
         return NoteFactory(
-            dateUtil
+            dateUtil,
+            sessionManager
         )
     }
 
@@ -83,8 +98,33 @@ object AppModule {
     @JvmStatic
     @Singleton
     @Provides
+    fun provideAuthDAO(noteDatabase: NoteDatabase): AuthDao {
+        return noteDatabase.authDao()
+    }
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun provideAuthDaoService(
+        authDao: AuthDao,
+        userMapper: UserMapper,
+
+        ): AuthDaoService {
+        return AuthDaoServiceImpl(authDao, userMapper)
+    }
+
+    @JvmStatic
+    @Singleton
+    @Provides
     fun provideNoteCacheMapper(dateUtil: DateUtil): CacheMapper {
         return CacheMapper(dateUtil)
+    }
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun provideAuthUserMapper(): UserMapper {
+        return UserMapper()
     }
 
     @JvmStatic
@@ -104,6 +144,27 @@ object AppModule {
     @JvmStatic
     @Singleton
     @Provides
+    fun provideAuthCacheDataSource(
+        authDaoService: AuthDaoService
+    ): AuthCacheDataSource {
+        return AuthCacheDataSourceImpl(authDaoService)
+    }
+
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun provideAuthNetworkDataSource(
+        firestoreService: AuthFirestoreService
+    ): AuthNetworkDataSource {
+        return AuthNetworkDataSourceImpl(
+            firestoreService
+        )
+    }
+
+    @JvmStatic
+    @Singleton
+    @Provides
     fun provideNoteDaoService(
         noteDao: NoteDao,
         noteEntityMapper: CacheMapper,
@@ -111,6 +172,7 @@ object AppModule {
     ): NoteDaoService {
         return NoteDaoServiceImpl(noteDao, noteEntityMapper, dateUtil)
     }
+
 
     @JvmStatic
     @Singleton
@@ -120,6 +182,7 @@ object AppModule {
     ): NoteCacheDataSource {
         return NoteCacheDataSourceImpl(noteDaoService)
     }
+
 
     @JvmStatic
     @Singleton
@@ -139,6 +202,18 @@ object AppModule {
     @JvmStatic
     @Singleton
     @Provides
+    fun provideAuthFirestoreService(
+        firebaseAuth: FirebaseAuth,
+
+        ): AuthFirestoreService {
+        return AuthFirestoreServiceImpl(
+            firebaseAuth,
+        )
+    }
+
+    @JvmStatic
+    @Singleton
+    @Provides
     fun provideNoteNetworkDataSource(
         firestoreService: NoteFirestoreServiceImpl
     ): NoteNetworkDataSource {
@@ -146,6 +221,7 @@ object AppModule {
             firestoreService
         )
     }
+
 
     @JvmStatic
     @Singleton
@@ -167,11 +243,13 @@ object AppModule {
     @Provides
     fun provideSyncDeletedNotes(
         noteCacheDataSource: NoteCacheDataSource,
-        noteNetworkDataSource: NoteNetworkDataSource
+        noteNetworkDataSource: NoteNetworkDataSource,
+        application: BaseApplication
     ): SyncDeletedNotes {
         return SyncDeletedNotes(
             noteCacheDataSource,
-            noteNetworkDataSource
+            noteNetworkDataSource,
+            application
         )
     }
 
@@ -190,11 +268,12 @@ object AppModule {
     @Provides
     fun provideNoteDetailInteractors(
         noteCacheDataSource: NoteCacheDataSource,
-        noteNetworkDataSource: NoteNetworkDataSource
+        noteNetworkDataSource: NoteNetworkDataSource,
+        application: BaseApplication
     ): NoteDetailInteractors {
         return NoteDetailInteractors(
-            DeleteNote(noteCacheDataSource, noteNetworkDataSource),
-            UpdateNote(noteCacheDataSource, noteNetworkDataSource)
+            DeleteNote(noteCacheDataSource, noteNetworkDataSource, application),
+            UpdateNote(noteCacheDataSource, noteNetworkDataSource, application)
         )
     }
 
@@ -204,15 +283,48 @@ object AppModule {
     fun provideNoteListInteractors(
         noteCacheDataSource: NoteCacheDataSource,
         noteNetworkDataSource: NoteNetworkDataSource,
-        noteFactory: NoteFactory
+        noteFactory: NoteFactory,
+        application: BaseApplication
     ): NoteListInteractors {
         return NoteListInteractors(
-            InsertNewNote(noteCacheDataSource, noteNetworkDataSource, noteFactory),
-            DeleteNote(noteCacheDataSource, noteNetworkDataSource),
+            InsertNewNote(noteCacheDataSource, noteNetworkDataSource, noteFactory, application),
+            DeleteNote(noteCacheDataSource, noteNetworkDataSource, application),
             SearchNotes(noteCacheDataSource),
             GetNumNotes(noteCacheDataSource),
-            RestoreDeletedNote(noteCacheDataSource, noteNetworkDataSource),
-            DeleteMultipleNotes(noteCacheDataSource, noteNetworkDataSource)
+            RestoreDeletedNote(noteCacheDataSource, noteNetworkDataSource, application),
+            DeleteMultipleNotes(noteCacheDataSource, noteNetworkDataSource, application),
+            GetAllNotesFromNetwork(noteCacheDataSource, noteNetworkDataSource),
+            GetUpdatedNotes(noteCacheDataSource, noteNetworkDataSource, application)
         )
     }
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun provideAuthInteractors(
+        authCacheDataSource: AuthCacheDataSource,
+        authNetworkDataSource: AuthNetworkDataSource,
+        sharedPreferences: SharedPreferences,
+        sharedPrefsEditor: SharedPreferences.Editor
+    ): AuthInteractors {
+        return AuthInteractors(
+            Login(authCacheDataSource, authNetworkDataSource, sharedPreferences, sharedPrefsEditor),
+            Register(
+                authCacheDataSource,
+                authNetworkDataSource,
+                sharedPreferences,
+                sharedPrefsEditor
+            ),
+            ForgotPassword(authNetworkDataSource),
+            CheckAuthenticatedUser(authCacheDataSource, sharedPreferences)
+        )
+    }
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun provideNetworkStatusHelper(application: BaseApplication):NetworkStatusHelper{
+        return NetworkStatusHelper(application)
+    }
+
 }

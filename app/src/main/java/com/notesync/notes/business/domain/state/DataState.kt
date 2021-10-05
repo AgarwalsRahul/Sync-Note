@@ -26,7 +26,7 @@ data class DataState<T>(
             data: T? = null,
             stateEvent: StateEvent?
         ): DataState<T> {
-            return DataState(
+            return DataState<T>(
                 stateMessage = response?.let {
                     StateMessage(
                         it

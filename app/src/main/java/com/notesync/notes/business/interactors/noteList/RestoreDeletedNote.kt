@@ -1,25 +1,35 @@
 package com.notesync.notes.business.interactors.noteList
 
+import android.content.Context
+import androidx.work.*
 import com.notesync.notes.business.data.cache.CacheResponseHandler
 import com.notesync.notes.business.data.cache.abstraction.NoteCacheDataSource
 import com.notesync.notes.business.data.network.abstraction.NoteNetworkDataSource
+import com.notesync.notes.business.data.util.GsonHelper
 import com.notesync.notes.business.data.util.safeApiCall
 import com.notesync.notes.business.data.util.safeCacheCall
 import com.notesync.notes.business.domain.model.Note
+import com.notesync.notes.business.domain.model.User
 import com.notesync.notes.business.domain.state.DataState
 import com.notesync.notes.business.domain.state.*
 import com.notesync.notes.business.domain.state.StateEvent
 import com.notesync.notes.framework.presentation.notelist.state.NoteListViewState
+import com.notesync.notes.framework.workers.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class RestoreDeletedNote(
     private val noteCacheDataSource: NoteCacheDataSource,
-    private val noteNetworkDataSource: NoteNetworkDataSource
+    private val noteNetworkDataSource: NoteNetworkDataSource,
+    private val context: Context
 ) {
 
-    fun restoreDeleteNote(note: Note, stateEvent: StateEvent): Flow<DataState<NoteListViewState>?> =
+    fun restoreDeleteNote(
+        note: Note,
+        stateEvent: StateEvent,
+        user: User
+    ): Flow<DataState<NoteListViewState>?> =
         flow {
             val cacheResult = safeCacheCall(IO) {
                 noteCacheDataSource.insertNote(note)
@@ -61,21 +71,54 @@ class RestoreDeletedNote(
 
             emit(response)
 
-            updateNetwork(response?.stateMessage?.response?.message, note)
+            updateNetwork(response?.stateMessage?.response?.message, note, user)
         }
 
-    private suspend fun updateNetwork(response: String?, note: Note) {
+    private suspend fun updateNetwork(response: String?, note: Note, user: User) {
         if (response.equals(RESTORE_NOTE_SUCCESS)) {
 
-            // insert into "notes" node
-            safeApiCall(IO) {
-                noteNetworkDataSource.insertOrUpdateNote(note)
-            }
+//            // insert into "notes" node
+//            safeApiCall(IO) {
+//                noteNetworkDataSource.insertOrUpdateNote(note, user.id)
+//            }
+//
+//            // remove from "deleted" node
+//            safeApiCall(IO) {
+//                noteNetworkDataSource.deleteDeletedNote(note, user.id)
+//            }
+//
+//            safeApiCall(IO){
+//                noteNetworkDataSource.insertUpdatedOrNewNote(note,user)
+//            }
+            val data = workDataOf(
+                Pair("newNote", GsonHelper.serializeToJson(note)),
+                Pair("user", GsonHelper.serializeToJson(user))
+            )
+            val backgroundConstraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiresBatteryNotLow(false)
+                .build()
+            val worker = OneTimeWorkRequestBuilder<InsertOrUpdateNoteWorker>().setInputData(data)
+                .setConstraints(backgroundConstraints)
+                .addTag("InsertOrUpdateNoteWorker").build()
+            val worker1 =
+                OneTimeWorkRequestBuilder<DeleteDeletedNoteWorker>().setInputData(data)
+                    .setConstraints(backgroundConstraints)
+                    .addTag("DeleteDeletedNoteWorker").build()
 
-            // remove from "deleted" node
-            safeApiCall(IO) {
-                noteNetworkDataSource.deleteDeletedNote(note)
-            }
+            val worker2 =
+                OneTimeWorkRequestBuilder<InsertUpdatedOrNewNoteWorker>().setInputData(
+                    data
+                )
+                    .setConstraints(backgroundConstraints)
+                    .addTag("InsertUpdatedOrNewNoteWorker").build()
+            WorkManager.getInstance(context)
+                .beginUniqueWork(
+                    "RestoreDeletedNote",
+                    ExistingWorkPolicy.APPEND,
+                    listOf(worker, worker1, worker2)
+                )
+                .enqueue()
         }
     }
 

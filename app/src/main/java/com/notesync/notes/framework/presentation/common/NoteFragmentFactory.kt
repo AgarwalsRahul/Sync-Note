@@ -3,6 +3,7 @@ package com.notesync.notes.framework.presentation.common
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.notesync.notes.business.domain.util.DateUtil
+import com.notesync.notes.di.main.MainScope
 import com.notesync.notes.framework.presentation.notedetail.NoteDetailFragment
 import com.notesync.notes.framework.presentation.notelist.NoteListFragment
 import com.notesync.notes.framework.presentation.splash.SplashFragment
@@ -14,6 +15,7 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @FlowPreview
 @ObsoleteCoroutinesApi
+@MainScope
 class NoteFragmentFactory
 @Inject
 constructor(
@@ -35,10 +37,6 @@ constructor(
                 fragment
             }
 
-            SplashFragment::class.java.name -> {
-                val fragment = SplashFragment(viewModelFactory)
-                fragment
-            }
 
             else -> {
                 super.instantiate(classLoader, className)

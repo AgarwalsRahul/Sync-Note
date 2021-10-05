@@ -1,33 +1,65 @@
 package com.notesync.notes.framework.presentation.auth
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.notesync.notes.R
+import com.notesync.notes.business.domain.state.StateMessageCallback
+import com.notesync.notes.business.interactors.auth.Login.Companion.LOGIN_SUCCESS
+import com.notesync.notes.business.interactors.common.DeleteNote
+import com.notesync.notes.business.interactors.noteDetail.UpdateNote
+import com.notesync.notes.framework.presentation.MainActivity
+import com.notesync.notes.framework.presentation.UIController
+import com.notesync.notes.framework.presentation.auth.state.AuthStateEvent
+import com.notesync.notes.framework.presentation.auth.state.LoginFields
+import com.notesync.notes.framework.presentation.common.AuthViewModelFactory
+import com.notesync.notes.framework.presentation.common.hideKeyboard
+import com.notesync.notes.framework.presentation.common.invisible
+import com.notesync.notes.framework.presentation.common.visible
+import com.notesync.notes.util.printLogD
+import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
+import javax.inject.Named
+import kotlin.math.log
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+@FlowPreview
+@ObsoleteCoroutinesApi
+@ExperimentalCoroutinesApi
+class LoginFragment constructor(private val viewModelFactory: ViewModelProvider.Factory) :
+    Fragment() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class LoginFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    val viewModel: AuthViewModel by activityViewModels {
+        viewModelFactory
+    }
+
+    lateinit var uiController: UIController
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
+        viewModel.setupChannel()
+
+
     }
 
     override fun onCreateView(
@@ -38,23 +70,191 @@ class LoginFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment LoginFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LoginFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupOnBackPressedCallback()
+
+        login_button.setOnClickListener {
+
+            view.hideKeyboard()
+            Log.d("LoginFragment","Login button is clicked")
+            viewModel.setStateEvent(
+                AuthStateEvent.LoginAttemptEvent(
+                    email_address.text.toString(),
+                    password.text.toString()
+                )
+            )
+        }
+
+        register_button.setOnClickListener {
+
+            findNavController(this).navigate(R.id.action_loginFragment_to_registerFragment)
+        }
+
+        forgot_password_button.setOnClickListener {
+
+            findNavController(this).navigate(R.id.action_loginFragment_to_forgotPasswordFragment)
+        }
+        initListener()
+        subscribeObservers()
+    }
+
+
+    private fun initListener() {
+        emailTextListener()
+
+        passwordTextListener()
+    }
+
+    private fun passwordTextListener() {
+        password.apply {
+            addTextChangedListener {
+                viewModel.setLoginPassword(it.toString())
+                if (password_layout.isErrorEnabled
+                ) {
+                    password_layout.error =
+                        viewModel.validatePasswords(this.text.toString())
+
                 }
             }
+            onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    password_layout.isErrorEnabled = true
+                    password_layout.error =
+                        viewModel.validatePasswords(this.text.toString())
+                }
+
+            }
+        }
     }
+
+    private fun emailTextListener() {
+        email_address.apply {
+            addTextChangedListener {
+                viewModel.setLoginEmail(it.toString())
+                if (email_address_layout.isErrorEnabled
+                ) {
+
+                    email_address_layout.error =
+                        viewModel.validateEmail(this.text.toString())
+
+                }
+            }
+            onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    email_address_layout.isErrorEnabled = true
+                    email_address_layout.error =
+                        viewModel.validateEmail(this.text.toString())
+                }
+
+            }
+        }
+    }
+
+    @DelicateCoroutinesApi
+    private fun subscribeObservers() {
+        viewModel.viewState.observe(viewLifecycleOwner, { viewState ->
+            viewState?.let {
+                it.loginFields?.let { loginFields ->
+                    loginFields.login_email?.let {
+                        email_address.setText(it)
+
+                    }
+                    loginFields.login_password?.let {
+                        password.setText(it)
+
+                    }
+                }
+            }
+        })
+
+        lifecycleScope.launch {
+            viewModel.isLoginEnabled.collect { value ->
+//                if (value != null)
+                    login_button.isEnabled = value
+            }
+        }
+
+        viewModel.shouldDisplayProgressBar.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                email_address_layout.isEnabled = !it
+                password_layout.isEnabled = !it
+                register_button.isEnabled = !it
+
+                forgot_password_button.isEnabled = !it
+
+                if (it) {
+                    login_button.invisible()
+                } else {
+                    login_button.visible()
+                }
+            }
+
+            uiController.displayProgressBar(it)
+        })
+
+        viewModel.stateMessage.observe(viewLifecycleOwner, Observer { stateMessage ->
+            stateMessage?.response?.let { response ->
+                uiController.onResponseReceived(
+                    response = response,
+                    stateMessageCallback = object : StateMessageCallback {
+                        override fun removeMessageFromStack() {
+                            viewModel.clearStateMessage()
+                        }
+                    }
+                )
+
+            }
+        })
+    }
+
+    private fun setupOnBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                onBackPressed()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+    }
+
+    private fun onBackPressed() {
+        view?.hideKeyboard()
+
+        if (viewModel.dataChannelManager.getActiveJobs().size == 0) {
+            activity?.finish()
+        }
+        viewModel.cancelActiveJobs()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        viewModel.setLoginFields(
+            LoginFields(
+                email_address.text.toString(),
+                password.text.toString(),
+            )
+        )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        viewModel.setLoginFields(
+            LoginFields(
+                email_address.text.toString(),
+                password.text.toString()
+            )
+        )
+    }
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity?.let {
+            uiController = context as UIController
+        }
+    }
+
+
 }

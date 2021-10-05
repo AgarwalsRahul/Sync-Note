@@ -6,6 +6,8 @@ import com.notesync.notes.framework.dataSource.cache.abstraction.NoteDaoService
 import com.notesync.notes.framework.dataSource.cache.mappers.CacheMapper
 import com.notesync.notes.framework.dataSource.cache.database.NoteDao
 import com.notesync.notes.framework.dataSource.cache.database.returnOrderedQuery
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,7 +18,7 @@ class NoteDaoServiceImpl @Inject constructor(
     private val dateUtil: DateUtil
 ) : NoteDaoService {
     override suspend fun insertNote(note: Note): Long {
-        return noteDao.insertNote(cacheMapper.mapToEntity(note))
+        return noteDao.insertNote(cacheMapper.mapToEntity(note,null))
     }
 
     override suspend fun deleteNote(primaryKey: String): Int {
@@ -42,69 +44,72 @@ class NoteDaoServiceImpl @Inject constructor(
 
     }
 
-    override suspend fun searchNotes(): List<Note> {
-        return cacheMapper.entityListToNoteList(noteDao.searchNotes())
+    override fun searchNotes(): Flow<List<Note>> {
+        return noteDao.searchNotes().map {
+            cacheMapper.entityListToNoteList(it)
+        }
     }
 
-    override suspend fun searchNotesOrderByDateDESC(
+    override  fun searchNotesOrderByDateDESC(
         query: String,
         page: Int,
         pageSize: Int
-    ): List<Note> {
-        return cacheMapper.entityListToNoteList(
-            noteDao.searchNotesOrderByDateDESC(
-                query,
-                page,
-                pageSize
-            )
-        )
+    ): Flow<List<Note>> {
+        return noteDao.searchNotesOrderByDateDESC(
+            query,
+            page,
+            pageSize
+        ).map {
+            cacheMapper.entityListToNoteList(it)
+        }
+
     }
 
-    override suspend fun searchNotesOrderByDateASC(
+    override  fun searchNotesOrderByDateASC(
         query: String,
         page: Int,
         pageSize: Int
-    ): List<Note> {
-        return cacheMapper.entityListToNoteList(
-            noteDao.searchNotesOrderByDateASC(
-                query,
-                page,
-                pageSize
-            )
-        )
+    ): Flow<List<Note>> {
+        return noteDao.searchNotesOrderByDateASC(
+            query,
+            page,
+            pageSize
+        ).map {
+            cacheMapper.entityListToNoteList(it)
+        }
     }
 
-    override suspend fun searchNotesOrderByTitleDESC(
+    override  fun searchNotesOrderByTitleDESC(
         query: String,
         page: Int,
         pageSize: Int
-    ): List<Note> {
-        return cacheMapper.entityListToNoteList(
-            noteDao.searchNotesOrderByTitleDESC(
-                query,
-                page,
-                pageSize
-            )
-        )
+    ): Flow<List<Note>> {
+        return noteDao.searchNotesOrderByTitleDESC(
+            query,
+            page,
+            pageSize
+        ).map {
+            cacheMapper.entityListToNoteList(it)
+        }
     }
 
-    override suspend fun searchNotesOrderByTitleASC(
+    override  fun searchNotesOrderByTitleASC(
         query: String,
         page: Int,
         pageSize: Int
-    ): List<Note> {
-        return cacheMapper.entityListToNoteList(
-            noteDao.searchNotesOrderByTitleASC(
-                query,
-                page,
-                pageSize
-            )
-        )
+    ): Flow<List<Note>> {
+        return noteDao.searchNotesOrderByTitleASC(
+            query,
+            page,
+            pageSize
+        ).map {
+            cacheMapper.entityListToNoteList(it)
+        }
     }
 
     override suspend fun searchNoteById(id: String): Note? {
         return noteDao.searchNoteById(id)?.let {
-            cacheMapper.mapFromEntity(it)
+            cacheMapper.mapFromEntity(it,null)
         }
     }
 
@@ -112,25 +117,28 @@ class NoteDaoServiceImpl @Inject constructor(
         return noteDao.getNumNotes()
     }
 
-    override suspend fun getAllNotes(): List<Note> {
-        return cacheMapper.entityListToNoteList(noteDao.searchNotes())
+    override fun getAllNotes(): Flow<List<Note>> {
+        return noteDao.searchNotes().map {
+            cacheMapper.entityListToNoteList(it)
+        }
     }
 
     override suspend fun insertNotes(notes: List<Note>): LongArray {
         return noteDao.insertNotes(cacheMapper.noteListToEntityList(notes))
     }
 
-    override suspend fun returnOrderedQuery(
+    override  fun returnOrderedQuery(
         query: String,
         filterAndOrder: String,
         page: Int
-    ): List<Note> {
-        return cacheMapper.entityListToNoteList(
-            noteDao.returnOrderedQuery(
-                query,
-                filterAndOrder,
-                page
-            )
-        )
+    ): Flow<List<Note>> {
+        return noteDao.returnOrderedQuery(
+            query,
+            filterAndOrder,
+            page
+        ).map {
+            cacheMapper.entityListToNoteList(it)
+        }
+
     }
 }

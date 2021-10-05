@@ -1,91 +1,92 @@
 package com.notesync.notes.framework.presentation.splash
 
+import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment.findNavController
-import com.google.firebase.auth.FirebaseAuth
 import com.notesync.notes.R
-import com.notesync.notes.business.domain.state.DialogInputCaptureCallback
-import com.notesync.notes.framework.dataSource.network.implementation.NoteFirestoreServiceImpl.Companion.EMAIL
-import com.notesync.notes.framework.presentation.BaseApplication
-import com.notesync.notes.framework.presentation.common.BaseNoteFragment
+import com.notesync.notes.business.domain.state.StateMessageCallback
+import com.notesync.notes.business.interactors.auth.CheckAuthenticatedUser
+import com.notesync.notes.framework.presentation.UIController
+import com.notesync.notes.framework.presentation.auth.AuthViewModel
+import com.notesync.notes.framework.presentation.auth.state.AuthStateEvent
 import com.notesync.notes.util.printLogD
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import javax.inject.Singleton
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 @ObsoleteCoroutinesApi
+class SplashFragment(private val viewModelProvider: ViewModelProvider.Factory) :
+    Fragment(R.layout.fragment_splash) {
 
+    val viewModel: AuthViewModel by activityViewModels {
+        viewModelProvider
+    }
 
-@Singleton
-class SplashFragment
+    lateinit var uiController: UIController
 
-constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
-): BaseNoteFragment(R.layout.fragment_splash) {
+    override fun onCreate(savedInstanceState: Bundle?) {
 
-    val viewModel: SplashViewModel by viewModels {
-        viewModelFactory
+        super.onCreate(savedInstanceState)
+        viewModel.setupChannel()
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkFirebaseAuth()
+        subscribeObserver()
+
     }
 
-    private fun checkFirebaseAuth(){
-        if(FirebaseAuth.getInstance().currentUser == null){
-            displayCapturePassword()
-        }
-        else{
-            subscribeObservers()
-        }
+    override fun onResume() {
+        super.onResume()
+        checkPreviousAuthUser()
     }
 
+    private fun checkPreviousAuthUser() {
+        Log.d("SplashFragment", "EVVENT CHECK PREVIOUS USER")
+        viewModel.setStateEvent(AuthStateEvent.CheckPreviousAuthUser())
+    }
 
-    private fun displayCapturePassword(){
-        uiController.displayInputCaptureDialog(
-            "Enter Password",
-            object: DialogInputCaptureCallback {
-                override fun onTextCaptured(text: String) {
-                    FirebaseAuth.getInstance()
-                        .signInWithEmailAndPassword(EMAIL, text)
-                        .addOnCompleteListener {
-                            if(it.isSuccessful){
-                                printLogD("MainActivity",
-                                    "Signing in to Firebase: ${it.result}")
-                                subscribeObservers()
+    private fun subscribeObserver() {
+
+
+        viewModel.stateMessage.observe(viewLifecycleOwner, { stateMessage ->
+            stateMessage?.let {
+                it.response?.let { response ->
+                    printLogD("SplashFragment", "${response.message}")
+                    if (response.message == CheckAuthenticatedUser.NO_USER_FOUND) {
+                        findNavController(this).navigate(R.id.action_splashFragment_to_loginFragment)
+                    }
+                    uiController.onResponseReceived(
+                        response = response,
+                        stateMessageCallback = object : StateMessageCallback {
+                            override fun removeMessageFromStack() {
+                                viewModel.clearStateMessage()
                             }
                         }
+                    )
                 }
             }
-        )
-    }
-
-    private fun subscribeObservers(){
-        viewModel.hasSyncBeenExecuted().observe(viewLifecycleOwner, Observer { hasSyncBeenExecuted ->
-
-            if(hasSyncBeenExecuted){
-                navNoteListFragment()
-            }
         })
-    }
 
-    private fun navNoteListFragment(){
-        findNavController(this).navigate(R.id.action_splashFragment_to_noteListFragment)
-    }
-
-    override fun inject() {
 
     }
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity?.let {
+            uiController = context as UIController
+
+        }
+    }
+
 
 }

@@ -2,6 +2,9 @@ package com.notesync.notes.framework.dataSource.cache.abstraction
 
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_PAGINATION_PAGE_SIZE
+import kotlinx.coroutines.flow.Flow
+import java.util.*
+
 
 interface NoteDaoService {
 
@@ -15,44 +18,46 @@ interface NoteDaoService {
     suspend fun updateNote(id: String, title: String, body: String?, timestamp: String?): Int
 
 
-    suspend fun searchNotes(): List<Note>
+    fun searchNotes(): Flow<List<Note>>
 
-    suspend fun searchNotesOrderByDateDESC(
+
+
+     fun searchNotesOrderByDateDESC(
         query: String,
         page: Int,
         pageSize: Int = NOTE_PAGINATION_PAGE_SIZE
-    ): List<Note>
+    ): Flow<List<Note>>
 
-    suspend fun searchNotesOrderByDateASC(
+     fun searchNotesOrderByDateASC(
         query: String,
         page: Int,
         pageSize: Int = NOTE_PAGINATION_PAGE_SIZE
-    ): List<Note>
+    ): Flow<List<Note>>
 
-    suspend fun searchNotesOrderByTitleDESC(
+     fun searchNotesOrderByTitleDESC(
         query: String,
         page: Int,
         pageSize: Int = NOTE_PAGINATION_PAGE_SIZE
-    ): List<Note>
+    ): Flow<List<Note>>
 
-    suspend fun searchNotesOrderByTitleASC(
+     fun searchNotesOrderByTitleASC(
         query: String,
         page: Int,
         pageSize: Int = NOTE_PAGINATION_PAGE_SIZE
-    ): List<Note>
+    ): Flow<List<Note>>
 
     suspend fun searchNoteById(id: String): Note?
 
     suspend fun getNumNotes(): Int
 
-    suspend fun getAllNotes(): List<Note>
+     fun getAllNotes(): Flow<List<Note>>
 
     // Only used for testing purpose
     suspend fun insertNotes(notes: List<Note>): LongArray
 
-    suspend fun returnOrderedQuery(
+     fun returnOrderedQuery(
         query: String,
         filterAndOrder: String,
         page: Int
-    ): List<Note>
+    ): Flow<List<Note>>
 }

@@ -12,7 +12,9 @@ data class NoteNetworkEntity(
 
     var updated_at: Timestamp,
 
-    var created_at: Timestamp
+    var created_at: Timestamp,
+
+    var device_id:String?
 
 ){
 
@@ -22,7 +24,8 @@ data class NoteNetworkEntity(
         "",
         "",
         Timestamp.now(),
-        Timestamp.now()
+        Timestamp.now(),
+        null
     )
 
 
