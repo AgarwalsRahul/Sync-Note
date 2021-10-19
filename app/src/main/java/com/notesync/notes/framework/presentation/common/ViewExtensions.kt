@@ -11,12 +11,15 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 
 import com.notesync.notes.business.domain.state.StateMessageCallback
 import com.notesync.notes.util.TodoCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 // threshold for when contents of collapsing toolbar is hidden
@@ -127,4 +130,25 @@ fun Activity.displayToast(
     toast.show()
 
     stateMessageCallback.removeMessageFromStack()
+}
+
+
+fun SearchView.getQueryTextChangeStateFlow(): StateFlow<String> {
+
+    val query = MutableStateFlow("")
+
+    setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            return false
+        }
+
+
+        override fun onQueryTextChange(newText: String): Boolean {
+            query.value = newText
+            return true
+        }
+    })
+
+    return query
+
 }

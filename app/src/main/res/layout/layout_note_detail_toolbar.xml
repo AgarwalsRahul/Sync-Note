@@ -4,17 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/toolbar_height"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimaryDark"
+   >
 
 
     <ImageView
+        android:id="@+id/toolbar_primary_icon"
         android:layout_width="@dimen/toolbar_item_margin"
         android:layout_height="@dimen/toolbar_item_margin"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:backgroundTint="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:id="@+id/toolbar_primary_icon"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:layout_width="0dp"
@@ -25,7 +28,8 @@
         app:layout_constraintRight_toLeftOf="@id/toolbar_secondary_icon"
         app:layout_constraintHorizontal_bias="0"
         android:id="@+id/tool_bar_title"
-        android:textColor="@color/default_grey"
+        android:textColor="@color/colorPrimary"
+        android:fontFamily="@font/gilroy_bold"
         android:layout_marginStart="@dimen/toolbar_title_margin"
         android:layout_marginEnd="@dimen/default_view_margin"
         android:gravity="center_vertical"
@@ -42,6 +46,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:id="@+id/toolbar_secondary_icon"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_marginEnd="@dimen/default_view_margin"
         />
 

@@ -2,21 +2,22 @@ package com.notesync.notes.framework.presentation.notelist
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
@@ -32,22 +33,23 @@ import com.notesync.notes.framework.dataSource.cache.database.NOTE_FILTER_DATE_C
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_FILTER_TITLE
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_ORDER_ASC
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_ORDER_DESC
-import com.notesync.notes.framework.presentation.common.BaseNoteFragment
-import com.notesync.notes.framework.presentation.common.hideKeyboard
+import com.notesync.notes.framework.presentation.BaseApplication
+import com.notesync.notes.framework.presentation.common.*
 import com.notesync.notes.framework.presentation.notedetail.NOTE_DETAIL_SELECTED_NOTE_BUNDLE_KEY
 import com.notesync.notes.framework.presentation.notelist.state.NoteListStateEvent.*
 import com.notesync.notes.framework.presentation.notelist.state.NoteListToolbarState.*
 import com.notesync.notes.framework.presentation.notelist.state.NoteListViewState
-import com.notesync.notes.util.NetworkStatus
-import com.notesync.notes.util.NetworkStatusHelper
+import com.notesync.notes.util.Constants.DARK_THEME
+import com.notesync.notes.util.Constants.LIGHT_THEME
 import com.notesync.notes.util.TodoCallback
 import com.notesync.notes.util.printLogD
 import kotlinx.android.synthetic.main.fragment_note_list.*
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.android.synthetic.main.layout_searchview_toolbar.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.flow.*
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 const val NOTE_LIST_STATE_BUNDLE_KEY = "com.notesync.notes.framework.presentation.notelist.state"
@@ -73,7 +75,12 @@ constructor(
     private var itemTouchHelper: ItemTouchHelper? = null
 
 
+    @Inject
+    lateinit var themeManager: ThemeManager
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
         super.onCreate(savedInstanceState)
         viewModel.setupChannel()
 
@@ -84,6 +91,9 @@ constructor(
                 clearArgs()
             }
         }
+
+//
+
     }
 
     private fun clearArgs() {
@@ -92,15 +102,23 @@ constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        note_list_fragment_container.setOnClickListener {
+            view?.hideKeyboard()
+            search_view.clearFocus()
+        }
         setupUI()
+
         setupRecyclerView()
         setupSwipeRefresh()
         setupFAB()
         subscribeObservers()
-
+        night_mode.setOnClickListener {
+            themeManager.setTheme()
+        }
         restoreInstanceState(savedInstanceState)
+
     }
+
 
     @SuppressLint("NotifyDataSetChanged")
     private fun subscribeObservers() {
@@ -123,7 +141,13 @@ constructor(
 
 
 
-        viewModel.viewState.observe(viewLifecycleOwner,  { viewState ->
+        themeManager.themeMode.observe(viewLifecycleOwner, {
+            it?.let { value ->
+                setNightThemeImageColor(value)
+            }
+        })
+
+        viewModel.viewState.observe(viewLifecycleOwner, { viewState ->
 
             if (viewState != null) {
                 viewState.noteList?.let { noteList ->
@@ -133,7 +157,18 @@ constructor(
                         viewModel.setQueryExhausted(true)
                     }
                     listAdapter?.submitList(noteList)
+                    if (noteList.isEmpty() && viewModel.getSearchQuery().isNotEmpty()) {
+
+                        search_image.visible()
+                        search_result_textView.visible()
+                    } else {
+                        search_image.gone()
+                        search_result_textView.gone()
+
+
+                    }
                     listAdapter?.notifyDataSetChanged()
+
                 }
 
 //                // a note been inserted or selected
@@ -144,38 +179,25 @@ constructor(
             }
         })
 
-        viewModel.shouldDisplayProgressBar.observe(viewLifecycleOwner,  {
+        viewModel.shouldDisplayProgressBar.observe(viewLifecycleOwner, {
             printActiveJobs()
             uiController.displayProgressBar(it)
         })
 
-//        NetworkStatusHelper(requireContext()).observe(viewLifecycleOwner, {
-//            if (it is NetworkStatus.Unavailable) {
-//                printLogD("NetworkStatusHelper","network is unavailable.")
-//                showNoInternetConnectionSnackBar()
-//            }
-//        })
 
-        viewModel.stateMessage.observe(viewLifecycleOwner,  { stateMessage ->
+
+        viewModel.stateMessage.observe(viewLifecycleOwner, { stateMessage ->
             stateMessage?.let { message ->
                 when {
                     message.response.message?.equals(DELETE_SUCCESS) == true -> {
                         showUndoSnackbarDeleteNote()
                     }
+
                     message.response.message?.equals(SearchNotes.NO_NOTES_IN_CACHE) == true -> {
-//                        val observer = NetworkStatusHelper(requireContext())
-//                        observer.observe(viewLifecycleOwner, { status ->
-//                            if (status is NetworkStatus.Available) {
-//                                printLogD("NetworkStatusHelper","network is available.")
-//                                viewModel.setStateEvent(GetAllNotesFromNetwork())
-//                                viewModel.clearStateMessage()
-//                                observer.removeObservers(viewLifecycleOwner)
-//                            }else{
-//                                printLogD("NetworkStatusHelper","network is unavailable.")
-//                                showNoInternetConnectionSnackBar()
-//                            }
-//                        })
+                        Log.d("NoteListFragment", "No Notes in Cache Get from network")
                         viewModel.clearStateMessage()
+                        viewModel.setStateEvent(GetAllNotesFromNetwork())
+
                     }
                     else -> {
                         uiController.onResponseReceived(
@@ -192,6 +214,28 @@ constructor(
         })
     }
 
+
+    private fun setNightThemeImageColor(themeMode: Int) {
+        when (themeMode) {
+            DARK_THEME -> {
+                night_mode.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorPrimary
+                    )
+                )
+            }
+            LIGHT_THEME -> {
+                night_mode.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.secondary_text_color
+                    )
+                )
+            }
+        }
+    }
+
     private fun restoreInstanceState(savedInstanceState: Bundle?) {
         savedInstanceState?.let { inState ->
             (inState[NOTE_LIST_STATE_BUNDLE_KEY] as NoteListViewState?)?.let { viewState ->
@@ -200,15 +244,13 @@ constructor(
         }
     }
 
-    private fun showEmptyListScreen() {
-
-    }
 
     private fun setupRecyclerView() {
         recycler_view.apply {
-            layoutManager = LinearLayoutManager(activity)
-            val topSpacingDecorator = TopSpacingItemDecoration(20)
-            addItemDecoration(topSpacingDecorator)
+            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+
+            addItemDecoration(SpacesItemDecoration(20))
+//            ( layoutManager as StaggeredGridLayoutManager).gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
             itemTouchHelper = ItemTouchHelper(
                 NoteItemTouchHelperCallback(
                     this@NoteListFragment,
@@ -219,20 +261,30 @@ constructor(
                 this@NoteListFragment,
                 viewLifecycleOwner,
                 viewModel.noteListInteractionManager.selectedNotes,
-                dateUtil
+                dateUtil,
             )
             itemTouchHelper?.attachToRecyclerView(this)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
-                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                    val lastPosition = layoutManager.findLastVisibleItemPosition()
-                    if (lastPosition == listAdapter?.itemCount?.minus(1)) {
+                    val layoutManager = recyclerView.layoutManager as StaggeredGridLayoutManager
+                    val visibleItemCount = layoutManager.childCount
+                    val totalItemCount = layoutManager.itemCount
+                    var firstVisibleItemPosition = 0
+                    val firstVisibleItemPositions =
+                        layoutManager.findFirstVisibleItemPositions(null)
+                    firstVisibleItemPosition = firstVisibleItemPositions[0]
+//                    if (lastPosition[-1] == listAdapter?.itemCount?.minus(1)) {
+//                        viewModel.nextPage()
+//                    }
+                    if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
                         viewModel.nextPage()
                     }
                 }
             })
-            adapter = listAdapter
+            setEmptyView(emptyView)
+            setAdapter(listAdapter)
+
         }
     }
 
@@ -245,19 +297,34 @@ constructor(
 
             val searchView = toolbar.findViewById<SearchView>(R.id.search_view)
 
-            val searchPlate: SearchView.SearchAutoComplete? =
-                searchView.findViewById(androidx.appcompat.R.id.search_src_text)
 
-            searchPlate?.setOnEditorActionListener { v, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED
-                    || actionId == EditorInfo.IME_ACTION_SEARCH
-                ) {
-                    val searchQuery = v.text.toString()
-                    viewModel.setQuery(searchQuery)
-                    startNewSearch()
-                }
-                true
+            CoroutineScope(Main).launch {
+                searchView.getQueryTextChangeStateFlow()
+                    .debounce(300)
+                    .distinctUntilChanged()
+
+                    .flowOn(Dispatchers.Default).collect {
+                        viewModel.setQuery(it)
+                        startNewSearch()
+                    }
             }
+
+//
+//            val searchPlate: SearchView.SearchAutoComplete? =
+//                searchView.findViewById(androidx.appcompat.R.id.search_src_text)
+//
+//            searchPlate.s
+//
+//            searchPlate?.setOnEditorActionListener { v, actionId, _ ->
+//                if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED
+//                    || actionId == EditorInfo.IME_ACTION_SEARCH
+//                ) {
+//                    val searchQuery = v.text.toString()
+//                    viewModel.setQuery(searchQuery)
+//                    startNewSearch()
+//                }
+//                true
+//            }
         }
     }
 
@@ -317,7 +384,7 @@ constructor(
     private fun showFilterDialog() {
 
         activity?.let {
-            val dialog = MaterialDialog(it)
+            val dialog = MaterialDialog(it).cornerRadius(16.0f)
                 .noAutoDismiss()
                 .customView(R.layout.layout_filter)
 
@@ -431,6 +498,7 @@ constructor(
 
     private fun setupUI() {
         view?.hideKeyboard()
+
     }
 
     private fun saveLayoutManagerState() {
@@ -506,12 +574,12 @@ constructor(
     }
 
     override fun inject() {
-
+        (activity?.application as BaseApplication).appComponent
+            .inject(this)
     }
 
     override fun onResume() {
         super.onResume()
-//
         viewModel.retrieveNumNotesInCache()
         viewModel.clearList()
         viewModel.refreshSearchQuery()

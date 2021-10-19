@@ -1,6 +1,7 @@
 package com.notesync.notes.di
 
 import com.notesync.notes.business.domain.state.SessionManager
+import com.notesync.notes.business.domain.state.ThemeManager
 import com.notesync.notes.di.auth.AuthComponent
 import com.notesync.notes.di.main.MainComponent
 import com.notesync.notes.di.main.NoteFragmentFactoryModule
@@ -8,6 +9,7 @@ import com.notesync.notes.di.main.NoteViewModelModule
 import com.notesync.notes.di.worker.WorkerBindingModule
 import com.notesync.notes.framework.presentation.BaseActivity
 import com.notesync.notes.framework.presentation.BaseApplication
+import com.notesync.notes.framework.presentation.notelist.NoteListFragment
 import com.notesync.notes.framework.workers.CustomWorkerFactory
 import dagger.BindsInstance
 import dagger.Component
@@ -29,6 +31,8 @@ interface AppComponent {
 
     val workerFactory:CustomWorkerFactory
 
+    val themeManager:ThemeManager
+
     @Component.Factory
     interface Factory {
         fun create(@BindsInstance app: BaseApplication): AppComponent
@@ -36,6 +40,7 @@ interface AppComponent {
 
     fun inject(baseActivity: BaseActivity)
 
+    fun inject(noteListFragment: NoteListFragment)
 
     fun authComponent(): AuthComponent.Factory
 

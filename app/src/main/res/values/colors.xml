@@ -2,8 +2,8 @@
 <resources>
 
     <!-- Main theme colors -->
-    <color name="colorPrimary">#fff</color>
-    <color name="colorPrimaryDark">#7d7d7d</color>
+    <color name="colorPrimary">#2C72FF</color>
+    <color name="colorPrimaryDark">#fff</color>
     <color name="colorAccent">#0094DE</color>
 
     <!-- Secondary theme colors -->
@@ -23,6 +23,19 @@
 
     <color name="default_grey">#686868</color>
     <color name="default_background_color">#EEEEEE</color>
+
+    //Background
+    <color name="background_color">#FFFFFF</color>
+    
+    //Text
+    
+    <color name="primary_text_color">#2C72FF</color>
+    <color name="secondary_text_color">#000000</color>
+    <color name="grey_dark">#5B5B5B</color>
+    <color name="grey_light">#9f9f9f</color>
+
+    <color name="card_background_color">#F8F8F8</color>
+
 
 
 

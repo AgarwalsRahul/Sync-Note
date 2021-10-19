@@ -13,65 +13,132 @@
         android:layout_width="match_parent"
         android:layout_height="0dp">
 
-        <com.google.android.material.textfield.TextInputLayout
+        <ImageView
+            android:contentDescription="@string/syncnote_logo"
+            android:id="@+id/imageView"
+            android:layout_width="50dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_logo" />
+
+        <TextView
+            android:id="@+id/syncNoteTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/gilroy_semibold"
+            android:text="@string/sync"
+            android:textColor="?attr/textColor"
+            android:textSize="21sp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/gliroy_black"
+            android:text="@string/hello_nwelcome_back"
+            android:textColor="?attr/textColor"
+            android:textSize="30sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+
+        <com.notesync.notes.framework.presentation.util.CustomTextInputLayout
             android:id="@+id/email_address_layout"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="120dp"
-            android:layout_marginEnd="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="25dp"
+            android:background="@null"
+            app:boxBackgroundColor="@null"
+            app:boxBackgroundMode="none"
             android:minHeight="48dp"
             app:errorEnabled="false"
+            app:hintEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/text_email">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/email_address"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
+                android:textColorHint="@color/grey_dark"
+                android:background="@drawable/textfield_rectangle"
                 android:ems="10"
+                android:fontFamily="@font/gilroy_regular"
                 android:hint="@string/email_address"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:paddingHorizontal="21dp"
+                android:paddingVertical="12dp"
+                android:textColor="#000000"
+                android:textSize="16sp" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.notesync.notes.framework.presentation.util.CustomTextInputLayout>
 
-
-        <com.google.android.material.textfield.TextInputLayout
+        <com.notesync.notes.framework.presentation.util.CustomTextInputLayout
             android:id="@+id/password_layout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="68dp"
-            android:layout_marginEnd="10dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="25dp"
+            android:background="@null"
             android:minHeight="48dp"
+            app:boxBackgroundColor="@null"
+            app:boxBackgroundMode="none"
+            app:hintEnabled="false"
+            app:endIconDrawable="@drawable/ic_baseline_visibility_off_24"
+            app:endIconMode="password_toggle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/email_address_layout">
+            app:layout_constraintTop_toBottomOf="@+id/text_password">
 
             <EditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
+                android:background="@drawable/textfield_rectangle"
                 android:ems="10"
+                android:fontFamily="@font/gilroy_regular"
                 android:hint="@string/password"
+
+                android:textColorHint="@color/grey_dark"
                 android:inputType="textPassword"
+                android:paddingHorizontal="21dp"
+                android:paddingVertical="12dp"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:autofillHints="" />
 
-                />
-
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.notesync.notes.framework.presentation.util.CustomTextInputLayout>
 
 
         <Button
             android:id="@+id/login_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
-            android:text="Login"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="25dp"
+            android:background="@drawable/button_background"
+            style="@style/ButtonTheme"
+            android:fontFamily="@font/gilroy_bold"
+            android:text="@string/sign_in_button_text"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent"
@@ -81,23 +148,118 @@
             android:id="@+id/forgot_password_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
+            android:layout_marginTop="18dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/gilroy_bold"
             android:text="@string/forgot_password"
+            android:textColor="?attr/textColor"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.881"
+            app:layout_constraintHorizontal_bias="0.878"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/password_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-        <Button
-            android:id="@+id/register_button"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/gilroy_bold"
+                android:text="@string/don_t_have_an_account"
+                android:textColor="?attr/textColor"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/register_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="@font/gliroy_black"
+                android:text="@string/sign_up_button_text"
+                android:textColor="#2C72FF"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/text_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="52dp"
-            android:text="@string/register_button_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="28dp"
+            android:fontFamily="@font/gilroy_bold"
+            android:text="@string/email"
+            android:textColor="?attr/textColor"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+        <TextView
+            android:id="@+id/text_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/gilroy_bold"
+            android:text="@string/password"
+            android:textColor="?attr/textColor"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/email_address_layout" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="18dp"
+
+            android:fontFamily="@font/gilroy_semibold"
+            android:text="@string/password_constrsaint_text"
+            android:textColor="?attr/metaTextColor"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/password_layout"
+            app:layout_constraintStart_toStartOf="@+id/password_layout"
+            app:layout_constraintTop_toBottomOf="@+id/password_layout" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:fontFamily="@font/gilroy_light"
+            android:text="@string/or"
+            android:textColor="?attr/metaTextColor"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/login_button"
+            app:layout_constraintStart_toStartOf="@+id/login_button"
             app:layout_constraintTop_toBottomOf="@+id/login_button" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/gliroy_black"
+            android:text="@string/note"
+            android:textColor="#2C72FF"
+            android:textSize="21sp"
+            app:layout_constraintBottom_toBottomOf="@+id/syncNoteTitle"
+            app:layout_constraintStart_toEndOf="@+id/syncNoteTitle"
+            app:layout_constraintTop_toTopOf="@+id/syncNoteTitle" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

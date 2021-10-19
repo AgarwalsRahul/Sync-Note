@@ -14,7 +14,10 @@ import com.notesync.notes.R
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.util.DateUtil
 import com.notesync.notes.framework.presentation.common.changeColor
+import com.notesync.notes.framework.presentation.common.gone
+import com.notesync.notes.framework.presentation.common.visible
 import com.notesync.notes.util.printLogD
+import kotlinx.android.synthetic.main.layout_note_list_item.view.*
 
 
 import java.lang.IndexOutOfBoundsException
@@ -44,28 +47,29 @@ class NoteListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         return NoteViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.layout_note_list_item,
-                parent,
-                false
-            ),
-            interaction,
-            lifecycleOwner,
-            selectedNotes,
-            dateUtil
-        )
-    }
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.layout_note_list_item,
+                    parent,
+                    false
+                ),
+                interaction,
+                lifecycleOwner,
+                selectedNotes,
+                dateUtil
+            )
+        }
+
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is NoteViewHolder -> {
-                holder.bind(differ.currentList.get(position))
+                holder.bind(differ.currentList[position])
             }
         }
     }
 
     override fun getItemCount(): Int {
-        return differ.currentList.size
+        return  differ.currentList.size
     }
 
     fun submitList(list: List<Note>) {
@@ -114,6 +118,7 @@ class NoteListAdapter(
 
 //            note_title.text = item.title
             findViewById<TextView>(R.id.note_title).setText(item.title)
+            findViewById<TextView>(R.id.note_body_card).setText(item.body)
             findViewById<TextView>(R.id.note_timestamp).setText(
                 dateUtil.removeTimeFromDateString(
                     item.updated_at
@@ -125,22 +130,18 @@ class NoteListAdapter(
 
                 if (notes != null) {
                     if (notes.contains(note)) {
-                        changeColor(
-                            newColor = COLOR_GREY
-                        )
+                        this.check_mark.visible()
                     } else {
-                        changeColor(
-                            newColor = COLOR_PRIMARY
-                        )
+                        this.check_mark.gone()
                     }
                 } else {
-                    changeColor(
-                        newColor = COLOR_PRIMARY
-                    )
+                    this.check_mark.gone()
                 }
             })
         }
     }
+
+ class EmptyListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     interface Interaction {
 

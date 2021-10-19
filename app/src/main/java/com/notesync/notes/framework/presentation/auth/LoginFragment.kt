@@ -1,45 +1,32 @@
 package com.notesync.notes.framework.presentation.auth
 
 import android.content.Context
-import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.notesync.notes.R
 import com.notesync.notes.business.domain.state.StateMessageCallback
-import com.notesync.notes.business.interactors.auth.Login.Companion.LOGIN_SUCCESS
-import com.notesync.notes.business.interactors.common.DeleteNote
-import com.notesync.notes.business.interactors.noteDetail.UpdateNote
-import com.notesync.notes.framework.presentation.MainActivity
 import com.notesync.notes.framework.presentation.UIController
 import com.notesync.notes.framework.presentation.auth.state.AuthStateEvent
 import com.notesync.notes.framework.presentation.auth.state.LoginFields
-import com.notesync.notes.framework.presentation.common.AuthViewModelFactory
 import com.notesync.notes.framework.presentation.common.hideKeyboard
 import com.notesync.notes.framework.presentation.common.invisible
 import com.notesync.notes.framework.presentation.common.visible
-import com.notesync.notes.util.printLogD
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.collect
-import javax.inject.Inject
-import javax.inject.Named
-import kotlin.math.log
 
 @FlowPreview
 @ObsoleteCoroutinesApi
@@ -77,7 +64,7 @@ class LoginFragment constructor(private val viewModelFactory: ViewModelProvider.
         login_button.setOnClickListener {
 
             view.hideKeyboard()
-            Log.d("LoginFragment","Login button is clicked")
+            Log.d("LoginFragment", "Login button is clicked")
             viewModel.setStateEvent(
                 AuthStateEvent.LoginAttemptEvent(
                     email_address.text.toString(),
@@ -103,10 +90,12 @@ class LoginFragment constructor(private val viewModelFactory: ViewModelProvider.
     private fun initListener() {
         emailTextListener()
 
+
         passwordTextListener()
     }
 
     private fun passwordTextListener() {
+
         password.apply {
             addTextChangedListener {
                 viewModel.setLoginPassword(it.toString())
@@ -119,9 +108,13 @@ class LoginFragment constructor(private val viewModelFactory: ViewModelProvider.
             }
             onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
-                    password_layout.isErrorEnabled = true
+                    viewModel.passwordFocusInitial = false
+                    password_layout.isErrorEnabled =
+                        !viewModel.validatePasswords(this.text.toString()).isNullOrEmpty()
                     password_layout.error =
                         viewModel.validatePasswords(this.text.toString())
+                }else{
+                    password_layout.isErrorEnabled=!viewModel.passwordFocusInitial
                 }
 
             }
@@ -130,21 +123,26 @@ class LoginFragment constructor(private val viewModelFactory: ViewModelProvider.
 
     private fun emailTextListener() {
         email_address.apply {
+
             addTextChangedListener {
                 viewModel.setLoginEmail(it.toString())
                 if (email_address_layout.isErrorEnabled
                 ) {
-
                     email_address_layout.error =
                         viewModel.validateEmail(this.text.toString())
-
                 }
             }
             onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
-                    email_address_layout.isErrorEnabled = true
+                    viewModel.emailFocusInitial = false
+                    email_address_layout.isErrorEnabled =
+                        !viewModel.validateEmail(this.text.toString()).isNullOrEmpty()
                     email_address_layout.error =
                         viewModel.validateEmail(this.text.toString())
+
+
+                } else {
+                    email_address_layout.isErrorEnabled = !viewModel.emailFocusInitial
                 }
 
             }
@@ -171,7 +169,7 @@ class LoginFragment constructor(private val viewModelFactory: ViewModelProvider.
         lifecycleScope.launch {
             viewModel.isLoginEnabled.collect { value ->
 //                if (value != null)
-                    login_button.isEnabled = value
+                login_button.isEnabled = value
             }
         }
 

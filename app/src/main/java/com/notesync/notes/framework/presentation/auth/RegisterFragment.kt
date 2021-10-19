@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.notesync.notes.R
 import com.notesync.notes.business.domain.state.StateMessageCallback
 import com.notesync.notes.framework.presentation.UIController
@@ -49,6 +50,9 @@ class RegisterFragment(private val viewModelFactory: AuthViewModelFactory) :
         register_button.setOnClickListener {
             view.hideKeyboard()
             register()
+        }
+        login_button_register.setOnClickListener{
+            findNavController(this).popBackStack()
         }
         initListener()
         subscribeObserver()
@@ -152,9 +156,14 @@ class RegisterFragment(private val viewModelFactory: AuthViewModelFactory) :
             }
             onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
-                    register_password_layout.isErrorEnabled = true
+                    viewModel.passwordRegisterFocusInitial=false
+                    register_password_layout.isErrorEnabled =
+                        !viewModel.validatePasswords(this.text.toString()).isNullOrEmpty()
                     register_password_layout.error =
                         viewModel.validatePasswords(this.text.toString())
+                } else {
+                    register_password_layout.isErrorEnabled =
+                        !viewModel.passwordRegisterFocusInitial
                 }
 
             }
@@ -175,9 +184,14 @@ class RegisterFragment(private val viewModelFactory: AuthViewModelFactory) :
             }
             onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
-                    register_email_address_layout.isErrorEnabled = true
+                    viewModel.emailRegisterFocusInitial=false
+                    register_email_address_layout.isErrorEnabled =
+                        !viewModel.validateEmail(this.text.toString()).isNullOrEmpty()
                     register_email_address_layout.error =
                         viewModel.validateEmail(this.text.toString())
+                } else {
+                    register_email_address_layout.isErrorEnabled =
+                        !viewModel.emailRegisterFocusInitial
                 }
 
             }
@@ -190,7 +204,6 @@ class RegisterFragment(private val viewModelFactory: AuthViewModelFactory) :
             uiController = context as UIController
         }
     }
-
 
 
 }

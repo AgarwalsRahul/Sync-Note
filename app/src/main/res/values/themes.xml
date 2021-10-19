@@ -1,13 +1,35 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme.Light" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="md_color_button_text">@color/tealDark</item>
+        <item name="android:windowBackground">@color/background_color</item>
+        <item name="textColor">@color/secondary_text_color</item>
+        <item name="metaTextColor">@color/grey_light</item>
+        <item name="card_color">@color/card_background_color</item>
+        <item name="md_background_color">@color/card_background_color</item>
+        <item name="md_color_button_text">@color/colorPrimary</item>
+        <item name="md_divider_color">@color/colorPrimary</item>
+        <item name="md_font_button">@font/gilroy_bold</item>
+        <item name="md_font_title">@font/gilroy_extrabold</item>
+        <item name="md_font_body">@font/gilroy_regular</item>
+<!--        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>-->
+        <item name="android:autofilledHighlight" tools:targetApi="26">@android:color/transparent</item>
+<!--        <item name="android:statusBarc">@android:color/white</item>-->
+    </style>
+
+    <style name="ButtonTheme" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/button_background_color</item>
+
     </style>
 
 
+    <style name="CardTheme" parent="Widget.MaterialComponents.CardView">
+        <item name="backgroundTint">@color/card_background_color</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardBackgroundColor">@color/card_background_color</item>
+    </style>
 </resources>
