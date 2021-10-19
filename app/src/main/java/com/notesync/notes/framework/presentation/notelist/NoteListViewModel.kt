@@ -12,6 +12,7 @@ import com.notesync.notes.business.interactors.noteList.NoteListInteractors
 import com.notesync.notes.business.interactors.splash.SyncDeletedNotes
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_FILTER_DATE_CREATED
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_ORDER_DESC
+import com.notesync.notes.framework.dataSource.preferences.PreferenceKeys
 import com.notesync.notes.framework.dataSource.preferences.PreferenceKeys.Companion.NOTE_FILTER
 import com.notesync.notes.framework.dataSource.preferences.PreferenceKeys.Companion.NOTE_ORDER
 import com.notesync.notes.framework.presentation.common.BaseViewModel
@@ -19,12 +20,15 @@ import com.notesync.notes.framework.presentation.notelist.state.NoteListInteract
 import com.notesync.notes.framework.presentation.notelist.state.NoteListStateEvent.*
 import com.notesync.notes.framework.presentation.notelist.state.NoteListToolbarState
 import com.notesync.notes.framework.presentation.notelist.state.NoteListViewState
+import com.notesync.notes.util.Constants.LIGHT_THEME
 import com.notesync.notes.util.printLogD
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 
 const val DELETE_PENDING_ERROR = "There is already a pending delete operation."
@@ -51,6 +55,8 @@ constructor(
     val toolbarState: LiveData<NoteListToolbarState>
         get() = noteListInteractionManager.toolbarState
 
+
+
     init {
         setNoteFilter(
             sharedPreferences.getString(
@@ -64,7 +70,6 @@ constructor(
                 NOTE_ORDER_DESC
             )
         )
-
 
     }
 
@@ -98,11 +103,12 @@ constructor(
             val job: Flow<DataState<NoteListViewState>?> = when (stateEvent) {
 
                 is GetAllNotesFromNetwork -> {
+                    Log.d("NotelIstViewModel", "Started Event")
                     noteListInteractors.getAllNotesFromNetwork.getNotes(stateEvent, it)
                 }
 
                 is InsertNewNoteEvent -> {
-                    Log.d("InsertNewNoteEvent","Inserting")
+                    Log.d("InsertNewNoteEvent", "Inserting")
                     noteListInteractors.insertNewNote.insertNewNote(
                         title = stateEvent.title,
                         stateEvent = stateEvent, user = it

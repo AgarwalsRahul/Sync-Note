@@ -1,48 +1,48 @@
 package com.notesync.notes.framework.presentation
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
+import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.callbacks.onDismiss
+import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.callbacks.*
+import com.afollestad.materialdialogs.input.getInputField
 import com.afollestad.materialdialogs.input.input
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.notesync.notes.R
-import com.notesync.notes.business.domain.state.AreYouSureCallback
-import com.notesync.notes.business.domain.state.DialogInputCaptureCallback
 import com.notesync.notes.business.domain.state.*
-import com.notesync.notes.business.domain.state.StateMessageCallback
-import com.notesync.notes.framework.presentation.common.NoteFragmentFactory
 import com.notesync.notes.framework.presentation.common.*
-import com.notesync.notes.util.NetworkStatus
+import com.notesync.notes.util.Constants.DARK_THEME
+import com.notesync.notes.util.Constants.LIGHT_THEME
 import com.notesync.notes.util.NetworkStatusHelper
 import com.notesync.notes.util.TodoCallback
-import com.notesync.notes.util.printLogD
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_note_list.*
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import javax.inject.Inject
-import javax.inject.Named
 
 @ExperimentalCoroutinesApi
 @FlowPreview
 @ObsoleteCoroutinesApi
+@DelicateCoroutinesApi
 class MainActivity : BaseActivity(),
     UIController {
 
-    private val TAG: String = "AppDebug"
+
 
     private var appBarConfiguration: AppBarConfiguration? = null
 
@@ -53,6 +53,9 @@ class MainActivity : BaseActivity(),
 
     @Inject
     lateinit var providerFactory: NoteViewModelFactory
+
+
+
 
     private lateinit var networkStatusHelper: NetworkStatusHelper
 
@@ -72,6 +75,7 @@ class MainActivity : BaseActivity(),
     }
 
 
+
     private fun setFragmentFactory() {
         supportFragmentManager.fragmentFactory = fragmentFactory
     }
@@ -87,12 +91,19 @@ class MainActivity : BaseActivity(),
             }
         })
 
-        networkStatusHelper.observe(this, {
-           if(it==null || it==NetworkStatus.Unavailable){
-               printLogD("NetworkStatusHelper","UNAVAILABLE")
-           }
-        })
+
+//        networkStatusHelper.observe(this, {
+//            if (it == null || it == NetworkStatus.Unavailable) {
+//                printLogD("NetworkStatusHelper", "UNAVAILABLE")
+//            }
+//        })
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.init()
+    }
+
 
 
     override fun inject() {
@@ -113,24 +124,40 @@ class MainActivity : BaseActivity(),
                 || super.onSupportNavigateUp()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    @SuppressLint("CheckResult")
     override fun displayInputCaptureDialog(
         title: String,
         callback: DialogInputCaptureCallback
     ) {
-        dialogInView = MaterialDialog(this).show {
+        dialogInView = MaterialDialog(this@MainActivity, BottomSheet(LayoutMode.WRAP_CONTENT))
+
+            .cornerRadius(16.0f)
+
+
+        dialogInView?.show {
             title(text = title)
 
-            input(
+
+          input(
                 waitForPositiveButton = true,
-                inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+                inputType = InputType.TYPE_CLASS_TEXT
             ) { _, text ->
                 callback.onTextCaptured(text.toString())
             }
-            positiveButton(R.string.text_ok)
+            getInputField().background = null
+            getInputField().setTextColor(getColor(R.color.secondary_text_color))
+
+            positiveButton(R.string.text_Create)
+
+            negativeButton(R.string.text_cancel)
+
             onDismiss {
+                it.dismiss()
                 dialogInView = null
             }
             cancelable(true)
+            onAttachedToWindow()
         }
     }
 

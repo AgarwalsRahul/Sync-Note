@@ -18,7 +18,7 @@ abstract class ApiResponseHandler<ViewState, Data>(
                 DataState.error<ViewState>(
                     response = Response(
                         "${stateEvent?.errorInfo()}\n\nReason: ${response.errorMessage}",
-                        uiComponentType = UIComponentType.Dialog(),
+                        uiComponentType = UIComponentType.SnackBar(),
                         messageType = MessageType.Error()
                     ),
                     stateEvent
@@ -29,7 +29,7 @@ abstract class ApiResponseHandler<ViewState, Data>(
                     DataState.error<ViewState>(
                         response = Response(
                             "${stateEvent?.errorInfo()}\n\nReason: $NETWORK_DATA_NULL",
-                            uiComponentType = UIComponentType.Dialog(),
+                            uiComponentType = UIComponentType.SnackBar(),
                             messageType = MessageType.Error()
                         ),
                         stateEvent

@@ -1,5 +1,6 @@
 package com.notesync.notes.business.interactors.noteList
 
+import android.util.Log
 import com.notesync.notes.business.data.cache.CacheConstants
 import com.notesync.notes.business.data.cache.CacheErrors
 import com.notesync.notes.business.data.cache.CacheResponseHandler
@@ -33,13 +34,15 @@ class GetAllNotesFromNetwork(
     }
 
     fun getNotes(stateEvent: StateEvent, user: User): Flow<DataState<NoteListViewState>?> = flow {
-
+        Log.d("GetAllNotesFromNetwork","Started")
         val apiResult = safeApiCall(IO) {
             noteNetworkDataSource.getAllNotes(user)
         }
+        Log.d("GetAllNotesFromNetwork","${apiResult}")
         val response =
             object : ApiResponseHandler<NoteListViewState, List<Note>>(apiResult, stateEvent) {
                 override suspend fun handleSuccess(resultObj: List<Note>): DataState<NoteListViewState> {
+                    Log.d("GetAllNotesFromNetwork","${resultObj.size}")
                     if (resultObj.isEmpty()) {
                         return DataState.data(
                             Response(

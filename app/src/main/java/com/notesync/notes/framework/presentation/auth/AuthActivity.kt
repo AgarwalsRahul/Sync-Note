@@ -5,6 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
+import android.view.Window
+import android.view.WindowInsetsController
+import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -60,6 +64,8 @@ class AuthActivity : BaseActivity(), UIController {
         inject()
         setFragmentFactory()
         super.onCreate(savedInstanceState)
+
+
         setContentView(R.layout.activity_auth)
         viewModel.setupChannel()
         subscribeObserver()
@@ -75,7 +81,7 @@ class AuthActivity : BaseActivity(), UIController {
                 Log.d(Constants.TAG, "AuthActivity, subscribeObservers: AuthViewState: $it")
                 it.user?.let { user ->
                     printLogD("syncCacheWithNetwork", "executing data syncing")
-                    printLogD("AuthActivity","${user.deviceId}")
+                    printLogD("AuthActivity", "${user.deviceId}")
                     sessionManager.login(user)
 
                 }
@@ -131,10 +137,10 @@ class AuthActivity : BaseActivity(), UIController {
     override fun onPause() {
         super.onPause()
         if (dialogInView != null) {
-                printLogD("AuthActivity","Dialog is Dismissed")
+            printLogD("AuthActivity", "Dialog is Dismissed")
             (dialogInView as MaterialDialog).cancel()
             (dialogInView as MaterialDialog).dismiss().let {
-                printLogD("AuthActivity","Dialog is Dismissed")
+                printLogD("AuthActivity", "Dialog is Dismissed")
             }
             dialogInView = null
         }

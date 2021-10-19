@@ -10,6 +10,7 @@ class PreferenceKeys {
         const val USER_PREFERENCES: String = "com.notesync.user"
 
         const val DEVICE_PREFERENCES: String = "com.notesync.deviceID"
+        const val THEME_PREFERENCES: String = "com.notesync.theme"
 
         const val ENCRYPT_DECRYPT_PREFERENCES: String = "com.notesync.secretKey"
 

@@ -42,6 +42,10 @@ class AuthViewModel constructor(
 
     private val _forgotPasswordEmail = MutableStateFlow("")
 
+    var emailFocusInitial=true
+    var emailRegisterFocusInitial=true
+    var passwordFocusInitial=true
+    var passwordRegisterFocusInitial=true
 
     val forgotPasswordEmail: StateFlow<String>
         get() = _forgotPasswordEmail

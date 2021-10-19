@@ -20,7 +20,7 @@
     <string name="text_info">Info</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="text_yes">Yes</string>
-    <string name="text_enter_a_title">Enter a title</string>
+    <string name="text_enter_a_title">Enter a Title</string>
     <string name="text_undo">Undo</string>
 
 
@@ -33,19 +33,36 @@
     <string name="text_Filter">Filter</string>
     <string name="text_Search">Search</string>
 
-    <string name="filter_options">Filter options</string>
+    <string name="filter_options">Filter Options</string>
     <string name="filter_asc">ASC</string>
     <string name="filter_desc">DESC</string>
     <string name="filter_title">Title</string>
     <string name="filter_date">Date</string>
-    <string name="filter_title_or_date">Filter by title or date</string>
-    <string name="filter_asc_desc">Ascending or descending order</string>
+    <string name="filter_title_or_date">Filter by Title or Date</string>
+    <string name="filter_asc_desc">Filter by Order</string>
     <string name="text_Apply">Apply</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="password">Password</string>
+
     <string name="email_address">Email Address</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="register_button_text">Register</string>
     <string name="reset_password">Reset Password</string>
+    <string name="password_constrsaint_text">Use 6 or more characters with a mix of letters, numbers, and symbols.</string>
+    <string name="sign_in_button_text">Sign In</string>
+    <string name="hello_nwelcome_back">Hello\nWelcome Back!</string>
+    <string name="sync">sync</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="sign_up_button_text">Sign Up</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="or">or</string>
+    <string name="note">Note</string>
+    <string name="syncnote_logo">syncNote logo</string>
+    <string name="hello_nget_started">Hello\nGet Started!</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="reset_password_instruction">Enter the email associated with your account and we\'ll send an email with instructions to reset your password.</string>
+    <string name="floating_action_button_content_description">Add a Note</string>
+    <string name="text_Create">Create</string>
+    <string name="enter_a_title">Enter a Title</string>
 </resources>

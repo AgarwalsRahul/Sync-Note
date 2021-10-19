@@ -3,6 +3,7 @@ package com.notesync.notes.framework.presentation.notedetail
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -28,20 +29,24 @@ import com.yydcdut.markdown.MarkdownProcessor
 import com.yydcdut.markdown.syntax.edit.EditFactory
 import kotlinx.android.synthetic.main.fragment_note_detail.*
 import kotlinx.android.synthetic.main.layout_note_detail_toolbar.*
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 
-const val NOTE_DETAIL_STATE_BUNDLE_KEY = "com.notesync.notes.framework.presentation.notedetail.state"
+const val NOTE_DETAIL_STATE_BUNDLE_KEY =
+    "com.notesync.notes.framework.presentation.notedetail.state"
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 @ObsoleteCoroutinesApi
+@DelicateCoroutinesApi
 class NoteDetailFragment
 constructor(
     private val viewModelFactory: ViewModelProvider.Factory
-): BaseNoteFragment(R.layout.fragment_note_detail) {
+) : BaseNoteFragment(R.layout.fragment_note_detail) {
+
 
     val viewModel: NoteDetailViewModel by viewModels {
         viewModelFactory
@@ -59,9 +64,6 @@ constructor(
         setupOnBackPressDispatcher()
         subscribeObservers()
 
-        container_due_date.setOnClickListener {
-            // TODO("handle click of due date")
-        }
 
         note_title.setOnClickListener {
             onClick_noteTitle()
@@ -76,7 +78,7 @@ constructor(
         restoreInstanceState()
     }
 
-    private fun onErrorRetrievingNoteFromPreviousFragment(){
+    private fun onErrorRetrievingNoteFromPreviousFragment() {
         viewModel.setStateEvent(
             CreateStateMessageEvent(
                 stateMessage = StateMessage(
@@ -90,7 +92,7 @@ constructor(
         )
     }
 
-    private fun setupMarkdown(){
+    private fun setupMarkdown() {
         activity?.run {
             val markdownProcessor = MarkdownProcessor(this)
             markdownProcessor.factory(EditFactory.create())
@@ -98,16 +100,16 @@ constructor(
         }
     }
 
-    private fun onClick_noteTitle(){
-        if(!viewModel.isEditingTitle()){
+    private fun onClick_noteTitle() {
+        if (!viewModel.isEditingTitle()) {
             updateBodyInViewModel()
             updateNote()
             viewModel.setNoteInteractionTitleState(EditState())
         }
     }
 
-    private fun onClick_noteBody(){
-        if(!viewModel.isEditingBody()){
+    private fun onClick_noteBody() {
+        if (!viewModel.isEditingBody()) {
             updateTitleInViewModel()
             updateNote()
             viewModel.setNoteInteractionBodyState(EditState())
@@ -116,14 +118,13 @@ constructor(
 
     private fun onBackPressed() {
         view?.hideKeyboard()
-        if(viewModel.checkEditState()){
+        if (viewModel.checkEditState()) {
             updateBodyInViewModel()
             updateTitleInViewModel()
             updateNote()
             viewModel.exitEditState()
             displayDefaultToolbar()
-        }
-        else{
+        } else {
             findNavController(this).popBackStack()
         }
     }
@@ -135,11 +136,11 @@ constructor(
         updateNote()
     }
 
-    private fun subscribeObservers(){
+    private fun subscribeObservers() {
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
 
-            if(viewState != null){
+            if (viewState != null) {
 
                 viewState.note?.let { note ->
                     setNoteTitle(note.title)
@@ -156,7 +157,7 @@ constructor(
 
             stateMessage?.response?.let { response ->
 
-                when(response.message){
+                when (response.message) {
 
                     UPDATE_NOTE_SUCCESS -> {
                         viewModel.setIsUpdatePending(false)
@@ -171,13 +172,13 @@ constructor(
                     else -> {
                         uiController.onResponseReceived(
                             response = stateMessage.response,
-                            stateMessageCallback = object: StateMessageCallback {
+                            stateMessageCallback = object : StateMessageCallback {
                                 override fun removeMessageFromStack() {
                                     viewModel.clearStateMessage()
                                 }
                             }
                         )
-                        when(response.message){
+                        when (response.message) {
 
                             UPDATE_NOTE_FAILED_PK -> {
                                 findNavController(this).popBackStack()
@@ -199,7 +200,7 @@ constructor(
 
         viewModel.collapsingToolbarState.observe(viewLifecycleOwner, Observer { state ->
 
-            when(state){
+            when (state) {
 
                 is Expanded -> {
                     transitionToExpandedMode()
@@ -213,7 +214,7 @@ constructor(
 
         viewModel.noteTitleInteractionState.observe(viewLifecycleOwner, Observer { state ->
 
-            when(state){
+            when (state) {
 
                 is EditState -> {
                     note_title.enableContentInteraction()
@@ -230,7 +231,7 @@ constructor(
 
         viewModel.noteBodyInteractionState.observe(viewLifecycleOwner, Observer { state ->
 
-            when(state){
+            when (state) {
 
                 is EditState -> {
                     note_body.enableContentInteraction()
@@ -246,34 +247,34 @@ constructor(
         })
     }
 
-    private fun displayDefaultToolbar(){
+    private fun displayDefaultToolbar() {
         activity?.let { a ->
             toolbar_primary_icon.setImageDrawable(
-                resources.getDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
                     R.drawable.ic_arrow_back_grey_24dp,
                     a.application.theme
                 )
             )
             toolbar_secondary_icon.setImageDrawable(
-                resources.getDrawable(
-                    R.drawable.ic_delete,
-                    a.application.theme
-                )
+                ResourcesCompat.getDrawable(resources, R.drawable.ic_delete, a.application.theme)
             )
         }
     }
 
-    private fun displayEditStateToolbar(){
+    private fun displayEditStateToolbar() {
         activity?.let { a ->
             toolbar_primary_icon.setImageDrawable(
-                resources.getDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
                     R.drawable.ic_close_grey_24dp,
                     a.application.theme
                 )
             )
             toolbar_secondary_icon.setImageDrawable(
-                resources.getDrawable(
-                    R.drawable.ic_done_grey_24dp,
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.check_mark_update,
                     a.application.theme
                 )
             )
@@ -284,38 +285,37 @@ constructor(
         note_title.setText(title)
     }
 
-    private fun getNoteTitle(): String{
+    private fun getNoteTitle(): String {
         return note_title.text.toString()
     }
 
-    private fun getNoteBody(): String{
+    private fun getNoteBody(): String {
         return note_body.text.toString()
     }
 
-    private fun setNoteBody(body: String?){
+    private fun setNoteBody(body: String?) {
         note_body.setText(body)
     }
 
-    private fun getSelectedNoteFromPreviousFragment(){
+    private fun getSelectedNoteFromPreviousFragment() {
         arguments?.let { args ->
             (args.getParcelable(NOTE_DETAIL_SELECTED_NOTE_BUNDLE_KEY) as Note?)?.let { selectedNote ->
                 viewModel.setNote(selectedNote)
-            }?: onErrorRetrievingNoteFromPreviousFragment()
+            } ?: onErrorRetrievingNoteFromPreviousFragment()
         }
 
     }
 
-    private fun restoreInstanceState(){
+    private fun restoreInstanceState() {
         arguments?.let { args ->
             (args.getParcelable(NOTE_DETAIL_STATE_BUNDLE_KEY) as NoteDetailViewState?)?.let { viewState ->
                 viewModel.setViewState(viewState)
 
                 // One-time check after rotation
-                if(viewModel.isToolbarCollapsed()){
+                if (viewModel.isToolbarCollapsed()) {
                     app_bar.setExpanded(false)
                     transitionToCollapsedMode()
-                }
-                else{
+                } else {
                     app_bar.setExpanded(true)
                     transitionToExpandedMode()
                 }
@@ -323,78 +323,75 @@ constructor(
         }
     }
 
-    private fun updateTitleInViewModel(){
-        if(viewModel.isEditingTitle()){
+    private fun updateTitleInViewModel() {
+        if (viewModel.isEditingTitle()) {
             viewModel.updateNoteTitle(getNoteTitle())
         }
     }
 
-    private fun updateBodyInViewModel(){
-        if(viewModel.isEditingBody()){
+    private fun updateBodyInViewModel() {
+        if (viewModel.isEditingBody()) {
             viewModel.updateNoteBody(getNoteBody())
         }
     }
 
-    private fun setupUI(){
+    private fun setupUI() {
         note_title.disableContentInteraction()
         note_body.disableContentInteraction()
         displayDefaultToolbar()
         transitionToExpandedMode()
 
         app_bar.addOnOffsetChangedListener(
-            AppBarLayout.OnOffsetChangedListener{ _, offset ->
+            AppBarLayout.OnOffsetChangedListener { _, offset ->
 
-                if(offset < COLLAPSING_TOOLBAR_VISIBILITY_THRESHOLD){
+                if (offset < COLLAPSING_TOOLBAR_VISIBILITY_THRESHOLD) {
                     updateTitleInViewModel()
-                    if(viewModel.isEditingTitle()){
+                    if (viewModel.isEditingTitle()) {
                         viewModel.exitEditState()
                         displayDefaultToolbar()
                         updateNote()
                     }
                     viewModel.setCollapsingToolbarState(Collapsed())
-                }
-                else{
+                } else {
                     viewModel.setCollapsingToolbarState(Expanded())
                 }
             })
 
         toolbar_primary_icon.setOnClickListener {
-            if(viewModel.checkEditState()){
+            if (viewModel.checkEditState()) {
                 view?.hideKeyboard()
                 viewModel.triggerNoteObservers()
                 viewModel.exitEditState()
                 displayDefaultToolbar()
-            }
-            else{
+            } else {
                 onBackPressed()
             }
         }
 
         toolbar_secondary_icon.setOnClickListener {
-            if(viewModel.checkEditState()){
+            if (viewModel.checkEditState()) {
                 view?.hideKeyboard()
                 updateTitleInViewModel()
                 updateBodyInViewModel()
                 updateNote()
                 viewModel.exitEditState()
                 displayDefaultToolbar()
-            }
-            else{
+            } else {
                 deleteNote()
             }
         }
     }
 
-    private fun deleteNote(){
+    private fun deleteNote() {
         viewModel.setStateEvent(
             CreateStateMessageEvent(
                 stateMessage = StateMessage(
                     response = Response(
                         message = "Are you sure to Delete",
                         uiComponentType = UIComponentType.AreYouSureDialog(
-                            object: AreYouSureCallback{
+                            object : AreYouSureCallback {
                                 override fun proceed() {
-                                    viewModel.getNote()?.let{ note ->
+                                    viewModel.getNote()?.let { note ->
                                         initiateDeleteTransaction(note)
                                     }
                                 }
@@ -411,11 +408,11 @@ constructor(
         )
     }
 
-    private fun initiateDeleteTransaction(note: Note){
+    private fun initiateDeleteTransaction(note: Note) {
         viewModel.beginPendingDelete(note)
     }
 
-    private fun onDeleteSuccess(){
+    private fun onDeleteSuccess() {
         val bundle = bundleOf(NOTE_PENDING_DELETE_BUNDLE_KEY to viewModel.getNote())
         viewModel.setNote(null) // clear note from ViewState
         viewModel.setIsUpdatePending(false) // prevent update onPause
@@ -436,7 +433,7 @@ constructor(
 
 
     private fun updateNote() {
-        if(viewModel.getIsUpdatePending()){
+        if (viewModel.getIsUpdatePending()) {
             viewModel.setStateEvent(
                 UpdateNoteEvent()
             )

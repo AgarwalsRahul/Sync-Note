@@ -7,4 +7,7 @@ object Constants {
     const val DEBUG = true // enable logging
 
     const val MAX_RETRY_LIMIT = 3
+
+    const val DARK_THEME=1
+    const val LIGHT_THEME=0
 }
