@@ -3,19 +3,19 @@ package com.notesync.notes.framework.presentation
 import android.app.Application
 import androidx.work.Configuration
 import androidx.work.WorkManager
-import androidx.work.WorkerFactory
 import com.notesync.notes.di.AppComponent
 import com.notesync.notes.di.DaggerAppComponent
 import com.notesync.notes.di.auth.AuthComponent
 import com.notesync.notes.di.main.MainComponent
-
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @FlowPreview
+@DelicateCoroutinesApi
+@ObsoleteCoroutinesApi
 open class BaseApplication : Application() {
 //
 //    @Inject

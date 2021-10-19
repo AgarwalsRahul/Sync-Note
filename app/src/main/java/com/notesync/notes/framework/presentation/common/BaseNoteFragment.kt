@@ -13,11 +13,15 @@ import com.notesync.notes.framework.presentation.BaseApplication
 import com.notesync.notes.framework.presentation.MainActivity
 import com.notesync.notes.framework.presentation.UIController
 import com.notesync.notes.util.TodoCallback
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 
 @FlowPreview
 @ExperimentalCoroutinesApi
+@ObsoleteCoroutinesApi
+@DelicateCoroutinesApi
 abstract class BaseNoteFragment
 constructor(
     private @LayoutRes val layoutRes: Int

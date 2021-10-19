@@ -19,6 +19,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
+@ExperimentalCoroutinesApi
 class NoteFirestoreServiceImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
@@ -131,7 +132,7 @@ class NoteFirestoreServiceImpl @Inject constructor(
         }
     }
 
-    @ExperimentalCoroutinesApi
+
     override fun getRealtimeUpdatedNotes(user: User): Flow<Pair<Note, Boolean>?> {
         return callbackFlow {
 //            val response = MutableStateFlow<Pair<Note, Boolean>?>(null)
@@ -214,7 +215,7 @@ class NoteFirestoreServiceImpl @Inject constructor(
         }
     }
 
-    @ExperimentalCoroutinesApi
+
     override fun getDeletedNoteChanges(user: User): Flow<Note> {
         return callbackFlow {
 //            val result = MutableStateFlow<Note?>(null)

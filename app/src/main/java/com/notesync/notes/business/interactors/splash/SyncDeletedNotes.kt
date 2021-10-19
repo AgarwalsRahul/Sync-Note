@@ -6,7 +6,6 @@ import com.notesync.notes.business.data.cache.abstraction.NoteCacheDataSource
 import com.notesync.notes.business.data.network.abstraction.NoteNetworkDataSource
 import com.notesync.notes.business.data.util.GsonHelper
 import com.notesync.notes.business.domain.model.User
-import com.notesync.notes.business.domain.state.StateEvent
 import com.notesync.notes.framework.workers.SyncDeleteNoteWorker
 import java.util.concurrent.TimeUnit
 
@@ -17,7 +16,7 @@ class SyncDeletedNotes(
 ) {
 
 
-    fun syncDeletedNotes(user: User, stateEvent: StateEvent?) {
+    fun syncDeletedNotes(user: User,) {
         val data = workDataOf(Pair("user", GsonHelper.serializeToJson(user)))
 
         val backgroundConstraints = Constraints.Builder()

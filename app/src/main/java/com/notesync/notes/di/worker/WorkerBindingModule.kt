@@ -4,7 +4,15 @@ import com.notesync.notes.framework.workers.*
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 
+@FlowPreview
+@DelicateCoroutinesApi
+@ExperimentalCoroutinesApi
+@ObsoleteCoroutinesApi
 @Module
 interface WorkerBindingModule {
 

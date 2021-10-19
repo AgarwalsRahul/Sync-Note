@@ -1,9 +1,10 @@
 package com.notesync.notes.framework.presentation.common
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.notesync.notes.business.domain.state.SessionManager
-import com.notesync.notes.business.domain.state.StateEvent
-import com.notesync.notes.business.domain.state.ViewState
 import com.notesync.notes.business.interactors.noteList.NoteListInteractors
 import com.notesync.notes.business.interactors.splash.SyncDeletedNotes
 import com.notesync.notes.util.printLogD
@@ -12,6 +13,7 @@ import kotlinx.coroutines.Dispatchers.Main
 
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
+@DelicateCoroutinesApi
 @FlowPreview
 class MainViewModel(
     private val syncDeletedNotes: SyncDeletedNotes,
@@ -22,18 +24,18 @@ class MainViewModel(
 
     val hasSyncBeenExecuted: LiveData<Boolean>
         get() = _hasSyncBeenExecuted
-   @DelicateCoroutinesApi
+
    fun init(){
         printLogD("MainViewModel","getUpdateNotes is launched")
         viewModelScope.launch {
             sessionManager.cachedUser.value?.let {
-                syncDeletedNotes.syncDeletedNotes(it,null)
+                syncDeletedNotes.syncDeletedNotes(it)
             }
         }
         viewModelScope.launch {
             sessionManager.cachedUser.value?.let {
                 printLogD("MainViewModel","getUpdateNotes is launched")
-                noteListInteractors.getUpdatedNotes.getUpdatedNotes(it,null)
+                noteListInteractors.getUpdatedNotes.getUpdatedNotes(it)
             }
         }
        GlobalScope.launch(Main){

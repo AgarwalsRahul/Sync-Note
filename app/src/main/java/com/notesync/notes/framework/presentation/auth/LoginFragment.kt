@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.collect
 @FlowPreview
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
+@DelicateCoroutinesApi
 class LoginFragment constructor(private val viewModelFactory: ViewModelProvider.Factory) :
     Fragment() {
 

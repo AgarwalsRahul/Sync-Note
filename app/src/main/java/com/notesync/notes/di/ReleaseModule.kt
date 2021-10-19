@@ -9,12 +9,16 @@ import com.notesync.notes.framework.dataSource.preferences.PreferenceKeys
 import com.notesync.notes.framework.presentation.BaseApplication
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import javax.inject.Singleton
 
 @ExperimentalCoroutinesApi
 @FlowPreview
+@ObsoleteCoroutinesApi
+@DelicateCoroutinesApi
 @Module
 object ReleaseModule {
 

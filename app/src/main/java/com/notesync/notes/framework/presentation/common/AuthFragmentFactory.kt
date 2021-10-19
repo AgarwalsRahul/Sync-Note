@@ -8,6 +8,7 @@ import com.notesync.notes.framework.presentation.auth.LoginFragment
 import com.notesync.notes.framework.presentation.auth.RegisterFragment
 import com.notesync.notes.framework.presentation.notedetail.NoteDetailFragment
 import com.notesync.notes.framework.presentation.splash.SplashFragment
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @FlowPreview
 @ObsoleteCoroutinesApi
+@DelicateCoroutinesApi
 @AuthScope
 class AuthFragmentFactory
 @Inject

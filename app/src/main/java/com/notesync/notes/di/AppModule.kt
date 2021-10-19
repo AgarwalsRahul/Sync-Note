@@ -40,8 +40,10 @@ import com.notesync.notes.framework.presentation.splash.NoteNetworkSyncManager
 import com.notesync.notes.util.NetworkStatusHelper
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Singleton
@@ -49,6 +51,8 @@ import javax.inject.Singleton
 @Module
 @FlowPreview
 @ExperimentalCoroutinesApi
+@DelicateCoroutinesApi
+@ObsoleteCoroutinesApi
 object AppModule {
     // https://developer.android.com/reference/java/text/SimpleDateFormat.html?hl=pt-br
     @JvmStatic

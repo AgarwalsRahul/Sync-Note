@@ -103,7 +103,7 @@ constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         note_list_fragment_container.setOnClickListener {
-            view?.hideKeyboard()
+            view.hideKeyboard()
             search_view.clearFocus()
         }
         setupUI()

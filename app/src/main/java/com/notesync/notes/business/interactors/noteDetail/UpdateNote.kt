@@ -1,25 +1,31 @@
 package com.notesync.notes.business.interactors.noteDetail
 
 import android.content.Context
-import android.icu.text.IDNA
 import androidx.work.*
 import com.notesync.notes.business.data.cache.CacheResponseHandler
 import com.notesync.notes.business.data.cache.abstraction.NoteCacheDataSource
 import com.notesync.notes.business.data.network.abstraction.NoteNetworkDataSource
 import com.notesync.notes.business.data.util.GsonHelper
-import com.notesync.notes.business.data.util.safeApiCall
 import com.notesync.notes.business.data.util.safeCacheCall
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.model.User
 import com.notesync.notes.business.domain.state.*
-import com.notesync.notes.business.domain.util.DateUtil
 import com.notesync.notes.framework.presentation.notedetail.state.NoteDetailViewState
 import com.notesync.notes.framework.workers.InsertOrUpdateNoteWorker
 import com.notesync.notes.framework.workers.InsertUpdatedOrNewNoteWorker
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+
+@FlowPreview
+@DelicateCoroutinesApi
+@ObsoleteCoroutinesApi
+@ExperimentalCoroutinesApi
 class UpdateNote(
     private val noteCacheDataSource: NoteCacheDataSource,
     private val noteNetworkDataSource: NoteNetworkDataSource,
@@ -28,9 +34,9 @@ class UpdateNote(
 ) {
 
     companion object {
-        val UPDATE_NOTE_SUCCESS = "Successfully updated note."
-        val UPDATE_NOTE_FAILED = "Failed to update note."
-        val UPDATE_NOTE_FAILED_PK = "Update failed. Note is missing primary key."
+        const val UPDATE_NOTE_SUCCESS = "Successfully updated note."
+        const val UPDATE_NOTE_FAILED = "Failed to update note."
+        const val UPDATE_NOTE_FAILED_PK = "Update failed. Note is missing primary key."
 
     }
 

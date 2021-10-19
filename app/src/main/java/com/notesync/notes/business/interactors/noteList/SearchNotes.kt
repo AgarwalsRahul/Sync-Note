@@ -1,21 +1,13 @@
 package com.notesync.notes.business.interactors.noteList
 
-import android.webkit.DateSorter
 import com.notesync.notes.business.data.cache.CacheErrors
-import com.notesync.notes.business.data.cache.CacheResponseHandler
 import com.notesync.notes.business.data.cache.abstraction.NoteCacheDataSource
-import com.notesync.notes.business.data.util.safeCacheCall
-import com.notesync.notes.business.domain.model.Note
-import com.notesync.notes.business.domain.model.User
 import com.notesync.notes.business.domain.state.*
 import com.notesync.notes.framework.presentation.notelist.state.NoteListViewState
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import java.lang.Exception
 import java.util.concurrent.TimeoutException
 
 class SearchNotes(private val noteCacheDataSource: NoteCacheDataSource) {
@@ -76,29 +68,29 @@ class SearchNotes(private val noteCacheDataSource: NoteCacheDataSource) {
             when (e) {
                 is TimeoutCancellationException -> {
                     emit(
-                        DataState.error<NoteListViewState>(
+                        DataState.error(
                             Response(
                                 CacheErrors.CACHE_ERROR_TIMEOUT,
                                 UIComponentType.SnackBar(),
                                 MessageType.Error()
                             ), stateEvent
-                        ) as DataState<NoteListViewState>
+                        )
                     )
                 }
                 is TimeoutException -> {
                     emit(
-                        DataState.error<NoteListViewState>(
+                        DataState.error(
                             Response(
                                 CacheErrors.CACHE_ERROR_TIMEOUT,
                                 UIComponentType.SnackBar(),
                                 MessageType.Error()
                             ), stateEvent
-                        ) as DataState<NoteListViewState>
+                        )
                     )
                 }
                 else -> {
                     emit(
-                        DataState.error<NoteListViewState>(
+                        DataState.error(
                             Response(
                                 SEARCH_NOTES_FAILED,
                                 UIComponentType.SnackBar(),

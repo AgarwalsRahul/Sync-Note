@@ -13,8 +13,10 @@ import com.notesync.notes.framework.dataSource.preferences.PreferenceKeys
 import com.notesync.notes.framework.presentation.BaseApplication
 import com.notesync.notes.util.Constants.DARK_THEME
 import com.notesync.notes.util.Constants.LIGHT_THEME
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,6 +24,8 @@ import javax.inject.Singleton
 @FlowPreview
 @Singleton
 @ExperimentalCoroutinesApi
+@ObsoleteCoroutinesApi
+@DelicateCoroutinesApi
 class ThemeManager @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     private val editor: SharedPreferences.Editor,

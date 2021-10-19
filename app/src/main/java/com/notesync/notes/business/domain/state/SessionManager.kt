@@ -1,10 +1,5 @@
 package com.notesync.notes.business.domain.state
 
-import android.app.Application
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,7 +12,11 @@ import javax.inject.Singleton
 
 
 @Singleton
-class SessionManager @ExperimentalCoroutinesApi
+@ExperimentalCoroutinesApi
+@DelicateCoroutinesApi
+@FlowPreview
+@ObsoleteCoroutinesApi
+class SessionManager
 @Inject constructor(
     private val authCacheDataSource: AuthCacheDataSource,
     val application: BaseApplication
@@ -69,26 +68,4 @@ class SessionManager @ExperimentalCoroutinesApi
         }
     }
 
-    fun checkNetworkConnection(): Boolean {
-        val cm = application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        try {
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                val network = cm.activeNetwork;
-
-                val networkCapabilities = cm.getNetworkCapabilities(network);
-
-                val isInternetSuspended =
-                    !networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED)!!;
-                (networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                        && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-                        && !isInternetSuspended);
-            } else {
-                cm.activeNetworkInfo!!.isConnected
-            }
-
-        } catch (e: Exception) {
-            Log.e(TAG, "IsNetworkConnected : ${e.message}")
-        }
-        return false
-    }
 }

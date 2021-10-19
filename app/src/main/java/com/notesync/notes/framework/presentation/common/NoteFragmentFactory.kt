@@ -6,7 +6,7 @@ import com.notesync.notes.business.domain.util.DateUtil
 import com.notesync.notes.di.main.MainScope
 import com.notesync.notes.framework.presentation.notedetail.NoteDetailFragment
 import com.notesync.notes.framework.presentation.notelist.NoteListFragment
-import com.notesync.notes.framework.presentation.splash.SplashFragment
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -15,6 +15,7 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @FlowPreview
 @ObsoleteCoroutinesApi
+@DelicateCoroutinesApi
 @MainScope
 class NoteFragmentFactory
 @Inject
