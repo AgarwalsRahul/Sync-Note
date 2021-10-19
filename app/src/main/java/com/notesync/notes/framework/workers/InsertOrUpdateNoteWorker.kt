@@ -1,6 +1,5 @@
 package com.notesync.notes.framework.workers
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
@@ -14,9 +13,18 @@ import com.notesync.notes.util.printLogD
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 
-class InsertOrUpdateNoteWorker @AssistedInject constructor(
+@DelicateCoroutinesApi
+@ObsoleteCoroutinesApi
+@FlowPreview
+@ExperimentalCoroutinesApi
+class InsertOrUpdateNoteWorker
+@AssistedInject constructor(
     @Assisted private val appContext: Context, @Assisted private val params: WorkerParameters,
     private val noteNetworkDataSource: NoteNetworkDataSource,
     private val sessionManager: SessionManager

@@ -59,7 +59,7 @@ class SplashFragment(private val viewModelProvider: ViewModelProvider.Factory) :
 
         viewModel.stateMessage.observe(viewLifecycleOwner, { stateMessage ->
             stateMessage?.let {
-                it.response?.let { response ->
+                it.response.let { response ->
                     printLogD("SplashFragment", "${response.message}")
                     if (response.message == CheckAuthenticatedUser.NO_USER_FOUND) {
                         findNavController(this).navigate(R.id.action_splashFragment_to_loginFragment)

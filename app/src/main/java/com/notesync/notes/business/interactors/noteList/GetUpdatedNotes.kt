@@ -18,7 +18,7 @@ class GetUpdatedNotes constructor(
     private val context: Context
 ) {
 
-    suspend fun getUpdatedNotes(user: User, stateEvent: StateEvent?) {
+     fun getUpdatedNotes(user: User,) {
         val data = workDataOf(Pair("user", GsonHelper.serializeToJson(user)))
 
         val backgroundConstraints = Constraints.Builder()

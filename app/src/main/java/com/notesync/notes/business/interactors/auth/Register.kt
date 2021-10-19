@@ -11,15 +11,17 @@ import com.notesync.notes.business.domain.state.*
 import com.notesync.notes.framework.dataSource.network.implementation.NoteFirestoreServiceImpl
 import com.notesync.notes.framework.dataSource.preferences.PreferenceKeys
 import com.notesync.notes.framework.presentation.auth.state.AuthViewState
-import com.notesync.notes.framework.presentation.auth.state.LoginFields
 import com.notesync.notes.framework.presentation.auth.state.RegistrationFields
 import com.notesync.notes.util.printLogD
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
+
+@ExperimentalCoroutinesApi
 class Register(
     private val authCacheDataSource: AuthCacheDataSource,
     private val authNetworkDataSource: AuthNetworkDataSource,
@@ -80,7 +82,7 @@ class Register(
                                 REGISTER_SUCCESS,
                                 UIComponentType.None(),
                                 MessageType.Success()
-                            ), AuthViewState(user = resultObj), stateEvent
+                            ), AuthViewState(user = result), stateEvent
                         )
                     }
 
@@ -120,7 +122,7 @@ class Register(
 
     private fun saveSecretKeyToPrefs(password: String, userId: String): String {
         val secretKeyCharArray = (password + userId).toCharArray()
-        var sk: String = ""
+        var sk = ""
         for (c in secretKeyCharArray) {
             sk += (c.code).toString()
             if (sk.length > 10) {

@@ -2,23 +2,20 @@ package com.notesync.notes.business.interactors.auth
 
 import android.content.SharedPreferences
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.installations.FirebaseInstallations
 import com.notesync.notes.business.data.cache.abstraction.AuthCacheDataSource
 import com.notesync.notes.business.data.network.ApiResponseHandler
 import com.notesync.notes.business.data.network.abstraction.AuthNetworkDataSource
 import com.notesync.notes.business.data.util.safeApiCall
 import com.notesync.notes.business.domain.model.User
 import com.notesync.notes.business.domain.state.*
-import com.notesync.notes.business.interactors.noteDetail.UpdateNote
 import com.notesync.notes.framework.dataSource.network.implementation.NoteFirestoreServiceImpl.Companion.DEVICES_COLLECTION
-import com.notesync.notes.framework.dataSource.network.implementation.NoteFirestoreServiceImpl.Companion.NOTES_COLLECTION
-import com.notesync.notes.framework.dataSource.network.implementation.NoteFirestoreServiceImpl.Companion.UPDATES_COLLECTION
 import com.notesync.notes.framework.dataSource.network.implementation.NoteFirestoreServiceImpl.Companion.USERS_COLLECTION
 import com.notesync.notes.framework.dataSource.preferences.PreferenceKeys
 import com.notesync.notes.framework.presentation.auth.state.AuthViewState
 import com.notesync.notes.framework.presentation.auth.state.LoginFields
 import com.notesync.notes.util.printLogD
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -35,6 +32,7 @@ class Login(
         const val LOGIN_SUCCESS = "Successfully logged in"
     }
 
+    @ExperimentalCoroutinesApi
     fun login(
         email: String,
         password: String,

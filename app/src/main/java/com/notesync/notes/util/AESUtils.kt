@@ -27,7 +27,7 @@ class AESUtils(private val key: String) {
 
     @get:Throws(Exception::class)
     private val rawKey: ByteArray
-        private get() {
+        get() {
             val key: SecretKey =
                 SecretKeySpec(keyValue, "AES")
             return key.encoded

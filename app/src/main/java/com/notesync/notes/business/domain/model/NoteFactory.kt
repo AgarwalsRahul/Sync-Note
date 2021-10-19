@@ -2,12 +2,20 @@ package com.notesync.notes.business.domain.model
 
 import com.notesync.notes.business.domain.state.SessionManager
 import com.notesync.notes.business.domain.util.DateUtil
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.collections.ArrayList
 
 @Singleton
+@DelicateCoroutinesApi
+@FlowPreview
+@ObsoleteCoroutinesApi
+@ExperimentalCoroutinesApi
 class NoteFactory @Inject constructor(
     private val dateUtil: DateUtil,
     private val sessionManager: SessionManager

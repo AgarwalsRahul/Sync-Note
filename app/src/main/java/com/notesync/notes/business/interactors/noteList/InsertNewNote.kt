@@ -6,7 +6,6 @@ import com.notesync.notes.business.data.cache.CacheResponseHandler
 import com.notesync.notes.business.data.cache.abstraction.NoteCacheDataSource
 import com.notesync.notes.business.data.network.abstraction.NoteNetworkDataSource
 import com.notesync.notes.business.data.util.GsonHelper
-import com.notesync.notes.business.data.util.safeApiCall
 import com.notesync.notes.business.data.util.safeCacheCall
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.model.NoteFactory
@@ -16,11 +15,19 @@ import com.notesync.notes.framework.presentation.notelist.state.NoteListViewStat
 import com.notesync.notes.framework.workers.InsertOrUpdateNoteWorker
 import com.notesync.notes.framework.workers.InsertUpdatedOrNewNoteWorker
 import com.notesync.notes.util.printLogD
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class InsertNewNote(
+@FlowPreview
+@ExperimentalCoroutinesApi
+@ObsoleteCoroutinesApi
+@DelicateCoroutinesApi
+class InsertNewNote  constructor(
     private val noteCacheDataSource: NoteCacheDataSource,
     private val noteNetworkDataSource: NoteNetworkDataSource,
     private val noteFactory: NoteFactory,
@@ -83,7 +90,7 @@ class InsertNewNote(
         updateNetwork(cacheResponse?.stateMessage?.response?.message, newNote, user)
     }
 
-    private suspend fun updateNetwork(message: String?, newNote: Note, user: User) {
+    private  fun updateNetwork(message: String?, newNote: Note, user: User) {
         if (message == INSERT_NOTE_SUCCESS) {
 
 

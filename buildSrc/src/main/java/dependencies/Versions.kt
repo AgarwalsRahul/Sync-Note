@@ -4,7 +4,7 @@ object Versions {
 
     val gradle = "7.0.2"
     val compilesdk = 30
-    val minsdk = 21
+    val minsdk = 23
     val targetsdk = 30
     val kotlin = "1.5.31"
     val ktx = "1.6.0"

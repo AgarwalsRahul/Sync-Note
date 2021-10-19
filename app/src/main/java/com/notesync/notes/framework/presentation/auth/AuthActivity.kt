@@ -1,7 +1,9 @@
 package com.notesync.notes.framework.presentation.auth
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -11,6 +13,7 @@ import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
@@ -36,6 +39,7 @@ import com.notesync.notes.util.Constants.TAG
 import com.notesync.notes.util.TodoCallback
 import com.notesync.notes.util.printLogD
 import kotlinx.android.synthetic.main.activity_auth.*
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -45,6 +49,7 @@ import javax.inject.Named
 
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
+@DelicateCoroutinesApi
 @FlowPreview
 class AuthActivity : BaseActivity(), UIController {
 
@@ -60,6 +65,7 @@ class AuthActivity : BaseActivity(), UIController {
         providerFactory
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         setFragmentFactory()
@@ -78,7 +84,7 @@ class AuthActivity : BaseActivity(), UIController {
     private fun subscribeObserver() {
         viewModel.viewState.observe(this, { authViewState ->
             authViewState?.let {
-                Log.d(Constants.TAG, "AuthActivity, subscribeObservers: AuthViewState: $it")
+                Log.d(TAG, "AuthActivity, subscribeObservers: AuthViewState: $it")
                 it.user?.let { user ->
                     printLogD("syncCacheWithNetwork", "executing data syncing")
                     printLogD("AuthActivity", "${user.deviceId}")
@@ -116,6 +122,7 @@ class AuthActivity : BaseActivity(), UIController {
     }
 
 
+    @SuppressLint("CheckResult")
     override fun displayInputCaptureDialog(title: String, callback: DialogInputCaptureCallback) {
         dialogInView = MaterialDialog(this).show {
             title(text = title)
@@ -139,9 +146,7 @@ class AuthActivity : BaseActivity(), UIController {
         if (dialogInView != null) {
             printLogD("AuthActivity", "Dialog is Dismissed")
             (dialogInView as MaterialDialog).cancel()
-            (dialogInView as MaterialDialog).dismiss().let {
-                printLogD("AuthActivity", "Dialog is Dismissed")
-            }
+            (dialogInView as MaterialDialog).dismiss()
             dialogInView = null
         }
     }

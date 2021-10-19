@@ -11,6 +11,7 @@ import com.notesync.notes.framework.presentation.common.NoteViewModelFactory
 import com.notesync.notes.framework.presentation.splash.NoteNetworkSyncManager
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -18,6 +19,7 @@ import javax.inject.Singleton
 @FlowPreview
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
+@DelicateCoroutinesApi
 @Module
 object NoteViewModelModule {
     @MainScope
