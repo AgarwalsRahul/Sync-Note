@@ -69,12 +69,15 @@ class Login(
                             )
                         }
                         saveAuthenticatedUserToPrefs(resultObj.email)
-                        val sk =saveSecretKeyToPrefs(password,resultObj.id)
+                        val sk = saveSecretKeyToPrefs(password, resultObj.id)
                         val deviceId = saveDeviceIdToPrefs(authNetworkDataSource)
-                        FirebaseFirestore.getInstance().collection(USERS_COLLECTION)
-                            .document(resultObj.id).collection(DEVICES_COLLECTION)
-                            .document(deviceId!!).set({ }).await()
-                        val result = User(email = resultObj.email, id = resultObj.id, deviceId,sk =sk )
+                        safeApiCall(IO) {
+                            FirebaseFirestore.getInstance().collection(USERS_COLLECTION)
+                                .document(resultObj.id).collection(DEVICES_COLLECTION)
+                                .document(deviceId!!).set({ }).await()
+                        }
+                        val result =
+                            User(email = resultObj.email, id = resultObj.id, deviceId, sk = sk)
                         return DataState.data(
                             response = Response(
                                 LOGIN_SUCCESS,
@@ -99,7 +102,7 @@ class Login(
         }
     }
 
-    private fun saveSecretKeyToPrefs(password: String, userId: String):String {
+    private fun saveSecretKeyToPrefs(password: String, userId: String): String {
         val secretKeyCharArray = (password + userId).toCharArray()
         var sk: String = ""
         for (c in secretKeyCharArray) {

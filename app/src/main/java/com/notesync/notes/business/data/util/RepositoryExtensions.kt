@@ -2,6 +2,7 @@ package com.notesync.notes.business.data.util
 
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.notesync.notes.business.data.cache.CacheConstants.CACHE_TIMEOUT
 import com.notesync.notes.business.data.cache.CacheErrors.CACHE_ERROR_TIMEOUT
 import com.notesync.notes.business.data.cache.CacheErrors.CACHE_ERROR_UNKNOWN
@@ -64,6 +65,11 @@ suspend fun <T> safeApiCall(
                     ApiResult.FirebaseError(throwable.errorCode, errorMessage)
                 }
                 is FirebaseException -> {
+                    val errorMessage =
+                        if (!throwable.message.isNullOrEmpty()) throwable.message else ERROR_UNKNOWN
+                    ApiResult.FirebaseError(null, errorMessage)
+                }
+                is FirebaseFirestoreException->{
                     val errorMessage =
                         if (!throwable.message.isNullOrEmpty()) throwable.message else ERROR_UNKNOWN
                     ApiResult.FirebaseError(null, errorMessage)
