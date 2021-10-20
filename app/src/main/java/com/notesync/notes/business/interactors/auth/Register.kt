@@ -14,6 +14,7 @@ import com.notesync.notes.framework.presentation.auth.state.AuthViewState
 import com.notesync.notes.framework.presentation.auth.state.RegistrationFields
 import com.notesync.notes.util.printLogD
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -70,11 +71,14 @@ class Register(
                         saveAuthenticatedUserToPrefs(resultObj.email)
                         val sk = saveSecretKeyToPrefs(password, resultObj.id)
                         val deviceId = saveDeviceIdToPrefs(authNetworkDataSource)
-                        FirebaseFirestore.getInstance()
-                            .collection(NoteFirestoreServiceImpl.USERS_COLLECTION)
-                            .document(resultObj.id)
-                            .collection(NoteFirestoreServiceImpl.DEVICES_COLLECTION)
-                            .document(deviceId!!).set({ }).await()
+                        safeApiCall(IO) {
+                            FirebaseFirestore.getInstance()
+                                .collection(NoteFirestoreServiceImpl.USERS_COLLECTION)
+                                .document(resultObj.id)
+                                .collection(NoteFirestoreServiceImpl.DEVICES_COLLECTION)
+                                .document(deviceId!!).set({ }).await()
+                        }
+
                         val result =
                             User(email = resultObj.email, id = resultObj.id, deviceId, sk = sk)
                         return DataState.data(
