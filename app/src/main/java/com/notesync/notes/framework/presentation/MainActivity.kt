@@ -8,7 +8,6 @@ import android.text.InputType
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -23,9 +22,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.notesync.notes.R
 import com.notesync.notes.business.domain.state.*
 import com.notesync.notes.framework.presentation.common.*
-import com.notesync.notes.util.Constants.DARK_THEME
-import com.notesync.notes.util.Constants.LIGHT_THEME
-import com.notesync.notes.util.NetworkStatusHelper
 import com.notesync.notes.util.TodoCallback
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_note_list.*
@@ -57,7 +53,7 @@ class MainActivity : BaseActivity(),
 
 
 
-    private lateinit var networkStatusHelper: NetworkStatusHelper
+
 
     val viewModel: MainViewModel by viewModels {
         providerFactory
@@ -65,7 +61,7 @@ class MainActivity : BaseActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
-        networkStatusHelper = NetworkStatusHelper(this)
+
         setFragmentFactory()
         super.onCreate(savedInstanceState)
 

@@ -15,7 +15,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.transition.TransitionInflater
 import com.notesync.notes.R
 import com.notesync.notes.business.domain.state.StateMessageCallback
 import com.notesync.notes.framework.presentation.UIController
@@ -61,7 +63,8 @@ class LoginFragment constructor(private val viewModelFactory: ViewModelProvider.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupOnBackPressedCallback()
-
+        sharedElementEnterTransition = TransitionInflater.from(context)
+            .inflateTransition(R.transition.shared_element_transition)
         login_button.setOnClickListener {
 
             view.hideKeyboard()
@@ -75,13 +78,43 @@ class LoginFragment constructor(private val viewModelFactory: ViewModelProvider.
         }
 
         register_button.setOnClickListener {
+            val extras = FragmentNavigator.Extras.Builder().addSharedElements(
+                mapOf<View, String>(
+                    imageView to "logo_image",
+                    syncNoteTitle to "welcome_text",
+                    login_button to "auth_button",
+                    register_button to "bottom_button",
+                    register_text to "bottom_text",
+                    textView2 to "or_text"
+                    )
 
-            findNavController(this).navigate(R.id.action_loginFragment_to_registerFragment)
+            ).build()
+            findNavController(this).navigate(
+                R.id.action_loginFragment_to_registerFragment,
+                null,
+                null,
+                extras
+            )
         }
 
         forgot_password_button.setOnClickListener {
+            val extras = FragmentNavigator.Extras.Builder().addSharedElements(
+                mapOf<View, String>(
+                    imageView to "logo_image",
+                    syncNoteTitle to "welcome_text",
+                    textView4 to "app_note_text",
+                    email_address_layout to "email_layout",
+                    login_button to "auth_button",
+                    text_email to "email_text"
+                )
 
-            findNavController(this).navigate(R.id.action_loginFragment_to_forgotPasswordFragment)
+            ).build()
+            findNavController(this).navigate(
+                R.id.action_loginFragment_to_forgotPasswordFragment,
+                null,
+                null,
+                extras
+            )
         }
         initListener()
         subscribeObservers()
@@ -114,8 +147,8 @@ class LoginFragment constructor(private val viewModelFactory: ViewModelProvider.
                         !viewModel.validatePasswords(this.text.toString()).isNullOrEmpty()
                     password_layout.error =
                         viewModel.validatePasswords(this.text.toString())
-                }else{
-                    password_layout.isErrorEnabled=!viewModel.passwordFocusInitial
+                } else {
+                    password_layout.isErrorEnabled = !viewModel.passwordFocusInitial
                 }
 
             }

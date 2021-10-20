@@ -37,7 +37,6 @@ import com.notesync.notes.framework.dataSource.network.implementation.NoteFirest
 import com.notesync.notes.framework.dataSource.network.mappers.NetworkMapper
 import com.notesync.notes.framework.presentation.BaseApplication
 import com.notesync.notes.framework.presentation.splash.NoteNetworkSyncManager
-import com.notesync.notes.util.NetworkStatusHelper
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -324,11 +323,6 @@ object AppModule {
         )
     }
 
-    @JvmStatic
-    @Singleton
-    @Provides
-    fun provideNetworkStatusHelper(application: BaseApplication):NetworkStatusHelper{
-        return NetworkStatusHelper(application)
-    }
+
 
 }
