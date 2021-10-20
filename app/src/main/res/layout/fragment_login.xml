@@ -19,6 +19,7 @@
             android:layout_width="50dp"
             android:layout_height="52dp"
             android:layout_marginStart="25dp"
+            android:transitionName="logo_image"
             android:layout_marginTop="30dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -31,6 +32,7 @@
             android:layout_marginStart="10dp"
             android:fontFamily="@font/gilroy_semibold"
             android:text="@string/sync"
+            android:transitionName="welcome_text"
             android:textColor="?attr/textColor"
             android:textSize="21sp"
             app:layout_constraintBottom_toBottomOf="@+id/imageView"
@@ -45,6 +47,7 @@
             android:layout_marginTop="15dp"
             android:fontFamily="@font/gliroy_black"
             android:text="@string/hello_nwelcome_back"
+
             android:textColor="?attr/textColor"
             android:textSize="30sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -53,6 +56,7 @@
 
         <com.notesync.notes.framework.presentation.util.CustomTextInputLayout
             android:id="@+id/email_address_layout"
+            android:transitionName="email_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
@@ -99,8 +103,7 @@
             app:boxBackgroundColor="@null"
             app:boxBackgroundMode="none"
             app:hintEnabled="false"
-            app:endIconDrawable="@drawable/ic_baseline_visibility_off_24"
-            app:endIconMode="password_toggle"
+           app:passwordToggleEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -134,6 +137,7 @@
             android:layout_marginTop="30dp"
             android:layout_marginEnd="25dp"
             android:background="@drawable/button_background"
+            android:transitionName="auth_button"
             style="@style/ButtonTheme"
             android:fontFamily="@font/gilroy_bold"
             android:text="@string/sign_in_button_text"
@@ -172,15 +176,18 @@
             app:layout_constraintTop_toBottomOf="@+id/textView2">
 
             <TextView
+                android:id="@+id/register_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/gilroy_bold"
                 android:text="@string/don_t_have_an_account"
+                android:transitionName="bottom_text"
                 android:textColor="?attr/textColor"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/register_button"
+                android:transitionName="bottom_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
@@ -202,6 +209,7 @@
             android:layout_marginTop="28dp"
             android:fontFamily="@font/gilroy_bold"
             android:text="@string/email"
+            android:transitionName="email_text"
             android:textColor="?attr/textColor"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -238,6 +246,7 @@
 
         <TextView
             android:id="@+id/textView2"
+            android:transitionName="or_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="13dp"
@@ -255,6 +264,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/gliroy_black"
             android:text="@string/note"
+            android:transitionName="app_note_text"
             android:textColor="#2C72FF"
             android:textSize="21sp"
             app:layout_constraintBottom_toBottomOf="@+id/syncNoteTitle"

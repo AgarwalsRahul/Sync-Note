@@ -22,6 +22,9 @@ class RecyclerViewEmptySupport : RecyclerView {
     private var viewModel: NoteListViewModel? = null
     private val emptyObserver: AdapterDataObserver = object : AdapterDataObserver() {
 
+        init {
+            Log.d("RecyclerView","${viewModel?.getSearchQuery()}")
+        }
         override fun onChanged() {
             super.onChanged()
             initEmptyView()
@@ -45,16 +48,15 @@ class RecyclerViewEmptySupport : RecyclerView {
 
     private fun initEmptyView() {
         if (emptyView != null && viewModel != null) {
-            emptyView!!.setVisibility(
+            Log.d("RecyclerView","${viewModel!!.getSearchQuery()}")
+            emptyView!!.visibility =
                 if ((adapter == null || adapter!!.itemCount == 0) && viewModel!!.getSearchQuery()
-                        .isEmpty()
+                    == ""
                 ) VISIBLE else GONE
-            )
-            this@RecyclerViewEmptySupport.setVisibility(
+            this@RecyclerViewEmptySupport.visibility =
                 if ((adapter == null || adapter!!.itemCount == 0) && viewModel!!.getSearchQuery()
-                        .isEmpty()
+                    == ""
                 ) GONE else VISIBLE
-            )
         }
     }
 

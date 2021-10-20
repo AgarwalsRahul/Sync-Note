@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.transition.TransitionInflater
 import com.notesync.notes.R
 import com.notesync.notes.business.domain.state.StateMessageCallback
 import com.notesync.notes.business.interactors.auth.ForgotPassword.Companion.FORGOT_PASSWORD_SUCCESS
@@ -51,7 +52,8 @@ class ForgotPasswordFragment(private val viewModelProvider: ViewModelProvider.Fa
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        sharedElementEnterTransition = TransitionInflater.from(context)
+            .inflateTransition(R.transition.shared_element_transition)
         reset_password_button.setOnClickListener {
             view.hideKeyboard()
             resetPassword()

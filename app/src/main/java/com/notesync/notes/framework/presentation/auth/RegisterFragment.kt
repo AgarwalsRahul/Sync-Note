@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.transition.TransitionInflater
 import com.notesync.notes.R
 import com.notesync.notes.business.domain.state.StateMessageCallback
 import com.notesync.notes.framework.presentation.UIController
@@ -47,6 +48,8 @@ class RegisterFragment(private val viewModelFactory: AuthViewModelFactory) :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sharedElementEnterTransition = TransitionInflater.from(context)
+            .inflateTransition(R.transition.shared_element_transition)
         register_button.setOnClickListener {
             view.hideKeyboard()
             register()

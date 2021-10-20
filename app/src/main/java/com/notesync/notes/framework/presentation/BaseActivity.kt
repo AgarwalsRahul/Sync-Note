@@ -4,13 +4,18 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.notesync.notes.business.domain.state.SessionManager
-import com.notesync.notes.business.domain.state.ThemeManager
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
+import com.notesync.notes.R
+import com.notesync.notes.business.domain.state.*
 import com.notesync.notes.util.Constants.DARK_THEME
 import com.notesync.notes.util.Constants.LIGHT_THEME
+import com.notesync.notes.util.NetworkConnection
+import com.notesync.notes.util.TodoCallback
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -70,5 +75,27 @@ abstract class BaseActivity : AppCompatActivity() {
 
     abstract fun inject()
 
+    override fun onResume() {
+        super.onResume()
+        NetworkConnection(applicationContext).observe(this, { isConnected ->
+            isConnected?.let {
+                if (!it) {
+                  displaySnackbar("No Internet Connection.")
+                }
+            }
+        })
+    }
+
+    private fun displaySnackbar(
+        message: String,
+    ) {
+        val snackbar = Snackbar.make(
+            findViewById(android.R.id.content),
+            message,
+            Snackbar.LENGTH_SHORT
+        )
+        snackbar.show()
+
+    }
 
 }

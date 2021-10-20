@@ -41,6 +41,7 @@ import com.notesync.notes.framework.presentation.notelist.state.NoteListToolbarS
 import com.notesync.notes.framework.presentation.notelist.state.NoteListViewState
 import com.notesync.notes.util.Constants.DARK_THEME
 import com.notesync.notes.util.Constants.LIGHT_THEME
+import com.notesync.notes.util.NetworkConnection
 import com.notesync.notes.util.TodoCallback
 import com.notesync.notes.util.printLogD
 import kotlinx.android.synthetic.main.fragment_note_list.*
@@ -196,8 +197,14 @@ constructor(
                     message.response.message?.equals(SearchNotes.NO_NOTES_IN_CACHE) == true -> {
                         Log.d("NoteListFragment", "No Notes in Cache Get from network")
                         viewModel.clearStateMessage()
-                        viewModel.setStateEvent(GetAllNotesFromNetwork())
-
+                        val observer = NetworkConnection(requireContext())
+                        observer.observe(viewLifecycleOwner,{
+                            it?.let { isConnected->
+                                if(isConnected){
+                                    viewModel.setStateEvent(GetAllNotesFromNetwork())
+                                    observer.removeObservers(viewLifecycleOwner)
+                            } }
+                        })
                     }
                     else -> {
                         uiController.onResponseReceived(
@@ -249,7 +256,7 @@ constructor(
         recycler_view.apply {
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-            addItemDecoration(SpacesItemDecoration(20))
+            addItemDecoration(SpacesItemDecoration(15))
 //            ( layoutManager as StaggeredGridLayoutManager).gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
             itemTouchHelper = ItemTouchHelper(
                 NoteItemTouchHelperCallback(
@@ -282,6 +289,7 @@ constructor(
                     }
                 }
             })
+            setViewModel(viewModel)
             setEmptyView(emptyView)
             setAdapter(listAdapter)
 

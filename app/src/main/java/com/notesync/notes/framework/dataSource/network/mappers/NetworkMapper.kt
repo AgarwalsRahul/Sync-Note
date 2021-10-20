@@ -4,11 +4,6 @@ import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.util.DateUtil
 import com.notesync.notes.business.domain.util.EntityMapper
 import com.notesync.notes.framework.dataSource.network.model.NoteNetworkEntity
-import com.notesync.notes.util.AESUtils
-import com.notesync.notes.util.Decryption
-import com.notesync.notes.util.Encryption
-import java.nio.charset.Charset
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
