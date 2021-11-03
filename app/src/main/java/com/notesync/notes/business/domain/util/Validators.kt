@@ -28,5 +28,5 @@ fun validatePassword(input: String): Validators<String> {
     } else if (input.isEmpty()) {
         return Validators.ValueFailure.InvalidPassword("Password is Required")
     }
-    return Validators.ValueFailure.InvalidPassword("Password must be 6 characters long.")
+    return Validators.ValueFailure.InvalidPassword("Password does not match the constraints.")
 }

@@ -7,6 +7,7 @@
     android:layout_marginHorizontal="24dp"
     android:backgroundTint="?attr/card_color"
     android:elevation="15dp"
+    app:layout_scrollFlags="scroll|enterAlways"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -35,7 +35,7 @@ class SearchNotes(private val noteCacheDataSource: NoteCacheDataSource) {
                             DataState.data(
                                 Response(
                                     SEARCH_NOTES_NO_MATCHING_RESULT,
-                                    UIComponentType.SnackBar(),
+                                    UIComponentType.None(),
                                     MessageType.Success()
                                 ), NoteListViewState(noteList = ArrayList(it)), stateEvent
                             )

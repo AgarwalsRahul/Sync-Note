@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/multiselect_toolbar"
     android:background="@drawable/search_toolbar_background"
-    android:backgroundTint="#171C26"
+    android:backgroundTint="?attr/card_color"
+    app:layout_scrollFlags="scroll|enterAlways"
     android:elevation="10dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 

@@ -73,6 +73,16 @@ abstract class BaseActivity : AppCompatActivity() {
 
     }
 
+    override fun recreate() {
+        finish();
+        overridePendingTransition(R.anim.fade_in,
+            R.anim.fade_out);
+        startActivity(intent);
+        overridePendingTransition(R.anim.fade_in,
+            R.anim.fade_out);
+        super.recreate()
+    }
+
     abstract fun inject()
 
     override fun onResume() {

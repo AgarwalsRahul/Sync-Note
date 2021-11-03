@@ -55,7 +55,7 @@ constructor(
     val toolbarState: LiveData<NoteListToolbarState>
         get() = noteListInteractionManager.toolbarState
 
-
+    private var filterDialogShowing: Boolean = false
 
     init {
         setNoteFilter(
@@ -471,7 +471,7 @@ constructor(
     fun loadFirstPage() {
         setQueryExhausted(false)
         resetPage()
-        setStateEvent(SearchNotesEvent())
+        setStateEvent(SearchNotesEvent(showProgressBar = false))
         printLogD(
             "NoteListViewModel",
             "loadFirstPage: ${getCurrentViewStateOrNew().searchQuery}"
@@ -493,7 +493,12 @@ constructor(
 
     fun refreshSearchQuery() {
         setQueryExhausted(false)
-        setStateEvent(SearchNotesEvent(false))
+        setStateEvent(SearchNotesEvent(false, showProgressBar = false))
     }
+
+    fun setFilterDialogShowing(isShowing:Boolean){
+        filterDialogShowing=isShowing
+    }
+    fun getFilterDialogShowing()=filterDialogShowing
 
 }

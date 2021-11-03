@@ -1,13 +1,17 @@
 package com.notesync.notes.framework.presentation.notelist
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowInsetsController
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RadioGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -21,6 +25,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.notesync.notes.R
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.state.*
@@ -74,6 +79,7 @@ constructor(
 
     private var listAdapter: NoteListAdapter? = null
     private var itemTouchHelper: ItemTouchHelper? = null
+    private var dialog: MaterialDialog? = null
 
 
     @Inject
@@ -84,7 +90,7 @@ constructor(
         inject()
         super.onCreate(savedInstanceState)
         viewModel.setupChannel()
-
+        viewModel.retrieveNumNotesInCache()
         arguments?.let { args ->
             args.getParcelable<Note>(NOTE_PENDING_DELETE_BUNDLE_KEY)?.let { note ->
                 viewModel.setNotePendingDelete(note)
@@ -101,12 +107,14 @@ constructor(
         arguments?.clear()
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         note_list_fragment_container.setOnClickListener {
             view.hideKeyboard()
-            search_view.clearFocus()
+            search_view?.clearFocus()
         }
+        restoreInstanceState(savedInstanceState)
         setupUI()
 
         setupRecyclerView()
@@ -116,7 +124,7 @@ constructor(
         night_mode.setOnClickListener {
             themeManager.setTheme()
         }
-        restoreInstanceState(savedInstanceState)
+
 
     }
 
@@ -148,6 +156,8 @@ constructor(
             }
         })
 
+
+
         viewModel.viewState.observe(viewLifecycleOwner, { viewState ->
 
             if (viewState != null) {
@@ -158,6 +168,7 @@ constructor(
                         viewModel.setQueryExhausted(true)
                     }
                     listAdapter?.submitList(noteList)
+                    listAdapter?.notifyDataSetChanged()
                     if (noteList.isEmpty() && viewModel.getSearchQuery().isNotEmpty()) {
 
                         search_image.visible()
@@ -168,7 +179,7 @@ constructor(
 
 
                     }
-                    listAdapter?.notifyDataSetChanged()
+
 
                 }
 
@@ -198,12 +209,13 @@ constructor(
                         Log.d("NoteListFragment", "No Notes in Cache Get from network")
                         viewModel.clearStateMessage()
                         val observer = NetworkConnection(requireContext())
-                        observer.observe(viewLifecycleOwner,{
-                            it?.let { isConnected->
-                                if(isConnected){
+                        observer.observe(viewLifecycleOwner, {
+                            it?.let { isConnected ->
+                                if (isConnected) {
                                     viewModel.setStateEvent(GetAllNotesFromNetwork())
                                     observer.removeObservers(viewLifecycleOwner)
-                            } }
+                                }
+                            }
                         })
                     }
                     else -> {
@@ -249,6 +261,8 @@ constructor(
                 viewModel.setViewState(viewState)
             }
         }
+        if (viewModel.getFilterDialogShowing())
+            showFilterDialog()
     }
 
 
@@ -305,13 +319,13 @@ constructor(
 
             val searchView = toolbar.findViewById<SearchView>(R.id.search_view)
 
-
             CoroutineScope(Main).launch {
                 searchView.getQueryTextChangeStateFlow()
                     .debounce(300)
                     .distinctUntilChanged()
 
                     .flowOn(Dispatchers.Default).collect {
+                        Log.d("NoteListFragment", searchView.query.toString())
                         viewModel.setQuery(it)
                         startNewSearch()
                     }
@@ -337,7 +351,7 @@ constructor(
     }
 
     private fun startNewSearch() {
-        viewModel.clearList()
+//        viewModel.clearList()
         viewModel.loadFirstPage()
     }
 
@@ -392,40 +406,40 @@ constructor(
     private fun showFilterDialog() {
 
         activity?.let {
-            val dialog = MaterialDialog(it).cornerRadius(16.0f)
+            dialog = MaterialDialog(it).cornerRadius(16.0f)
                 .noAutoDismiss()
                 .customView(R.layout.layout_filter)
 
-            val view = dialog.getCustomView()
+            val view = dialog?.getCustomView()
 
             val filter = viewModel.getFilter()
             val order = viewModel.getOrder()
 
-            view.findViewById<RadioGroup>(R.id.filter_group).apply {
+            view?.findViewById<RadioGroup>(R.id.filter_group)?.apply {
                 when (filter) {
                     NOTE_FILTER_DATE_CREATED -> check(R.id.filter_date)
                     NOTE_FILTER_TITLE -> check(R.id.filter_title)
                 }
             }
 
-            view.findViewById<RadioGroup>(R.id.order_group).apply {
+            view?.findViewById<RadioGroup>(R.id.order_group)?.apply {
                 when (order) {
                     NOTE_ORDER_ASC -> check(R.id.filter_asc)
                     NOTE_ORDER_DESC -> check(R.id.filter_desc)
                 }
             }
 
-            view.findViewById<TextView>(R.id.positive_button).setOnClickListener {
+            view?.findViewById<TextView>(R.id.positive_button)?.setOnClickListener {
 
                 val newFilter =
-                    when (view.findViewById<RadioGroup>(R.id.filter_group).checkedRadioButtonId) {
+                    when (view?.findViewById<RadioGroup>(R.id.filter_group)?.checkedRadioButtonId) {
                         R.id.filter_title -> NOTE_FILTER_TITLE
                         R.id.filter_date -> NOTE_FILTER_DATE_CREATED
                         else -> NOTE_FILTER_DATE_CREATED
                     }
 
                 val newOrder =
-                    when (view.findViewById<RadioGroup>(R.id.order_group).checkedRadioButtonId) {
+                    when (view?.findViewById<RadioGroup>(R.id.order_group)?.checkedRadioButtonId) {
                         R.id.filter_desc -> "-"
                         else -> ""
                     }
@@ -437,17 +451,17 @@ constructor(
                 }
 
                 startNewSearch()
-
-                dialog.dismiss()
+                dialog?.dismiss()
             }
 
-            view.findViewById<TextView>(R.id.negative_button).setOnClickListener {
-                dialog.dismiss()
+            view?.findViewById<TextView>(R.id.negative_button)?.setOnClickListener {
+                dialog?.dismiss()
             }
 
-            dialog.show()
+            dialog?.show()
         }
     }
+
 
     private fun setupFilterButton() {
         val searchViewToolbar: Toolbar? = toolbar_content_container
@@ -589,7 +603,8 @@ constructor(
     override fun onResume() {
         super.onResume()
         viewModel.retrieveNumNotesInCache()
-        viewModel.clearList()
+//        viewModel.clearList()
+
         viewModel.refreshSearchQuery()
 
     }
@@ -597,6 +612,9 @@ constructor(
     override fun onPause() {
         super.onPause()
         saveLayoutManagerState()
+        viewModel.setFilterDialogShowing(dialog?.isShowing ?: false)
+        dialog?.dismiss()
+        dialog?.dismiss()
     }
 
     // Why didn't I use the "SavedStateHandle" here?
