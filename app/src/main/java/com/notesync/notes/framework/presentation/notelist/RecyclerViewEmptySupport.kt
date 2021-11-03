@@ -23,12 +23,14 @@ class RecyclerViewEmptySupport : RecyclerView {
     private val emptyObserver: AdapterDataObserver = object : AdapterDataObserver() {
 
         init {
-            Log.d("RecyclerView","${viewModel?.getSearchQuery()}")
+            Log.d("RecyclerView", "${viewModel?.getSearchQuery()}")
         }
+
         override fun onChanged() {
             super.onChanged()
             initEmptyView()
         }
+
 
         override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
             super.onItemRangeRemoved(positionStart, itemCount)
@@ -48,15 +50,16 @@ class RecyclerViewEmptySupport : RecyclerView {
 
     private fun initEmptyView() {
         if (emptyView != null && viewModel != null) {
-            Log.d("RecyclerView","${viewModel!!.getSearchQuery()}")
-            emptyView!!.visibility =
-                if ((adapter == null || adapter!!.itemCount == 0) && viewModel!!.getSearchQuery()
-                    == ""
-                ) VISIBLE else GONE
+            Log.d("RecyclerView", viewModel!!.getSearchQuery())
+
             this@RecyclerViewEmptySupport.visibility =
                 if ((adapter == null || adapter!!.itemCount == 0) && viewModel!!.getSearchQuery()
-                    == ""
+                    == "" && viewModel!!.getNoteListSize() == 0 && viewModel!!.viewState.value?.numNotesInCache == 0
                 ) GONE else VISIBLE
+            emptyView!!.visibility =
+                if ((adapter == null || adapter!!.itemCount == 0) && viewModel!!.getSearchQuery()
+                    == "" && viewModel!!.getNoteListSize() == 0 && viewModel!!.viewState.value?.numNotesInCache == 0
+                ) VISIBLE else GONE
         }
     }
 

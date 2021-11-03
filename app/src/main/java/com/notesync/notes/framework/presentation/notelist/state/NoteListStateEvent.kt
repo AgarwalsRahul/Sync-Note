@@ -85,7 +85,8 @@ sealed class NoteListStateEvent : StateEvent {
     }
 
     class SearchNotesEvent(
-        val clearLayoutManagerState: Boolean = true
+        val clearLayoutManagerState: Boolean = true,
+        val showProgressBar: Boolean = true
     ) : NoteListStateEvent() {
 
         override fun errorInfo(): String {
@@ -96,7 +97,7 @@ sealed class NoteListStateEvent : StateEvent {
             return "SearchNotesEvent"
         }
 
-        override fun shouldDisplayProgressBar() = true
+        override fun shouldDisplayProgressBar() = showProgressBar
     }
 
     class GetNumNotesInCacheEvent : NoteListStateEvent() {
@@ -109,7 +110,7 @@ sealed class NoteListStateEvent : StateEvent {
             return "GetNumNotesInCacheEvent"
         }
 
-        override fun shouldDisplayProgressBar() = true
+        override fun shouldDisplayProgressBar() = false
     }
 
     class CreateStateMessageEvent(

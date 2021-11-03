@@ -52,6 +52,8 @@ constructor(
         viewModelFactory
     }
 
+    lateinit var  markdownProcessor:MarkdownProcessor
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.setupChannel()
@@ -94,9 +96,11 @@ constructor(
 
     private fun setupMarkdown() {
         activity?.run {
-            val markdownProcessor = MarkdownProcessor(this)
+            markdownProcessor = MarkdownProcessor(this)
             markdownProcessor.factory(EditFactory.create())
-            markdownProcessor.live(note_body)
+            note_body?.let {
+                markdownProcessor.live(it)
+            }
         }
     }
 

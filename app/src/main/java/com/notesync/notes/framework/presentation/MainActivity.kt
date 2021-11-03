@@ -1,10 +1,13 @@
 package com.notesync.notes.framework.presentation
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -17,6 +20,7 @@ import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.callbacks.*
 import com.afollestad.materialdialogs.input.getInputField
 import com.afollestad.materialdialogs.input.input
+import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.notesync.notes.R
@@ -39,20 +43,16 @@ class MainActivity : BaseActivity(),
     UIController {
 
 
-
     private var appBarConfiguration: AppBarConfiguration? = null
 
     private var dialogInView: MaterialDialog? = null
+    private var mBottomSheet: MaterialDialog? = null
 
     @Inject
     lateinit var fragmentFactory: NoteFragmentFactory
 
     @Inject
     lateinit var providerFactory: NoteViewModelFactory
-
-
-
-
 
 
     val viewModel: MainViewModel by viewModels {
@@ -69,7 +69,6 @@ class MainActivity : BaseActivity(),
         setContentView(R.layout.activity_main)
 
     }
-
 
 
     private fun setFragmentFactory() {
@@ -101,7 +100,6 @@ class MainActivity : BaseActivity(),
     }
 
 
-
     override fun inject() {
         (application as BaseApplication).mainComponent()
             .inject(this)
@@ -120,22 +118,23 @@ class MainActivity : BaseActivity(),
                 || super.onSupportNavigateUp()
     }
 
+
     @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("CheckResult")
     override fun displayInputCaptureDialog(
         title: String,
         callback: DialogInputCaptureCallback
     ) {
-        dialogInView = MaterialDialog(this@MainActivity, BottomSheet(LayoutMode.WRAP_CONTENT))
+        mBottomSheet = MaterialDialog(this@MainActivity, BottomSheet(LayoutMode.WRAP_CONTENT))
 
             .cornerRadius(16.0f)
 
 
-        dialogInView?.show {
+        mBottomSheet?.show {
             title(text = title)
 
 
-          input(
+            input(
                 waitForPositiveButton = true,
                 inputType = InputType.TYPE_CLASS_TEXT
             ) { _, text ->
@@ -148,12 +147,12 @@ class MainActivity : BaseActivity(),
 
             negativeButton(R.string.text_cancel)
 
-            onDismiss {
-                it.dismiss()
-                dialogInView = null
-            }
-            cancelable(true)
-            onAttachedToWindow()
+//            onDismiss {
+//                mBottomSheet=null
+//            }
+            cancelable(false)
+
+
         }
     }
 

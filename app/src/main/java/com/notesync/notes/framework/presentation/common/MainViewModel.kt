@@ -1,5 +1,7 @@
 package com.notesync.notes.framework.presentation.common
 
+import android.os.Bundle
+import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,6 +26,8 @@ class MainViewModel(
 
     val hasSyncBeenExecuted: LiveData<Boolean>
         get() = _hasSyncBeenExecuted
+
+    var bottomsheetState:Bundle?=null
 
    fun init(){
         printLogD("MainViewModel","getUpdateNotes is launched")

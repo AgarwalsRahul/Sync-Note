@@ -6,7 +6,6 @@ import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -22,14 +21,10 @@ import com.notesync.notes.framework.presentation.common.hideKeyboard
 import com.notesync.notes.framework.presentation.common.invisible
 import com.notesync.notes.framework.presentation.common.visible
 import kotlinx.android.synthetic.main.fragment_forgot_password.*
-import kotlinx.android.synthetic.main.fragment_forgot_password.email_address
-import kotlinx.android.synthetic.main.fragment_forgot_password.email_address_layout
-
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @FlowPreview
