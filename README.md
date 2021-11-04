@@ -16,6 +16,10 @@ or notes are always with them.
 
 ## :camera_flash: Screenshots
 
+<img src="/screenshots/screen_1.png" width="260">&emsp;<img src="/screenshots/screen_2.png"
+width="260">&emsp;<img src="/screenshots/screen_3.png" width="260">&emsp;<img src="/screenshots/screen_4.png" width="260">;<img src="/screenshots/screen_5.png" width="260">
+<br>
+
 ## 🏗️️ Built with
 
 | What                        | How                                                                                                                                                                             |
