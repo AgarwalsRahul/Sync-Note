@@ -36,7 +36,7 @@
                 android:paddingStart="@dimen/default_view_margin"
                 android:paddingTop="5dp"
                 android:paddingEnd="@dimen/default_view_margin"
-                android:textCursorDrawable="?attr/textColor"
+
                 android:textColor="?attr/textColor"
                 android:textSize="16sp" />
 
@@ -59,13 +59,16 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
             app:expandedTitleGravity="top"
-
+            android:elevation="0dp"
+            app:elevation="0dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/tool_bar"
                 android:layout_width="match_parent"
                 app:contentInsetLeft="0dp"
+                app:elevation="0dp"
+                android:elevation="0dp"
                 app:contentInsetStart="0dp"
                 android:layout_height="@dimen/toolbar_height"
                 app:layout_collapseMode="pin">
@@ -82,6 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/toolbar_title_offset_height"
                 android:clipToPadding="false"
+
                 android:orientation="vertical"
                 android:paddingStart="@dimen/default_view_margin"
                 android:paddingEnd="@dimen/default_view_margin"

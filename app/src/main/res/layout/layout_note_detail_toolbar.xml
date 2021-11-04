@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/toolbar_height"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimaryDark"
    >
@@ -10,9 +11,10 @@
 
     <ImageView
         android:id="@+id/toolbar_primary_icon"
-        android:layout_width="@dimen/toolbar_item_margin"
-        android:layout_height="@dimen/toolbar_item_margin"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginStart="16dp"
+        android:padding="3dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:backgroundTint="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -40,8 +42,9 @@
 
 
     <ImageView
-        android:layout_width="@dimen/toolbar_item_margin"
-        android:layout_height="@dimen/toolbar_item_margin"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="3dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
