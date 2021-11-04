@@ -40,7 +40,8 @@ width="260">&emsp;<img src="/screenshots/screen_3.png" width="260">&emsp;<img sr
 * Message Handling system using **STACK** data structure
 * Fragment Transistion Animations
 * Collapsing Toolbar Layout
-* ViewModels
+* ViewModels 
+* Handle Configuration Changes
 
 ## TODO
 * Migrate from Dagger to [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
