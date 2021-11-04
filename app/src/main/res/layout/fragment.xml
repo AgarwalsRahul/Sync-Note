@@ -118,6 +118,7 @@
 
 
                     </LinearLayout>
+
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
 
 
@@ -149,7 +150,33 @@
 
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <ImageView
+            android:id="@+id/search_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="123dp"
+            android:visibility="gone"
+            android:layout_gravity="center|top"
 
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/coordinator"
+            app:srcCompat="@drawable/ic_no_matching_notes" />
+        <TextView
+            android:id="@+id/search_result_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="260dp"
+            android:fontFamily="@font/gilroy_medium"
+            android:layout_gravity="center|top"
+            android:text="No matching notes"
+            android:textColor="?attr/textColor"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_image" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -191,31 +218,9 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/search_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="20dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/coordinator"
-        app:srcCompat="@drawable/ic_no_matching_notes" />
 
-    <TextView
-        android:id="@+id/search_result_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="37dp"
-        android:fontFamily="@font/gilroy_medium"
-        android:text="No matching notes"
-        android:textColor="?attr/textColor"
-        android:textSize="16sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_image" />
+
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_new_note_fab"
