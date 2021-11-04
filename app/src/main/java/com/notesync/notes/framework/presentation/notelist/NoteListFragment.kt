@@ -1,17 +1,13 @@
 package com.notesync.notes.framework.presentation.notelist
 
 import android.annotation.SuppressLint
-import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.WindowInsetsController
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RadioGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -25,7 +21,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
-import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.notesync.notes.R
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.state.*
@@ -49,7 +44,7 @@ import com.notesync.notes.util.Constants.LIGHT_THEME
 import com.notesync.notes.util.NetworkConnection
 import com.notesync.notes.util.TodoCallback
 import com.notesync.notes.util.printLogD
-import kotlinx.android.synthetic.main.fragment_note_list.*
+import kotlinx.android.synthetic.main.fragment.*
 import kotlinx.android.synthetic.main.layout_searchview_toolbar.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
@@ -68,7 +63,7 @@ class NoteListFragment
 constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val dateUtil: DateUtil
-) : BaseNoteFragment(R.layout.fragment_note_list),
+) : BaseNoteFragment(R.layout.fragment),
     NoteListAdapter.Interaction,
     ItemTouchHelperAdapter {
 

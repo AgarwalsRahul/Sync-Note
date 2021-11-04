@@ -24,5 +24,6 @@
 
     <dimen name="splash_logo_width">80dp</dimen>
     <dimen name="note_card_radius">16dp</dimen>
+    <dimen name="note_card_elevation">2dp</dimen>
 
 </resources>

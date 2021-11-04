@@ -14,10 +14,10 @@
         style="@style/CardTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="3dp"
         android:background="@drawable/note_card_background"
         app:cardCornerRadius="16dp"
-        app:cardElevation="2dp"
+
         app:cardPreventCornerOverlap="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

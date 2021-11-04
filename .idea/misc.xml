@@ -30,10 +30,11 @@
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout-v23/fragment_login.xml" value="0.2513586956521739" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/activity_auth.xml" value="0.21014492753623187" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/activity_main.xml" value="0.21014492753623187" />
+        <entry key="..\:/Android/NotesSync/app/src/main/res/layout/fragment.xml" value="0.1793478260869565" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/fragment_forgot_password.xml" value="0.264" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/fragment_login.xml" value="0.25" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/fragment_note_detail.xml" value="0.25416666666666665" />
-        <entry key="..\:/Android/NotesSync/app/src/main/res/layout/fragment_note_list.xml" value="0.264" />
+        <entry key="..\:/Android/NotesSync/app/src/main/res/layout/fragment_note_list.xml" value="0.2" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/fragment_register.xml" value="0.2542991141219385" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/fragment_splash.xml" value="0.25416666666666665" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/layout_bottom_sheet.xml" value="0.2151268115942029" />
