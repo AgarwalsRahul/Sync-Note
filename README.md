@@ -20,7 +20,7 @@ or notes are always with them.
 
 | What                        | How                                                                                                                                                                             |
 |:----------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 🎭 User Interface (Android) | [Jetpack Compose](https://developer.android.com/jetpack/compose)                                                                                                                |
+| 🎭 User Interface (Android) | [Layouts](https://developer.android.com/guide/topics/ui/declaring-layout)                                                                                                                |
 | 🏗 Architecture             | [Clean](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)                                                                                           |
 | 💉 DI (Android)             | [Dagger](https://developer.android.com/training/dependency-injection/dagger-android)                                                                                                |
 | 🌊 Async                    | [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) + [Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/) |
