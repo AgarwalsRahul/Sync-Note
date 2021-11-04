@@ -4,6 +4,9 @@ or notes are always with them.
 
 ### Status: 🚧 In progress 🚧
 
+# Installation
+To Install the ***SyncNote*** [CLICK HERE](https://play.google.com/store/apps/details?id=com.notesync.notes)
+
 # Features
 * Organize notes by Date and Title
 * Dark and Light Mode support
