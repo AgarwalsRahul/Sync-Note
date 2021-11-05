@@ -175,9 +175,11 @@ constructor(
 
                         search_image.visible()
                         search_result_textView.visible()
+                        swipe_refresh.gone()
                     } else {
                         search_image.gone()
                         search_result_textView.gone()
+                        swipe_refresh.visible()
 
 
                     }

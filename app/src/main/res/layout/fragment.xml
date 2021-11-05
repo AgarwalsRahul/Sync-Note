@@ -157,7 +157,7 @@
             android:layout_marginTop="123dp"
             android:visibility="gone"
             android:layout_gravity="center|top"
-
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
@@ -170,6 +170,7 @@
             android:layout_marginTop="260dp"
             android:fontFamily="@font/gilroy_medium"
             android:layout_gravity="center|top"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:text="No matching notes"
             android:textColor="?attr/textColor"
             android:textSize="16sp"
