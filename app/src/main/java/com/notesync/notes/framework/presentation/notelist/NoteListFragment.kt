@@ -76,6 +76,8 @@ constructor(
     private var itemTouchHelper: ItemTouchHelper? = null
     private var dialog: MaterialDialog? = null
 
+    lateinit var searchView: SearchView
+
 
     @Inject
     lateinit var themeManager: ThemeManager
@@ -162,7 +164,12 @@ constructor(
                     ) {
                         viewModel.setQueryExhausted(true)
                     }
-                    listAdapter?.submitList(noteList)
+                    if (viewModel.isSearchPaginationExhausted() && !viewModel.isQueryExhausted() && viewModel.getSearchQuery()
+                            .isNotEmpty()
+                    ){
+                        viewModel.setQueryExhausted(true)
+                    }
+                        listAdapter?.submitList(noteList)
                     listAdapter?.notifyDataSetChanged()
                     if (noteList.isEmpty() && viewModel.getSearchQuery().isNotEmpty()) {
 
@@ -312,16 +319,23 @@ constructor(
 
         searchViewToolbar?.let { toolbar ->
 
-            val searchView = toolbar.findViewById<SearchView>(R.id.search_view)
+            searchView = toolbar.findViewById<SearchView>(R.id.search_view)
 
             CoroutineScope(Main).launch {
-                searchView.getQueryTextChangeStateFlow()
+                searchView.getQueryTextChangeStateFlow(viewModel.getSearchQuery())
                     .debounce(300)
                     .distinctUntilChanged()
 
-                    .flowOn(Dispatchers.Default).collect {
-                        Log.d("NoteListFragment", searchView.query.toString())
-                        viewModel.setQuery(it)
+                    .flowOn(Dispatchers.Default).collect { s ->
+                        Log.d("NoteListFragment", s)
+                        searchView.setQuery(s, false)
+                        viewModel.setQuery(s)
+//                        searchView.query?.let {
+//                            Log.d("NoteListFragment", it.toString())
+//                            viewModel.setQuery(it.toString())
+//
+//                        } ?: run{ searchView.setQuery("",false)
+//                            viewModel.setQuery("") }
                         startNewSearch()
                     }
             }
@@ -597,6 +611,7 @@ constructor(
 
     override fun onResume() {
         super.onResume()
+//        searchView.setQuery(viewModel.getSearchQuery(), false)
         viewModel.retrieveNumNotesInCache()
 //        viewModel.clearList()
 
@@ -607,6 +622,7 @@ constructor(
     override fun onPause() {
         super.onPause()
         saveLayoutManagerState()
+
         viewModel.setFilterDialogShowing(dialog?.isShowing ?: false)
         dialog?.dismiss()
         dialog?.dismiss()

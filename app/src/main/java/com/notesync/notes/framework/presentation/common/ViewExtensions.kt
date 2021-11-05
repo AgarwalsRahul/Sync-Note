@@ -51,7 +51,7 @@ fun View.fadeIn() {
     }
 }
 
-fun View.fadeOut(todoCallback: TodoCallback? = null){
+fun View.fadeOut(todoCallback: TodoCallback? = null) {
     val animationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
     apply {
         animate()
@@ -106,36 +106,35 @@ fun EditText.enableContentInteraction() {
     isCursorVisible = true
     setBackgroundResource(android.R.color.white)
     requestFocus()
-    if(text != null){
+    if (text != null) {
         setSelection(text.length)
     }
 }
 
 
-
 fun Activity.displayToast(
-    @StringRes message:Int,
+    @StringRes message: Int,
     stateMessageCallback: StateMessageCallback
-){
+) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     stateMessageCallback.removeMessageFromStack()
 }
 
 fun Activity.displayToast(
-    message:String,
+    message: String,
     stateMessageCallback: StateMessageCallback
-){
+) {
     Log.d("MainActivity", message)
-    val toast = Toast.makeText(this,message, Toast.LENGTH_SHORT)
+    val toast = Toast.makeText(this, message, Toast.LENGTH_SHORT)
     toast.show()
 
     stateMessageCallback.removeMessageFromStack()
 }
 
 
-fun SearchView.getQueryTextChangeStateFlow(): StateFlow<String> {
+fun SearchView.getQueryTextChangeStateFlow(searchQuery: String): StateFlow<String> {
 
-    val query = MutableStateFlow("")
+    val query = MutableStateFlow(searchQuery)
 
 
 
@@ -149,6 +148,8 @@ fun SearchView.getQueryTextChangeStateFlow(): StateFlow<String> {
 
 
             query.value = newText
+
+
             return true
         }
     })

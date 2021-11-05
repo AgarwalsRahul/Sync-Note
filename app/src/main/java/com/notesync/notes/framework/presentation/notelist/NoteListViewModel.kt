@@ -12,6 +12,7 @@ import com.notesync.notes.business.interactors.noteList.NoteListInteractors
 import com.notesync.notes.business.interactors.splash.SyncDeletedNotes
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_FILTER_DATE_CREATED
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_ORDER_DESC
+import com.notesync.notes.framework.dataSource.cache.database.NOTE_PAGINATION_PAGE_SIZE
 import com.notesync.notes.framework.dataSource.preferences.PreferenceKeys
 import com.notesync.notes.framework.dataSource.preferences.PreferenceKeys.Companion.NOTE_FILTER
 import com.notesync.notes.framework.dataSource.preferences.PreferenceKeys.Companion.NOTE_ORDER
@@ -233,6 +234,8 @@ constructor(
         }
         return 0
     }
+
+    fun isSearchPaginationExhausted() = getNoteListSize()<getPage()* NOTE_PAGINATION_PAGE_SIZE
 
     fun isPaginationExhausted() = getNoteListSize() >= getNumNotesInCache()
 
