@@ -26,6 +26,7 @@
             android:focusedByDefault="false"
             android:paddingStart="-16dp"
             app:iconifiedByDefault="false"
+            android:imeOptions="flagNoExtractUi"
             app:searchIcon="@drawable/ic_search_no_match"
             app:closeIcon="@null"
             app:queryHint="Search your notes"
