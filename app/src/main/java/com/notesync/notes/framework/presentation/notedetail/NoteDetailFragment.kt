@@ -1,6 +1,8 @@
 package com.notesync.notes.framework.presentation.notedetail
 
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.res.ResourcesCompat
@@ -57,11 +59,14 @@ constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.setupChannel()
+
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+//        restoreInstanceState(savedInstanceState)
         setupUI()
         setupOnBackPressDispatcher()
         subscribeObservers()
@@ -76,8 +81,8 @@ constructor(
         }
 
         setupMarkdown()
-        getSelectedNoteFromPreviousFragment()
-        restoreInstanceState()
+        getSelectedNoteFromPreviousFragment(savedInstanceState)
+
     }
 
     private fun onErrorRetrievingNoteFromPreviousFragment() {
@@ -140,6 +145,8 @@ constructor(
         updateNote()
     }
 
+
+
     private fun subscribeObservers() {
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
@@ -147,6 +154,7 @@ constructor(
             if (viewState != null) {
 
                 viewState.note?.let { note ->
+                    Log.d("NoteDetailFragment","Set Body ${note.body}")
                     setNoteTitle(note.title)
                     setNoteBody(note.body)
                 }
@@ -294,6 +302,7 @@ constructor(
     }
 
     private fun getNoteBody(): String {
+        Log.d("NoteDetailFragment",note_body.text.toString())
         return note_body.text.toString()
     }
 
@@ -301,20 +310,23 @@ constructor(
         note_body.setText(body)
     }
 
-    private fun getSelectedNoteFromPreviousFragment() {
+    private fun getSelectedNoteFromPreviousFragment(savedInstanceState: Bundle?) {
         arguments?.let { args ->
             (args.getParcelable(NOTE_DETAIL_SELECTED_NOTE_BUNDLE_KEY) as Note?)?.let { selectedNote ->
-                viewModel.setNote(selectedNote)
+                if(!restoreInstanceState(savedInstanceState)){
+                    viewModel.setNote(selectedNote)
+                }
             } ?: onErrorRetrievingNoteFromPreviousFragment()
         }
 
     }
 
-    private fun restoreInstanceState() {
-        arguments?.let { args ->
-            (args.getParcelable(NOTE_DETAIL_STATE_BUNDLE_KEY) as NoteDetailViewState?)?.let { viewState ->
+    private fun restoreInstanceState(savedInstanceState: Bundle?):Boolean {
+        savedInstanceState?.let { instate ->
+            (instate[NOTE_DETAIL_STATE_BUNDLE_KEY] as NoteDetailViewState?)?.let { viewState ->
                 viewModel.setViewState(viewState)
-
+                Log.d("NoteDetailFragment","Restore")
+                Log.d("NoteDetailFragmentRestore",viewState.note?.body?:"null")
                 // One-time check after rotation
                 if (viewModel.isToolbarCollapsed()) {
                     app_bar.setExpanded(false)
@@ -323,8 +335,11 @@ constructor(
                     app_bar.setExpanded(true)
                     transitionToExpandedMode()
                 }
+                return true
             }
+            return false
         }
+        return false
     }
 
     private fun updateTitleInViewModel() {
@@ -335,6 +350,7 @@ constructor(
 
     private fun updateBodyInViewModel() {
         if (viewModel.isEditingBody()) {
+            Log.d("NoteDetailFragment","Update Body")
             viewModel.updateNoteBody(getNoteBody())
         }
     }
@@ -461,9 +477,11 @@ constructor(
 
     override fun onSaveInstanceState(outState: Bundle) {
         val viewState = viewModel.getCurrentViewStateOrNew()
+        Log.d("NoteDetailFragmentViewState",viewState.note?.body?:"null")
         outState.putParcelable(NOTE_DETAIL_STATE_BUNDLE_KEY, viewState)
         super.onSaveInstanceState(outState)
     }
+
 
 
 }

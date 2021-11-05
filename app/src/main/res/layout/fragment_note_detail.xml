@@ -30,6 +30,7 @@
                 android:backgroundTint="@color/colorPrimaryDark"
                 android:fontFamily="@font/gilroy_medium"
                 android:gravity="top"
+
                 android:hint="@string/text_notes_go_here"
                 android:imeOptions="flagNoExtractUi"
                 android:minHeight="300dp"
