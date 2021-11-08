@@ -267,9 +267,10 @@ constructor(
     }
 
     // can be selected from Recyclerview or created new from dialog
-    fun setNote(note: Note?) {
+    fun setNote(note: Note?,) {
         val update = getCurrentViewStateOrNew()
         update.newNote = note
+
         setViewState(update)
     }
 

@@ -6,9 +6,12 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
+import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.navigation.findNavController
@@ -21,6 +24,7 @@ import com.afollestad.materialdialogs.callbacks.*
 import com.afollestad.materialdialogs.input.getInputField
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.notesync.notes.R
@@ -28,12 +32,23 @@ import com.notesync.notes.business.domain.state.*
 import com.notesync.notes.framework.presentation.common.*
 import com.notesync.notes.util.TodoCallback
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.bottom_sheet_dialog_layout.*
 import kotlinx.android.synthetic.main.fragment_note_list.*
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import javax.inject.Inject
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+
+
+import android.view.LayoutInflater
+
+
+
+
+
+
 
 @ExperimentalCoroutinesApi
 @FlowPreview
@@ -46,7 +61,7 @@ class MainActivity : BaseActivity(),
     private var appBarConfiguration: AppBarConfiguration? = null
 
     private var dialogInView: MaterialDialog? = null
-    private var mBottomSheet: MaterialDialog? = null
+    private var mBottomSheet: BottomSheetDialog? = null
 
     @Inject
     lateinit var fragmentFactory: NoteFragmentFactory
@@ -125,35 +140,95 @@ class MainActivity : BaseActivity(),
         title: String,
         callback: DialogInputCaptureCallback
     ) {
-        mBottomSheet = MaterialDialog(this@MainActivity, BottomSheet(LayoutMode.WRAP_CONTENT))
 
-            .cornerRadius(16.0f)
-
-
-        mBottomSheet?.show {
-            title(text = title)
-
-
-            input(
-                waitForPositiveButton = true,
-                inputType = InputType.TYPE_CLASS_TEXT
-            ) { _, text ->
-                callback.onTextCaptured(text.toString())
-            }
-            getInputField().background = null
-            getInputField().setTextColor(getColor(R.color.secondary_text_color))
-
-            positiveButton(R.string.text_Create)
-
-            negativeButton(R.string.text_cancel)
-
-//            onDismiss {
-//                mBottomSheet=null
+        viewModel.setDialogInputCaptureCallback(callback)
+//        mBottomSheet = MaterialDialog(this@MainActivity, BottomSheet(LayoutMode.WRAP_CONTENT))
+//
+//            .cornerRadius(16.0f)
+//
+//
+//        mBottomSheet?.show {
+//            title(text = title)
+//
+//
+//            input(
+//                waitForPositiveButton = true,
+//                inputType = InputType.TYPE_CLASS_TEXT
+//            ) { _, text ->
+//                callback.onTextCaptured(text.toString())
 //            }
-            cancelable(false)
+//            getInputField().background = null
+//            getInputField().setTextColor(getColor(R.color.secondary_text_color))
+//
+//            positiveButton(R.string.text_Create)
+//
+//            negativeButton(R.string.text_cancel)
+//
+////            onDismiss {
+////                mBottomSheet=null
+////            }
+//            cancelable(false)
 
 
+//        }
+        showBottomSheet(null, callback)
+
+
+    }
+
+    private fun showBottomSheet(
+        savedInstanceState: Bundle?,
+        callback: DialogInputCaptureCallback?
+    ) {
+        mBottomSheet = BottomSheetDialog(this)
+
+        val inflater = LayoutInflater.from(this)
+        val sheetView = inflater.inflate(
+            R.layout.bottom_sheet_dialog_layout,
+            this.window.decorView.rootView as ViewGroup,
+            false
+        )
+        mBottomSheet?.setContentView(sheetView)
+        savedInstanceState?.let {
+            mBottomSheet?.onRestoreInstanceState(it)
         }
+        val bottomSheetBehavior: BottomSheetBehavior<*> =
+            BottomSheetBehavior.from<View>(sheetView.parent as View)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED;
+
+        mBottomSheet?.show()
+        mBottomSheet?.setOnDismissListener {
+            mBottomSheet = null
+        }
+        mBottomSheet?.findViewById<TextView>(R.id.cancel_button)?.setOnClickListener {
+            mBottomSheet?.dismiss()
+        }
+        callback?.let {
+            mBottomSheet?.findViewById<TextView>(R.id.create_button)?.setOnClickListener {
+               mBottomSheet?.findViewById<EditText>(R.id.editTextTitle)?.let { editText ->
+                   if(editText.text.isNotEmpty()){
+                       callback.onTextCaptured(editText.text.toString())
+                       mBottomSheet?.dismiss()
+                   }else{
+                       displayToast("Title is mandatory")
+                   }
+               }
+            }
+        }
+
+
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        savedInstanceState.getBundle("bottomSheet")?.let {
+            showBottomSheet(it, viewModel.getDialogInputCaptureCallback())
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBundle("bottomSheet", mBottomSheet?.onSaveInstanceState())
     }
 
     override fun onResponseReceived(
@@ -373,6 +448,14 @@ class MainActivity : BaseActivity(),
                 }
                 cancelable(false)
             }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (mBottomSheet != null && mBottomSheet?.isShowing == true) {
+            mBottomSheet?.dismiss()
+            mBottomSheet = null
+        }
     }
 
 

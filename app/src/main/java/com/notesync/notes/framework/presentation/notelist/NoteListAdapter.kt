@@ -4,6 +4,9 @@ import android.text.Editable
 import android.view.*
 import android.widget.EditText
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -63,7 +66,7 @@ class NoteListAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is NoteViewHolder -> {
-                holder.bind(differ.currentList[position])
+                holder.bind(differ.currentList[position],position)
             }
         }
     }
@@ -105,7 +108,7 @@ class NoteListAdapter(
         private val COLOR_PRIMARY = R.color.colorPrimary
         private lateinit var note: Note
 
-        fun bind(item: Note) = with(itemView) {
+        fun bind(item: Note,position: Int) = with(itemView) {
             setOnClickListener {
                 interaction?.onItemSelected(adapterPosition, note)
             }
@@ -116,7 +119,7 @@ class NoteListAdapter(
             }
             note = item
 
-//            note_title.text = item.title
+//
             findViewById<TextView>(R.id.note_title).setText(item.title)
             findViewById<TextView>(R.id.note_body_card).setText(item.body)
             findViewById<TextView>(R.id.note_timestamp).setText(

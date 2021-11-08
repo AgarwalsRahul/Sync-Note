@@ -131,6 +131,16 @@ fun Activity.displayToast(
     stateMessageCallback.removeMessageFromStack()
 }
 
+fun Activity.displayToast(
+    message: String,
+
+) {
+    Log.d("MainActivity", message)
+    val toast = Toast.makeText(this, message, Toast.LENGTH_SHORT)
+    toast.show()
+
+}
+
 
 fun SearchView.getQueryTextChangeStateFlow(searchQuery: String): StateFlow<String> {
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.notesync.notes.business.domain.state.DialogInputCaptureCallback
 import com.notesync.notes.business.domain.state.SessionManager
 import com.notesync.notes.business.interactors.noteList.NoteListInteractors
 import com.notesync.notes.business.interactors.splash.SyncDeletedNotes
@@ -27,7 +28,11 @@ class MainViewModel(
     val hasSyncBeenExecuted: LiveData<Boolean>
         get() = _hasSyncBeenExecuted
 
-    var bottomsheetState:Bundle?=null
+
+
+    private var dialogInputCaptureCallback:DialogInputCaptureCallback?=null
+
+
 
    fun init(){
         printLogD("MainViewModel","getUpdateNotes is launched")
@@ -45,6 +50,14 @@ class MainViewModel(
        GlobalScope.launch(Main){
            _hasSyncBeenExecuted.value=true
        }
+    }
+
+    fun getDialogInputCaptureCallback() : DialogInputCaptureCallback?{
+        return dialogInputCaptureCallback
+    }
+
+    fun setDialogInputCaptureCallback(value:DialogInputCaptureCallback){
+        dialogInputCaptureCallback = value
     }
 
 }

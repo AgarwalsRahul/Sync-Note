@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RadioGroup
@@ -12,8 +13,10 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -45,6 +48,8 @@ import com.notesync.notes.util.NetworkConnection
 import com.notesync.notes.util.TodoCallback
 import com.notesync.notes.util.printLogD
 import kotlinx.android.synthetic.main.fragment.*
+import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.layout_note_list_item.*
 import kotlinx.android.synthetic.main.layout_searchview_toolbar.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
@@ -107,6 +112,7 @@ constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         note_list_fragment_container.setOnClickListener {
             view.hideKeyboard()
             search_view?.clearFocus()
@@ -117,6 +123,7 @@ constructor(
         setupRecyclerView()
         setupSwipeRefresh()
         setupFAB()
+
         subscribeObservers()
         night_mode.setOnClickListener {
             themeManager.setTheme()
@@ -170,6 +177,7 @@ constructor(
                         viewModel.setQueryExhausted(true)
                     }
                         listAdapter?.submitList(noteList)
+
                     listAdapter?.notifyDataSetChanged()
                     if (noteList.isEmpty() && viewModel.getSearchQuery().isNotEmpty()) {
 
@@ -272,6 +280,7 @@ constructor(
 
     private fun setupRecyclerView() {
         recycler_view.apply {
+
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
             addItemDecoration(SpacesItemDecoration(15))
@@ -390,6 +399,7 @@ constructor(
 
     private fun setupFAB() {
         add_new_note_fab.setOnClickListener {
+
             uiController.displayInputCaptureDialog(
                 getString(R.string.text_enter_a_title),
                 object : DialogInputCaptureCallback {
@@ -413,6 +423,8 @@ constructor(
 
         }
     }
+
+
 
     private fun showFilterDialog() {
 
@@ -522,6 +534,7 @@ constructor(
 
     private fun navigateToDetailFragment(selectedNote: Note) {
         val bundle = bundleOf(NOTE_DETAIL_SELECTED_NOTE_BUNDLE_KEY to selectedNote)
+
         findNavController(this).navigate(
             R.id.action_note_list_fragment_to_noteDetailFragment,
             bundle
