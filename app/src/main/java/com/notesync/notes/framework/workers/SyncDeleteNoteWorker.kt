@@ -27,35 +27,28 @@ class SyncDeleteNoteWorker @AssistedInject constructor(
     private val noteCacheDataSource: NoteCacheDataSource
 ) : CoroutineWorker(appContext, params) {
 
-    var jobToCancel: Job? = null
+
     override suspend fun doWork(): Result {
 
 
-        if (runAttemptCount > Constants.MAX_RETRY_LIMIT) {
-            return Result.failure(inputData)
-        }
+//        if (runAttemptCount > Constants.MAX_RETRY_LIMIT) {
+//            return Result.failure(inputData)
+//        }
 
         val data = inputData.keyValueMap
 
         val user = GsonHelper.deserializeToUser(data["user"] as String)
 
         try {
-            if (!isStopped)
-                jobToCancel = CoroutineScope(IO).launch {
-                    noteNetworkDataSource.getDeletedNoteChanges(user).onEmpty {
-                        printLogD("SyncDeleteNoteWorker", "onEmpty")
-                        return@onEmpty
-                    }
-                        .onCompletion {
-                            printLogD("SyncDeleteNoteWorker", "onComplete")
-                            return@onCompletion
-                        }
+
+                withContext(IO) {
+                    noteNetworkDataSource.getDeletedNoteChanges(user)
                         .collect {
                             withContext(IO) {
-                                if (!isStopped) {
+
                                     val result = noteCacheDataSource.deleteNote(it.id)
                                     printLogD("syncDeletedNotes", "$result")
-                                }
+
 
                             }
 

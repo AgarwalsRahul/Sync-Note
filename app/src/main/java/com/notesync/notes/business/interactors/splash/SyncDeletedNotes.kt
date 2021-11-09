@@ -7,6 +7,7 @@ import com.notesync.notes.business.data.network.abstraction.NoteNetworkDataSourc
 import com.notesync.notes.business.data.util.GsonHelper
 import com.notesync.notes.business.domain.model.User
 import com.notesync.notes.framework.workers.SyncDeleteNoteWorker
+import com.notesync.notes.util.printLogD
 import java.util.concurrent.TimeUnit
 
 class SyncDeletedNotes(
@@ -17,6 +18,8 @@ class SyncDeletedNotes(
 
 
     fun syncDeletedNotes(user: User,) {
+
+        printLogD("syncDeletedNotes","Start Syncing")
         val data = workDataOf(Pair("user", GsonHelper.serializeToJson(user)))
 
         val backgroundConstraints = Constraints.Builder()
@@ -24,13 +27,14 @@ class SyncDeletedNotes(
             .setRequiresBatteryNotLow(true)
             .build()
         val worker =
-            PeriodicWorkRequestBuilder<SyncDeleteNoteWorker>(1, TimeUnit.DAYS).setInputData(data)
-                .setConstraints(backgroundConstraints)
+            PeriodicWorkRequestBuilder<SyncDeleteNoteWorker>(1, TimeUnit.HOURS).setInputData(data)
+
                 .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
-                .addTag("SyncDeleteNotes").build()
+                .setConstraints(backgroundConstraints)
+                .addTag("SyncDeletedNotes").build()
 
         WorkManager.getInstance(context)
-            .enqueueUniquePeriodicWork("SyncDeleteNote", ExistingPeriodicWorkPolicy.REPLACE, worker)
+            .enqueueUniquePeriodicWork("SyncDeletedNote", ExistingPeriodicWorkPolicy.KEEP, worker)
 
 //        printLogD("syncDeleteNotes", "Event generated")
 //        try

@@ -32,7 +32,7 @@ class GetUpdatedNotes constructor(
                 .setConstraints(backgroundConstraints).addTag("GetUpdatedNotes").build()
 
         WorkManager.getInstance(context)
-            .enqueueUniquePeriodicWork("GetUpdatedNote", ExistingPeriodicWorkPolicy.REPLACE, worker)
+            .enqueueUniquePeriodicWork("GetUpdatedNote", ExistingPeriodicWorkPolicy.KEEP, worker)
     }
 
 }

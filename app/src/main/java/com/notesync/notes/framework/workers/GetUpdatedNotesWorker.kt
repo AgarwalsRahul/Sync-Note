@@ -29,9 +29,9 @@ class GetUpdatedNotesWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
 
-        if (runAttemptCount > MAX_RETRY_LIMIT) {
-            return Result.failure(inputData)
-        }
+//        if (runAttemptCount > MAX_RETRY_LIMIT) {
+//            return Result.failure(inputData)
+//        }
         val data = inputData.keyValueMap
         val user = GsonHelper.deserializeToUser(data["user"] as String)
         try {
