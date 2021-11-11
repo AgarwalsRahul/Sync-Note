@@ -42,6 +42,7 @@ width="260">&emsp;<img src="/screenshots/screen_3.png" width="260">&emsp;<img sr
 * Collapsing Toolbar Layout
 * ViewModels 
 * Handle Configuration Changes
+* Handle Process Death issues
 
 ## TODO
 * Migrate from Dagger to [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
