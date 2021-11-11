@@ -46,10 +46,11 @@ width="260">&emsp;<img src="/screenshots/screen_3.png" width="260">
 * Sealed Class for state management and UI management
 * Single Source of Truth Principal
 * Message Handling system using **STACK** data structure
-* Fragment Transistion Animations
+* Fragment Transition Animations
 * Collapsing Toolbar Layout
 * ViewModels
 * Handle Configuration Changes
+* Handle Process Death issues
 
 ## TODO
 
