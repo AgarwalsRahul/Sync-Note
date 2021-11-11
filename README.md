@@ -7,8 +7,7 @@ devices so that their thoughts or notes are always with them.
 
 # Installation
 
-To Install the ***
-SyncNote*** [CLICK HERE](https://play.google.com/store/apps/details?id=com.notesync.notes)
+To Install the ***SyncNote*** [CLICK HERE](https://play.google.com/store/apps/details?id=com.notesync.notes)
 
 # Features
 
