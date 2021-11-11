@@ -61,11 +61,12 @@ class SessionManager
     }
 
     fun setValue(newValue: User?) {
-        GlobalScope.launch(Dispatchers.Main) {
+//        GlobalScope.launch(Dispatchers.Main) {
             if (_cachedUser.value != newValue) {
                 _cachedUser.value = newValue
             }
-        }
+
+//        }
     }
 
 }

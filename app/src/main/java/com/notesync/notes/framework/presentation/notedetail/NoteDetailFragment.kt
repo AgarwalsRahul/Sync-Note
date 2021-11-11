@@ -61,7 +61,11 @@ constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.setupChannel()
-
+        savedInstanceState?.let { instate ->
+            (instate[NOTE_DETAIL_STATE_BUNDLE_KEY] as NoteDetailViewState?)?.let { viewState ->
+                viewModel.setViewState(viewState)
+            }
+        }
 
     }
 
@@ -271,7 +275,11 @@ constructor(
                 )
             )
             toolbar_secondary_icon.setImageDrawable(
-                ResourcesCompat.getDrawable(resources, R.drawable.ic_delete, a.application.theme)
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_delete,
+                    a.application.theme
+                )
             )
         }
     }

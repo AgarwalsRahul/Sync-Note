@@ -92,7 +92,8 @@ constructor(
         inject()
         super.onCreate(savedInstanceState)
         viewModel.setupChannel()
-        viewModel.retrieveNumNotesInCache()
+        restoreInstanceState(savedInstanceState)
+
         arguments?.let { args ->
             args.getParcelable<Note>(NOTE_PENDING_DELETE_BUNDLE_KEY)?.let { note ->
                 viewModel.setNotePendingDelete(note)
@@ -112,12 +113,12 @@ constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+//        viewModel.retrieveNumNotesInCache()
         note_list_fragment_container.setOnClickListener {
             view.hideKeyboard()
             search_view?.clearFocus()
         }
-        restoreInstanceState(savedInstanceState)
+
         setupUI()
 
         setupRecyclerView()
@@ -270,6 +271,7 @@ constructor(
     private fun restoreInstanceState(savedInstanceState: Bundle?) {
         savedInstanceState?.let { inState ->
             (inState[NOTE_LIST_STATE_BUNDLE_KEY] as NoteListViewState?)?.let { viewState ->
+
                 viewModel.setViewState(viewState)
             }
         }
@@ -660,6 +662,7 @@ constructor(
 
     override fun restoreListPosition() {
         viewModel.getLayoutManagerState()?.let { lmState ->
+            Log.d("restoreListPosition","state")
             recycler_view?.layoutManager?.onRestoreInstanceState(lmState)
         }
     }

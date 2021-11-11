@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -43,11 +44,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 
 import android.view.LayoutInflater
-
-
-
-
-
+import com.notesync.notes.business.domain.model.USER_BUNDLE_KEY
+import com.notesync.notes.business.domain.model.User
 
 
 @ExperimentalCoroutinesApi
@@ -79,6 +77,7 @@ class MainActivity : BaseActivity(),
 
         setFragmentFactory()
         super.onCreate(savedInstanceState)
+
 
         subscribeObservers()
         setContentView(R.layout.activity_main)
@@ -205,14 +204,14 @@ class MainActivity : BaseActivity(),
         }
         callback?.let {
             mBottomSheet?.findViewById<TextView>(R.id.create_button)?.setOnClickListener {
-               mBottomSheet?.findViewById<EditText>(R.id.editTextTitle)?.let { editText ->
-                   if(editText.text.isNotEmpty()){
-                       callback.onTextCaptured(editText.text.toString())
-                       mBottomSheet?.dismiss()
-                   }else{
-                       displayToast("Title is mandatory")
-                   }
-               }
+                mBottomSheet?.findViewById<EditText>(R.id.editTextTitle)?.let { editText ->
+                    if (editText.text.isNotEmpty()) {
+                        callback.onTextCaptured(editText.text.toString())
+                        mBottomSheet?.dismiss()
+                    } else {
+                        displayToast("Title is mandatory")
+                    }
+                }
             }
         }
 
@@ -221,14 +220,26 @@ class MainActivity : BaseActivity(),
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
+        restoreSession(savedInstanceState)
         savedInstanceState.getBundle("bottomSheet")?.let {
             showBottomSheet(it, viewModel.getDialogInputCaptureCallback())
+        }
+    }
+
+    private fun restoreSession(savedInstanceState: Bundle?) {
+        Log.d("searchNotes","restoreSession")
+        savedInstanceState?.let { state ->
+            (state[USER_BUNDLE_KEY] as User?)?.let {
+                sessionManager.setValue(it)
+            }
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBundle("bottomSheet", mBottomSheet?.onSaveInstanceState())
+        outState.putParcelable(USER_BUNDLE_KEY, sessionManager.cachedUser.value)
+
     }
 
     override fun onResponseReceived(

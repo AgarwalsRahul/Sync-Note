@@ -100,6 +100,8 @@ constructor(
     }
 
     override fun setStateEvent(stateEvent: StateEvent) {
+
+
         sessionManager.cachedUser.value?.let {
             val job: Flow<DataState<NoteListViewState>?> = when (stateEvent) {
 

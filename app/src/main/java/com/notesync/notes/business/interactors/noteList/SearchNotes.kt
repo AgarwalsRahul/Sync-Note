@@ -1,5 +1,6 @@
 package com.notesync.notes.business.interactors.noteList
 
+import android.util.Log
 import com.notesync.notes.business.data.cache.CacheErrors
 import com.notesync.notes.business.data.cache.abstraction.NoteCacheDataSource
 import com.notesync.notes.business.domain.state.*
@@ -26,10 +27,10 @@ class SearchNotes(private val noteCacheDataSource: NoteCacheDataSource) {
         if (page <= 0) {
             updatedPage = 1
         }
-
         try {
             noteCacheDataSource.searchNotes(query, filterAndOrder, updatedPage)
                 .collect {
+
                     if (it.isEmpty() && query.isNotEmpty()) {
                         emit(
                             DataState.data(
