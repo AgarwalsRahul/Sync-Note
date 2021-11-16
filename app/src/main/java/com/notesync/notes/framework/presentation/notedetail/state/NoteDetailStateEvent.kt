@@ -3,6 +3,7 @@ package com.notesync.notes.framework.presentation.notedetail.state
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.state.StateEvent
 import com.notesync.notes.business.domain.state.StateMessage
+import com.notesync.notes.framework.presentation.notelist.state.NoteListStateEvent
 
 sealed class NoteDetailStateEvent : StateEvent {
 
@@ -45,6 +46,22 @@ sealed class NoteDetailStateEvent : StateEvent {
 
         override fun eventName(): String {
             return "CreateStateMessageEvent"
+        }
+
+        override fun shouldDisplayProgressBar() = false
+    }
+
+    class MakeACopyEvent(
+        val title: String,
+        val body:String?=null
+    ) : NoteDetailStateEvent() {
+
+        override fun errorInfo(): String {
+            return "Error copying a note."
+        }
+
+        override fun eventName(): String {
+            return "MakeACopyEvent"
         }
 
         override fun shouldDisplayProgressBar() = false

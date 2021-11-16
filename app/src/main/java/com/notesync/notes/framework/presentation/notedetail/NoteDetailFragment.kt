@@ -3,7 +3,11 @@ package com.notesync.notes.framework.presentation.notedetail
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
@@ -14,6 +18,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.transition.TransitionInflater
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.notesync.notes.R
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.state.*
@@ -42,6 +48,9 @@ import kotlinx.coroutines.ObsoleteCoroutinesApi
 const val NOTE_DETAIL_STATE_BUNDLE_KEY =
     "com.notesync.notes.framework.presentation.notedetail.state"
 
+const val NOTE_DETAIL_BOTTOM_SHEET_BUNDLE_KEY =
+    "com.notesync.notes.framework.presentation.notedetail.bottomSheet"
+
 @FlowPreview
 @ExperimentalCoroutinesApi
 @ObsoleteCoroutinesApi
@@ -58,12 +67,17 @@ constructor(
 
     lateinit var markdownProcessor: MarkdownProcessor
 
+    private var mBottomSheet: BottomSheetDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.setupChannel()
         savedInstanceState?.let { instate ->
             (instate[NOTE_DETAIL_STATE_BUNDLE_KEY] as NoteDetailViewState?)?.let { viewState ->
                 viewModel.setViewState(viewState)
+            }
+            (instate[NOTE_DETAIL_BOTTOM_SHEET_BUNDLE_KEY] as Bundle?)?.let { bundle ->
+                showBottomSheet(bundle)
             }
         }
 
@@ -87,6 +101,10 @@ constructor(
             onClick_noteBody()
         }
 
+        more_options.setOnClickListener {
+            showBottomSheet()
+        }
+
         setupMarkdown()
         getSelectedNoteFromPreviousFragment(savedInstanceState)
 
@@ -104,6 +122,56 @@ constructor(
                 )
             )
         )
+    }
+
+
+    private fun showBottomSheet(savedInstanceState: Bundle? = null) {
+        activity?.let {
+            mBottomSheet = BottomSheetDialog(requireContext())
+            val inflater = LayoutInflater.from(requireContext())
+            val sheetView = inflater.inflate(
+                R.layout.bottom_sheet_note_detail_layout,
+                it.window.decorView.rootView as ViewGroup,
+                false
+            )
+            mBottomSheet?.setContentView(sheetView)
+            savedInstanceState?.let {
+                mBottomSheet?.onRestoreInstanceState(it)
+            }
+            val bottomSheetBehavior: BottomSheetBehavior<*> =
+                BottomSheetBehavior.from<View>(sheetView.parent as View)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED;
+
+            mBottomSheet?.show()
+            mBottomSheet?.setOnDismissListener {
+                mBottomSheet = null
+            }
+            mBottomSheet?.findViewById<LinearLayout>(R.id.delete_option)?.setOnClickListener {
+                mBottomSheet?.dismiss()
+                deleteNote()
+
+            }
+            mBottomSheet?.findViewById<LinearLayout>(R.id.make_a_copy_option)?.setOnClickListener {
+                mBottomSheet?.dismiss()
+                makeACopy()
+
+            }
+            mBottomSheet?.findViewById<LinearLayout>(R.id.share_option)?.setOnClickListener {
+                mBottomSheet?.dismiss()
+                shareNote()
+            }
+        }
+
+    }
+
+    private fun makeACopy() {
+        viewModel.getNote()?.let {
+            viewModel.setStateEvent(MakeACopyEvent(it.title, it.body))
+        }
+    }
+
+    private fun shareNote() {
+
     }
 
     private fun setupMarkdown() {
@@ -348,6 +416,7 @@ constructor(
                 }
                 return true
             }
+
             return false
         }
         return false
@@ -490,8 +559,20 @@ constructor(
         val viewState = viewModel.getCurrentViewStateOrNew()
         Log.d("NoteDetailFragmentViewState", viewState.note?.body ?: "null")
         outState.putParcelable(NOTE_DETAIL_STATE_BUNDLE_KEY, viewState)
+        outState.putParcelable(
+            NOTE_DETAIL_BOTTOM_SHEET_BUNDLE_KEY,
+            mBottomSheet?.onSaveInstanceState()
+        )
         super.onSaveInstanceState(outState)
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (mBottomSheet != null && mBottomSheet?.isShowing == true) {
+            mBottomSheet?.dismiss()
+            mBottomSheet = null
+        }
+    }
 
 }

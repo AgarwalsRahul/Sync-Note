@@ -367,6 +367,8 @@ class AuthActivity : BaseActivity(), UIController {
             }
     }
 
+
+
     override fun inject() {
 
         (application as BaseApplication).authComponent()

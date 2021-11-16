@@ -2,8 +2,8 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/note_detail_layout"
+    android:layout_width="match_parent"
 
     android:layout_height="match_parent">
 
@@ -12,14 +12,16 @@
         android:id="@+id/note_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:id="@+id/note_body_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:backgroundTint="@color/colorPrimaryDark"
             android:orientation="vertical"
+
             tools:ignore="MissingClass">
 
 
@@ -28,17 +30,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
+                android:layout_marginBottom="55dp"
                 android:backgroundTint="@color/colorPrimaryDark"
                 android:fontFamily="@font/gilroy_medium"
                 android:gravity="top"
-
                 android:hint="@string/text_notes_go_here"
                 android:imeOptions="flagNoExtractUi"
                 android:minHeight="300dp"
                 android:paddingStart="@dimen/default_view_margin"
                 android:paddingTop="5dp"
                 android:paddingEnd="@dimen/default_view_margin"
-
+                android:paddingBottom="5dp"
                 android:textColor="?attr/textColor"
                 android:textSize="16sp" />
 
@@ -60,22 +62,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
-            app:expandedTitleGravity="top"
             android:elevation="0dp"
             app:elevation="0dp"
+            app:expandedTitleGravity="top"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/tool_bar"
                 android:layout_width="match_parent"
-                app:contentInsetLeft="0dp"
-                app:elevation="0dp"
-                android:elevation="0dp"
-                app:contentInsetStart="0dp"
                 android:layout_height="@dimen/toolbar_height"
+                android:elevation="0dp"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:elevation="0dp"
                 app:layout_collapseMode="pin">
 
-                <include layout="@layout/layout_note_detail_toolbar"
+                <include
+                    layout="@layout/layout_note_detail_toolbar"
 
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
@@ -108,11 +111,44 @@
             </LinearLayout>
 
 
-
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
 
     </com.google.android.material.appbar.AppBarLayout>
+
+
+    <LinearLayout
+        android:id="@+id/bottom_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_gravity="bottom"
+        android:background="@color/colorPrimaryDark"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:weightSum="100">
+
+        <TextView
+            android:id="@+id/updated_date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="97"
+            android:fontFamily="@font/gilroy_regular"
+            android:text="Edited 9:36PM"
+            android:textColor="?attr/textColor"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/more_options"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="3dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_weight="3"
+            android:clickable="true"
+            android:src="@drawable/ic_baseline_more_vert_24"
+            android:focusable="true" />
+    </LinearLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -55,7 +55,7 @@ class NoteDetailViewModel(
                     if (!isNoteTitleNull() && pk != null) {
                         noteDetailInteractors.updateNote.updateNote(
                             note = getNote()!!,
-                            stateEvent = stateEvent,it
+                            stateEvent = stateEvent, it
                         )
                     } else {
                         emitStateMessageEvent(
@@ -74,7 +74,7 @@ class NoteDetailViewModel(
                 is DeleteNoteEvent -> {
                     noteDetailInteractors.deleteNote.deleteNote(
                         note = stateEvent.note,
-                        stateEvent = stateEvent,it
+                        stateEvent = stateEvent, it
                     )
                 }
 
@@ -83,6 +83,15 @@ class NoteDetailViewModel(
                         stateMessage = stateEvent.stateMessage,
                         stateEvent = stateEvent
                     )
+                }
+
+                is MakeACopyEvent -> {
+
+                    noteDetailInteractors.makeACopy.makeACopy(
+                        null,
+                        stateEvent.title, stateEvent.body, stateEvent, it
+                    )
+
                 }
 
                 else -> {

@@ -16,6 +16,8 @@ import com.notesync.notes.business.domain.state.SessionManager
 import com.notesync.notes.business.domain.util.DateUtil
 import com.notesync.notes.business.interactors.auth.*
 import com.notesync.notes.business.interactors.common.DeleteNote
+import com.notesync.notes.business.interactors.noteDetail.MakeACopy
+import com.notesync.notes.business.interactors.noteList.InsertNewNote
 import com.notesync.notes.business.interactors.noteDetail.NoteDetailInteractors
 import com.notesync.notes.business.interactors.noteDetail.UpdateNote
 import com.notesync.notes.business.interactors.noteList.*
@@ -272,11 +274,13 @@ object AppModule {
     fun provideNoteDetailInteractors(
         noteCacheDataSource: NoteCacheDataSource,
         noteNetworkDataSource: NoteNetworkDataSource,
-        application: BaseApplication
+        application: BaseApplication,
+        noteFactory: NoteFactory,
     ): NoteDetailInteractors {
         return NoteDetailInteractors(
             DeleteNote(noteCacheDataSource, noteNetworkDataSource, application),
-            UpdateNote(noteCacheDataSource, noteNetworkDataSource, application)
+            UpdateNote(noteCacheDataSource, noteNetworkDataSource, application),
+            MakeACopy(noteCacheDataSource,noteFactory,application)
         )
     }
 

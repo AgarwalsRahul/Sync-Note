@@ -227,7 +227,7 @@ class MainActivity : BaseActivity(),
     }
 
     private fun restoreSession(savedInstanceState: Bundle?) {
-        Log.d("searchNotes","restoreSession")
+        Log.d("searchNotes", "restoreSession")
         savedInstanceState?.let { state ->
             (state[USER_BUNDLE_KEY] as User?)?.let {
                 sessionManager.setValue(it)
@@ -296,6 +296,7 @@ class MainActivity : BaseActivity(),
             }
         }
     }
+
 
     private fun displaySnackbar(
         message: String,

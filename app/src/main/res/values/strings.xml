@@ -65,4 +65,7 @@
     <string name="floating_action_button_content_description">Add a Note</string>
     <string name="text_Create">Create</string>
     <string name="enter_a_title">Enter a Title</string>
+    <string name="delete_text">Delete</string>
+    <string name="make_a_copy">Make a copy</string>
+    <string name="share">Share</string>
 </resources>
