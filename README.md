@@ -5,7 +5,7 @@ or notes are always with them.
 ### Status: 🚧 In progress 🚧
 
 # Installation
-To Install the ***SyncNote*** [CLICK HERE](https://play.google.com/store/apps/details?id=com.notesync.notes)
+<a href="https://play.google.com/store/apps/details?id=com.notesync.notese"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height=60px /></a>
 
 # Features
 * Organize notes by Date and Title
