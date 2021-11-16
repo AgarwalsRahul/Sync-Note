@@ -1,5 +1,6 @@
 package com.notesync.notes.framework.presentation.notedetail
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -102,6 +103,14 @@ constructor(
         }
 
         more_options.setOnClickListener {
+            view.hideKeyboard()
+            if (viewModel.checkEditState()) {
+                updateBodyInViewModel()
+                updateTitleInViewModel()
+                updateNote()
+                viewModel.exitEditState()
+                displayDefaultToolbar()
+            }
             showBottomSheet()
         }
 
@@ -171,6 +180,17 @@ constructor(
     }
 
     private fun shareNote() {
+        // Sharing text note
+
+        viewModel.getNote()?.let {
+            if (it.body.isNotEmpty()) {
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                shareIntent.putExtra(Intent.EXTRA_TEXT, it.body)
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, it.title)
+                startActivity(Intent.createChooser(shareIntent, "Share..."))
+            }
+        }
 
     }
 
