@@ -1,4 +1,4 @@
-# Sync-Note
+# ![alt text](https://github.com/AgarwalsRahul/Sync-Note/blob/main/Frame%20(1).png) Sync-Note
 **SyncNote** is a note-taking app built with Kotlin, where notes sync across all of the user’s devices so that their thoughts 
 or notes are always with them.
 
