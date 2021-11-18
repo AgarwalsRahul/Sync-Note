@@ -251,6 +251,7 @@ constructor(
                     Log.d("NoteDetailFragment", "Set Body ${note.body}")
                     setNoteTitle(note.title)
                     setNoteBody(note.body)
+                    setNoteTimeStamp(note.updated_at)
                 }
             }
         })
@@ -362,13 +363,7 @@ constructor(
                     a.application.theme
                 )
             )
-            toolbar_secondary_icon.setImageDrawable(
-                ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.ic_delete,
-                    a.application.theme
-                )
-            )
+            toolbar_secondary_icon.invisible()
         }
     }
 
@@ -388,6 +383,7 @@ constructor(
                     a.application.theme
                 )
             )
+            toolbar_secondary_icon.visible()
         }
     }
 
@@ -406,6 +402,10 @@ constructor(
 
     private fun setNoteBody(body: String?) {
         note_body.setText(body)
+    }
+
+    private fun setNoteTimeStamp(timestamp:String){
+        updated_date_text.text = timestamp
     }
 
     private fun getSelectedNoteFromPreviousFragment(savedInstanceState: Bundle?) {
