@@ -74,4 +74,5 @@
     <string name="trash">Trash</string>
     <string name="no_browser">No browser found!</string>
     <string name="empty_trash">Empty Trash</string>
+    <string name="restore">Restore</string>
 </resources>
