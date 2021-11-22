@@ -3,9 +3,10 @@ package com.notesync.notes.framework.dataSource.cache.implementation
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.util.DateUtil
 import com.notesync.notes.framework.dataSource.cache.abstraction.NoteDaoService
-import com.notesync.notes.framework.dataSource.cache.mappers.CacheMapper
 import com.notesync.notes.framework.dataSource.cache.database.NoteDao
 import com.notesync.notes.framework.dataSource.cache.database.returnOrderedQuery
+import com.notesync.notes.framework.dataSource.cache.mappers.CacheMapper
+import com.notesync.notes.framework.dataSource.cache.mappers.TrashCacheMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -15,6 +16,7 @@ import javax.inject.Singleton
 class NoteDaoServiceImpl @Inject constructor(
     private val noteDao: NoteDao,
     private val cacheMapper: CacheMapper,
+    private val trashCacheMapper: TrashCacheMapper,
     private val dateUtil: DateUtil
 ) : NoteDaoService {
     override suspend fun insertNote(note: Note): Long {
@@ -109,12 +111,16 @@ class NoteDaoServiceImpl @Inject constructor(
 
     override suspend fun searchNoteById(id: String): Note? {
         return noteDao.searchNoteById(id)?.let {
-            cacheMapper.mapFromEntity(it,null)
+            cacheMapper.mapFromEntity(it, null)
         }
     }
 
     override suspend fun getNumNotes(): Int {
         return noteDao.getNumNotes()
+    }
+
+    override suspend fun getNumTrashNotes(): Int {
+       return noteDao.getNumTrashNotes()
     }
 
     override fun getAllNotes(): Flow<List<Note>> {
@@ -123,11 +129,36 @@ class NoteDaoServiceImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteTrashNote(primaryKey: String): Int {
+        return noteDao.deleteTrashNote(primaryKey)
+    }
+
+    override suspend fun deleteTrashNotes(notes: List<Note>): Int {
+        val ids = notes.mapIndexed { _, note -> note.id }
+        return noteDao.deleteTrashNotes(ids)
+    }
+
+    override suspend fun emptyTrash(): Int {
+        return noteDao.emptyTrash()
+    }
+
     override suspend fun insertNotes(notes: List<Note>): LongArray {
         return noteDao.insertNotes(cacheMapper.noteListToEntityList(notes))
     }
 
-    override  fun returnOrderedQuery(
+    override suspend fun insertTrashNote(note: Note): Long {
+        return noteDao.insertTrashNote(trashCacheMapper.mapToEntity(note))
+    }
+
+    override suspend fun insertTrashNotes(notes: List<Note>): LongArray {
+        return noteDao.insertTrashNotes(trashCacheMapper.noteListToEntityList(notes))
+    }
+
+    override fun getTrashNotes(page: Int): Flow<List<Note>> {
+        return noteDao.getTrashNotes(page)
+    }
+
+    override fun returnOrderedQuery(
         query: String,
         filterAndOrder: String,
         page: Int

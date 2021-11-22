@@ -63,6 +63,7 @@
                     <androidx.appcompat.widget.Toolbar
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/title_toolbar"
                         app:contentInsetLeft="0dp"
                         app:contentInsetStart="0dp"
                         app:layout_collapseMode="none">

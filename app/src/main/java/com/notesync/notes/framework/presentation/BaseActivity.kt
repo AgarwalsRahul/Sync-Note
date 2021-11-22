@@ -1,5 +1,6 @@
 package com.notesync.notes.framework.presentation
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View

@@ -19,6 +19,18 @@ class NoteCacheDataSourceImpl
         return noteDaoService.deleteNote(primaryKey)
     }
 
+    override suspend fun deleteTrashNote(primaryKey: String): Int {
+        return noteDaoService.deleteTrashNote(primaryKey)
+    }
+
+    override suspend fun deleteTrashNotes(notes: List<Note>): Int {
+        return noteDaoService.deleteTrashNotes(notes)
+    }
+
+    override suspend fun emptyTrash(): Int {
+       return noteDaoService.emptyTrash()
+    }
+
     override suspend fun deleteNotes(notes: List<Note>): Int {
         return noteDaoService.deleteNotes(notes)
     }
@@ -44,11 +56,27 @@ class NoteCacheDataSourceImpl
         return noteDaoService.getNumNotes()
     }
 
+    override suspend fun getNumTrashNotes(): Int {
+        return noteDaoService.getNumTrashNotes()
+    }
+
     override suspend fun insertNotes(notes: List<Note>): LongArray {
         return noteDaoService.insertNotes(notes)
     }
 
+    override suspend fun insertTrashNote(note: Note): Long {
+        return noteDaoService.insertTrashNote(note)
+    }
+
+    override suspend fun insertTrashNotes(notes: List<Note>): LongArray {
+        return noteDaoService.insertTrashNotes(notes)
+    }
+
     override fun getAllNotes(): Flow<List<Note>> {
         return noteDaoService.getAllNotes()
+    }
+
+    override fun getTrashNotes(page: Int): Flow<List<Note>> {
+        return noteDaoService.getTrashNotes(page)
     }
 }

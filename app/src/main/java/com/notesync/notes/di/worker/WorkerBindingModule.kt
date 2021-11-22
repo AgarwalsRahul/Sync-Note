@@ -55,4 +55,9 @@ interface WorkerBindingModule {
     @IntoMap
     @WorkerKey(SyncDeleteNoteWorker::class)
     fun bindSyncDeleteNoteWorker(factory: SyncDeleteNoteWorker.Factory): ChildWorkerFactory
+
+    @Binds
+    @IntoMap
+    @WorkerKey(EmptyTrashWorker::class)
+    fun bindEmptyTrashWorker(factory: EmptyTrashWorker.Factory): ChildWorkerFactory
 }

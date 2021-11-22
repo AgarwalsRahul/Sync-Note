@@ -34,5 +34,7 @@ interface NoteNetworkDataSource {
 
     suspend fun deleteUpdatedNoteFromOtherDevices(user: User, note: Note)
 
-    fun getDeletedNoteChanges(user: User): Flow<Note>
+    fun getDeletedNoteChanges(user: User): Flow<Pair<Note,Boolean>>
+
+    suspend fun deleteAllTrashNotes(notes:List<Note>,user: User)
 }

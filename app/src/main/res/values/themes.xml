@@ -17,16 +17,25 @@
         <item name="md_font_title">@font/gilroy_extrabold</item>
         <item name="md_font_body">@font/gilroy_regular</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="bottomSheetDialogTheme">@style/CustomBottomSheetDialog</item>
-<!--        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>-->
         <item name="android:autofilledHighlight" tools:targetApi="26">@android:color/transparent</item>
-<!--        <item name="android:statusBarc">@android:color/white</item>-->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
+        <item name="colorNavigationItem">@color/menu_item_color_state</item>
+        <item name="colorNavigationItemSelected">?attr/textColor</item>
+        <item name="drawableNavigationItemBackground">@drawable/menu_background_color_state</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+
+
     </style>
 
     <style name="ButtonTheme" parent="Widget.MaterialComponents.Button">
         <item name="backgroundTint">@color/button_background_color</item>
 
     </style>
+
+
 
 
     <style name="CardTheme" parent="Widget.MaterialComponents.CardView">
@@ -54,4 +63,33 @@
         <item name="cornerSizeBottomRight">0dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
+
+    <style name="Widget.Custom.NavigationView" parent="Widget.Design.NavigationView">
+        <item name="itemIconTint">?attr/colorNavigationItem</item>
+        <item name="itemTextColor">?attr/colorNavigationItem</item>
+        <item name="itemIconSize">24dp</item>
+        <item name="itemIconPadding">16dp</item>
+        <item name="itemTextAppearance">@style/NavTextStyle</item>
+        <item name="itemBackground">?attr/drawableNavigationItemBackground</item>
+        <item name="itemShapeFillColor">?attr/drawableNavigationItemBackground</item>
+        <item name="android:colorControlHighlight">@android:color/transparent</item>
+        <item name="itemRippleColor">@android:color/transparent</item>
+    </style>
+
+    <style name="ThemeOverlay.NavigationView" parent="">
+        <item name="android:colorControlHighlight">@android:color/transparent</item>
+        <item name="android:listDivider">@color/colorPrimary</item>1
+    </style>
+
+    <style name="NavTextStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/gilroy_bold</item>
+
+    </style>
+
+    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/grey_dark</item>
+    </style>
+
+
 </resources>

@@ -3,7 +3,6 @@ package com.notesync.notes.framework.dataSource.cache.abstraction
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_PAGINATION_PAGE_SIZE
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 
 
 interface NoteDaoService {
@@ -50,12 +49,26 @@ interface NoteDaoService {
 
     suspend fun getNumNotes(): Int
 
-     fun getAllNotes(): Flow<List<Note>>
+    suspend fun getNumTrashNotes(): Int
+
+    fun getAllNotes(): Flow<List<Note>>
+
+    suspend fun deleteTrashNote(primaryKey: String): Int
+
+    suspend fun deleteTrashNotes(notes: List<Note>): Int
+
+    suspend fun emptyTrash():Int
 
     // Only used for testing purpose
     suspend fun insertNotes(notes: List<Note>): LongArray
 
-     fun returnOrderedQuery(
+    suspend fun insertTrashNote(note: Note): Long
+
+    suspend fun insertTrashNotes(notes: List<Note>): LongArray
+
+    fun getTrashNotes(page:Int):Flow<List<Note>>
+
+    fun returnOrderedQuery(
         query: String,
         filterAndOrder: String,
         page: Int

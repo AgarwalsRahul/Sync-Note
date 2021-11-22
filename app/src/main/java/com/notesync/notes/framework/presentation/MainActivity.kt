@@ -1,51 +1,46 @@
 package com.notesync.notes.framework.presentation
 
+
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.view.GravityCompat
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.bottomsheets.BottomSheet
-import com.afollestad.materialdialogs.callbacks.*
-import com.afollestad.materialdialogs.input.getInputField
-import com.afollestad.materialdialogs.input.input
-import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import com.afollestad.materialdialogs.callbacks.onDismiss
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.notesync.notes.R
+import com.notesync.notes.business.domain.model.USER_BUNDLE_KEY
+import com.notesync.notes.business.domain.model.User
 import com.notesync.notes.business.domain.state.*
 import com.notesync.notes.framework.presentation.common.*
+import com.notesync.notes.util.Constants
 import com.notesync.notes.util.TodoCallback
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.bottom_sheet_dialog_layout.*
-import kotlinx.android.synthetic.main.fragment_note_list.*
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import javax.inject.Inject
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-
-
-import android.view.LayoutInflater
-import com.notesync.notes.business.domain.model.USER_BUNDLE_KEY
-import com.notesync.notes.business.domain.model.User
 
 
 @ExperimentalCoroutinesApi
@@ -56,10 +51,13 @@ class MainActivity : BaseActivity(),
     UIController {
 
 
-    private var appBarConfiguration: AppBarConfiguration? = null
+    lateinit var appBarConfiguration: AppBarConfiguration
+
+    lateinit var navController: NavController
 
     private var dialogInView: MaterialDialog? = null
     private var mBottomSheet: BottomSheetDialog? = null
+
 
     @Inject
     lateinit var fragmentFactory: NoteFragmentFactory
@@ -81,12 +79,62 @@ class MainActivity : BaseActivity(),
 
         subscribeObservers()
         setContentView(R.layout.activity_main)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.noteListFragment,
+                R.id.nav_trash,
+                //set all your top level destinations in here
+            ), // don't forget the parentheses
+            drawer // include your drawer_layout
+        )
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+        setNavigationListener()
 
     }
 
 
     private fun setFragmentFactory() {
         supportFragmentManager.fragmentFactory = fragmentFactory
+    }
+
+    private fun setNavigationListener() {
+        nvView.setNavigationItemSelectedListener {
+
+            when (it.itemId) {
+                R.id.nav_about -> {
+
+                }
+                R.id.nav_settings -> {
+
+                }
+
+                R.id.nav_notes -> {
+
+                    if (!it.isChecked) {
+                        it.isChecked = true
+                        navController.setGraph(R.navigation.nav_app_graph)
+                    }
+
+                }
+
+                R.id.nav_trash -> {
+                    if (!it.isChecked) {
+                        it.isChecked = true
+                        navController.setGraph(R.navigation.trash_nav_graph)
+                    }
+                }
+                R.id.nav_share -> {
+                    share()
+                }
+                R.id.nav_rate -> {
+                    rate()
+                }
+            }
+            drawer.closeDrawers()
+            true
+        }
     }
 
 
@@ -107,6 +155,7 @@ class MainActivity : BaseActivity(),
 //            }
 //        })
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -129,7 +178,7 @@ class MainActivity : BaseActivity(),
     override fun onSupportNavigateUp(): Boolean {
         return findNavController(R.id.nav_host_fragment)
             .navigateUp(appBarConfiguration as AppBarConfiguration)
-                || super.onSupportNavigateUp()
+
     }
 
 
@@ -462,11 +511,37 @@ class MainActivity : BaseActivity(),
             }
     }
 
+    fun share() {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(Intent.EXTRA_TEXT, Constants.SHARE_APP_MSG)
+        startActivity(Intent.createChooser(shareIntent, "Share..."))
+    }
+
+    fun rate() {
+        val browserIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(Constants.PLAYSTORE_LINK)
+        )
+        if (browserIntent.resolveActivity(packageManager) != null)
+            startActivity(browserIntent)
+        else
+            displayToast(getString(R.string.no_browser))
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         if (mBottomSheet != null && mBottomSheet?.isShowing == true) {
             mBottomSheet?.dismiss()
             mBottomSheet = null
+        }
+    }
+
+    override fun onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawers()
+        } else {
+            super.onBackPressed()
         }
     }
 

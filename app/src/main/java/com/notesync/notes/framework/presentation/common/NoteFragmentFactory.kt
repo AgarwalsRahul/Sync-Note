@@ -6,6 +6,7 @@ import com.notesync.notes.business.domain.util.DateUtil
 import com.notesync.notes.di.main.MainScope
 import com.notesync.notes.framework.presentation.notedetail.NoteDetailFragment
 import com.notesync.notes.framework.presentation.notelist.NoteListFragment
+import com.notesync.notes.framework.presentation.trash.TrashFragment
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -37,7 +38,10 @@ constructor(
                 val fragment = NoteDetailFragment(viewModelFactory)
                 fragment
             }
-
+            TrashFragment::class.java.name->{
+                val fragment = TrashFragment(viewModelFactory,dateUtil)
+                fragment
+            }
 
             else -> {
                 super.instantiate(classLoader, className)

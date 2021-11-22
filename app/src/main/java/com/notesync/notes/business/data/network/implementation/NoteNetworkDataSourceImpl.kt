@@ -67,7 +67,11 @@ class NoteNetworkDataSourceImpl @Inject constructor(private val firestoreService
         return firestoreService.deleteUpdatedNoteFromOtherDevices(user,note)
     }
 
-    override fun getDeletedNoteChanges(user: User): Flow<Note> {
+    override fun getDeletedNoteChanges(user: User): Flow<Pair<Note,Boolean>> {
         return firestoreService.getDeletedNoteChanges(user)
+    }
+
+    override suspend fun deleteAllTrashNotes(notes:List<Note>,user: User) {
+        return firestoreService.deleteAllTrashNotes(notes,user)
     }
 }

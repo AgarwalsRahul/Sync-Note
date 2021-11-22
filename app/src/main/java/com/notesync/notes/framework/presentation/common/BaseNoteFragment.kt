@@ -1,16 +1,18 @@
 package com.notesync.notes.framework.presentation.common
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.notesync.notes.R
 import com.notesync.notes.di.AppComponent
 import com.notesync.notes.framework.presentation.BaseApplication
 import com.notesync.notes.framework.presentation.MainActivity
+
 import com.notesync.notes.framework.presentation.UIController
 import com.notesync.notes.util.TodoCallback
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -88,6 +90,26 @@ constructor(
         inject()
         super.onAttach(context)
         setUIController(null) // null in production
+    }
+
+     fun setupStatusBar() {
+        val window: Window = requireActivity().window
+
+        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+
+        window.statusBarColor = ContextCompat.getColor(requireActivity(), R.color.card_background_color)
+    }
+
+     fun clearStatusbar(){
+        val window: Window = requireActivity().window
+
+        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+
+        window.statusBarColor = Color.TRANSPARENT
     }
 
     fun setUIController(mockController: UIController?){

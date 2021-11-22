@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single"
+        >
+        <item
+            android:id="@+id/nav_notes"
+            android:icon="@drawable/ic_baseline_notes_24"
+            android:title="@string/notes" />
+        <item
+            android:id="@+id/nav_trash"
+            android:icon="@drawable/ic_baseline_delete_outline_24"
+            android:title="@string/trash" />
+    </group>
+
+    <group android:id="@+id/others" android:menuCategory="secondary">
+
+                <item
+                    android:id="@+id/nav_settings"
+                    android:icon="@drawable/ic_outline_settings_24"
+                    android:title="Settings" />
+                <item
+                    android:id="@+id/nav_share"
+                    android:icon="@drawable/ic_baseline_share_24"
+                    android:title="Share App" />
+
+                <item
+                    android:id="@+id/nav_rate"
+                    android:icon="@drawable/ic_outline_star_rate_24"
+                    android:title="Rate App" />
+                <item
+                    android:id="@+id/nav_about"
+                    android:icon="@drawable/ic_outline_info_24"
+                    android:title="About" />
+
+    </group>
+
+</menu>
+<!--    <group-->
+<!--        android:id="@+id/grp_2"-->
+<!--        android:checkableBehavior="single">-->
+
+<!--        <item-->
+<!--            android:id="@+id/panierFragment"-->
+<!--            android:icon="@drawable/ic_shopping_cart"-->
+<!--            android:title="@string/txt_cart"-->
+<!--            app:actionLayout="@layout/badge_navigation_colored" />-->
+<!--        <item-->
+<!--            android:id="@+id/categoryFragment"-->
+<!--            android:icon="@drawable/ic_palette"-->
+<!--            app:actionLayout="@layout/badge_navigation_colored"-->
+<!--            android:title="@string/txt_category" />-->
+<!--    </group>-->
+
+
+<!--    <group-->
+<!--        android:id="@+id/grp_5"-->
+<!--        android:checkableBehavior="single">-->
+<!--        <item-->
+<!--            android:id="@+id/settingFragment"-->
+<!--            android:icon="@drawable/ic_settings"-->
+<!--            android:title="@string/txt_setting" />-->
+<!--        <item-->
+<!--            android:id="@+id/aboutFragment"-->
+<!--            android:icon="@drawable/ic_help"-->
+<!--            android:title="@string/txt_about" />-->
+<!--    </group>-->
+

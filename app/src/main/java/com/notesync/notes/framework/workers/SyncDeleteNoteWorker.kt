@@ -2,23 +2,19 @@ package com.notesync.notes.framework.workers
 
 import android.content.Context
 import androidx.work.CoroutineWorker
-import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.google.firebase.firestore.ListenerRegistration
 import com.notesync.notes.business.data.cache.abstraction.NoteCacheDataSource
 import com.notesync.notes.business.data.network.abstraction.NoteNetworkDataSource
 import com.notesync.notes.business.data.util.GsonHelper
-import com.notesync.notes.util.Constants
+import com.notesync.notes.business.data.util.safeCacheCall
 import com.notesync.notes.util.cLog
 import com.notesync.notes.util.printLogD
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEmpty
+import kotlinx.coroutines.withContext
 
 class SyncDeleteNoteWorker @AssistedInject constructor(
     @Assisted private val appContext: Context, @Assisted private val params: WorkerParameters,
@@ -46,8 +42,19 @@ class SyncDeleteNoteWorker @AssistedInject constructor(
                         .collect {
                             withContext(IO) {
 
-                                    val result = noteCacheDataSource.deleteNote(it.id)
+                                if (it.second) {
+                                    safeCacheCall(IO) {
+                                        noteCacheDataSource.deleteTrashNote(it.first.id)
+                                    }
+                                } else {
+                                    val result = safeCacheCall(IO){
+                                        noteCacheDataSource.deleteNote(it.first.id)
+                                    }
+                                    safeCacheCall(IO) {
+                                        noteCacheDataSource.insertTrashNote(it.first)
+                                    }
                                     printLogD("syncDeletedNotes", "$result")
+                                }
 
 
                             }

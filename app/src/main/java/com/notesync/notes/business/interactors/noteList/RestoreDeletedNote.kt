@@ -51,6 +51,9 @@ class RestoreDeletedNote(
                                         note = note
                                     )
                                 )
+                            safeCacheCall(IO){
+                                noteCacheDataSource.deleteTrashNote(note.id)
+                            }
                             DataState.data(
                                 response = Response(
                                     message = RESTORE_NOTE_SUCCESS,

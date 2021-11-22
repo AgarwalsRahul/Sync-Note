@@ -1,29 +1,29 @@
 package com.notesync.notes.framework.presentation.notelist
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.doOnPreDraw
+import androidx.core.view.get
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.google.android.material.navigation.NavigationView
 import com.notesync.notes.R
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.state.*
@@ -37,6 +37,7 @@ import com.notesync.notes.framework.dataSource.cache.database.NOTE_FILTER_TITLE
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_ORDER_ASC
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_ORDER_DESC
 import com.notesync.notes.framework.presentation.BaseApplication
+import com.notesync.notes.framework.presentation.MainActivity
 import com.notesync.notes.framework.presentation.common.*
 import com.notesync.notes.framework.presentation.notedetail.NOTE_DETAIL_SELECTED_NOTE_BUNDLE_KEY
 import com.notesync.notes.framework.presentation.notelist.state.NoteListStateEvent.*
@@ -47,8 +48,19 @@ import com.notesync.notes.util.Constants.LIGHT_THEME
 import com.notesync.notes.util.NetworkConnection
 import com.notesync.notes.util.TodoCallback
 import com.notesync.notes.util.printLogD
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment.*
+import kotlinx.android.synthetic.main.fragment.add_new_note_fab
+import kotlinx.android.synthetic.main.fragment.emptyView
+import kotlinx.android.synthetic.main.fragment.night_mode
+import kotlinx.android.synthetic.main.fragment.note_list_fragment_container
+import kotlinx.android.synthetic.main.fragment.recycler_view
+import kotlinx.android.synthetic.main.fragment.search_image
+import kotlinx.android.synthetic.main.fragment.search_result_textView
+import kotlinx.android.synthetic.main.fragment.swipe_refresh
+import kotlinx.android.synthetic.main.fragment.toolbar_content_container
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.fragment_note_list.*
 import kotlinx.android.synthetic.main.layout_note_list_item.*
 import kotlinx.android.synthetic.main.layout_searchview_toolbar.*
 import kotlinx.coroutines.*
@@ -83,6 +95,8 @@ constructor(
 
     lateinit var searchView: SearchView
 
+    lateinit var mActivity: FragmentActivity
+
 
     @Inject
     lateinit var themeManager: ThemeManager
@@ -93,7 +107,7 @@ constructor(
         super.onCreate(savedInstanceState)
         viewModel.setupChannel()
         restoreInstanceState(savedInstanceState)
-
+        setHasOptionsMenu(true)
         arguments?.let { args ->
             args.getParcelable<Note>(NOTE_PENDING_DELETE_BUNDLE_KEY)?.let { note ->
                 viewModel.setNotePendingDelete(note)
@@ -124,12 +138,37 @@ constructor(
         setupRecyclerView()
         setupSwipeRefresh()
         setupFAB()
-
+        setHasOptionsMenu(true)
         subscribeObservers()
         night_mode.setOnClickListener {
             themeManager.setTheme()
         }
 
+
+    }
+
+
+    private fun setupToolbar() {
+        val mainActivity = mActivity as MainActivity
+        val navigationView: NavigationView = mActivity.findViewById(R.id.nvView)
+
+        val toolbar = toolbar_content_container
+            .findViewById<Toolbar>(R.id.searchview_toolbar)
+
+        toolbar?.let {
+            mainActivity.setSupportActionBar(toolbar)
+            val navController = NavHostFragment.findNavController(this)
+            val appBarConfiguration = mainActivity.appBarConfiguration
+            NavigationUI.setupActionBarWithNavController(
+                mainActivity,
+                navController,
+                appBarConfiguration
+            )
+
+            navigationView.menu[0].isChecked = true
+
+
+        }
 
     }
 
@@ -147,10 +186,13 @@ constructor(
                 }
 
                 is SearchViewState -> {
+
                     enableSearchViewToolbarState()
+                    setupToolbar()
                     disableMultiSelectToolbarState()
                 }
             }
+
         })
 
 
@@ -268,6 +310,7 @@ constructor(
         }
     }
 
+
     private fun restoreInstanceState(savedInstanceState: Bundle?) {
         savedInstanceState?.let { inState ->
             (inState[NOTE_LIST_STATE_BUNDLE_KEY] as NoteListViewState?)?.let { viewState ->
@@ -375,21 +418,6 @@ constructor(
     private fun startNewSearch() {
 //        viewModel.clearList()
         viewModel.loadFirstPage()
-    }
-
-    private fun showNoInternetConnectionSnackBar() {
-        uiController.onResponseReceived(
-            response = Response(
-                message = "No internet connection.",
-                uiComponentType = UIComponentType.SnackBar(),
-                messageType = MessageType.Info()
-            ),
-            stateMessageCallback = object : StateMessageCallback {
-                override fun removeMessageFromStack() {
-                    viewModel.clearStateMessage()
-                }
-            }
-        )
     }
 
     private fun setupSwipeRefresh() {
@@ -567,6 +595,7 @@ constructor(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
+
             toolbar_content_container.addView(view)
             setupMultiSelectionToolbar(view)
         }
@@ -598,6 +627,7 @@ constructor(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
+
             toolbar_content_container.addView(view)
             setupSearchView()
             setupFilterButton()
@@ -722,6 +752,12 @@ constructor(
                 )
             )
         )
+    }
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity?.let { mActivity = it }
     }
 
 

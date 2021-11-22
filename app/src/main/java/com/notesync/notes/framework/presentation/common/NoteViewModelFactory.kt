@@ -8,10 +8,12 @@ import com.notesync.notes.business.domain.state.SessionManager
 import com.notesync.notes.business.interactors.noteDetail.NoteDetailInteractors
 import com.notesync.notes.business.interactors.noteList.NoteListInteractors
 import com.notesync.notes.business.interactors.splash.SyncDeletedNotes
+import com.notesync.notes.business.interactors.trash.TrashInteractors
 import com.notesync.notes.di.main.MainScope
 import com.notesync.notes.framework.presentation.notedetail.NoteDetailViewModel
 import com.notesync.notes.framework.presentation.notelist.NoteListViewModel
 import com.notesync.notes.framework.presentation.splash.NoteNetworkSyncManager
+import com.notesync.notes.framework.presentation.trash.TrashViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -28,6 +30,7 @@ class NoteViewModelFactory
 constructor(
     private val noteListInteractors: NoteListInteractors,
     private val noteDetailInteractors: NoteDetailInteractors,
+    private val trashInteractors: TrashInteractors,
     private val noteFactory: NoteFactory,
     private val editor: SharedPreferences.Editor,
     private val sharedPreferences: SharedPreferences,
@@ -57,6 +60,10 @@ constructor(
 
             MainViewModel::class.java -> {
                 MainViewModel(syncDeletedNotes, noteListInteractors, sessionManager) as T
+            }
+
+            TrashViewModel::class.java->{
+                TrashViewModel(noteFactory,sessionManager,trashInteractors) as T
             }
 
 

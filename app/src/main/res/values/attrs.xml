@@ -4,4 +4,9 @@
     <attr name="metaTextColor" format="color"/>
     <attr name="card_color" format="color"/>
 
+    <attr name="colorNavigationItem" format="color" />
+    <attr name="colorNavigationItemSelected" format="color" />
+
+    <attr name="drawableNavigationItemBackground" format="reference" />
+
 </resources>

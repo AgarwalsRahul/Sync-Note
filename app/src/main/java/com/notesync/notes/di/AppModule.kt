@@ -17,12 +17,12 @@ import com.notesync.notes.business.domain.util.DateUtil
 import com.notesync.notes.business.interactors.auth.*
 import com.notesync.notes.business.interactors.common.DeleteNote
 import com.notesync.notes.business.interactors.noteDetail.MakeACopy
-import com.notesync.notes.business.interactors.noteList.InsertNewNote
 import com.notesync.notes.business.interactors.noteDetail.NoteDetailInteractors
 import com.notesync.notes.business.interactors.noteDetail.UpdateNote
 import com.notesync.notes.business.interactors.noteList.*
 import com.notesync.notes.business.interactors.splash.SyncDeletedNotes
 import com.notesync.notes.business.interactors.splash.SyncNotes
+import com.notesync.notes.business.interactors.trash.*
 import com.notesync.notes.framework.dataSource.cache.abstraction.AuthDaoService
 import com.notesync.notes.framework.dataSource.cache.abstraction.NoteDaoService
 import com.notesync.notes.framework.dataSource.cache.database.AuthDao
@@ -31,6 +31,7 @@ import com.notesync.notes.framework.dataSource.cache.database.NoteDatabase
 import com.notesync.notes.framework.dataSource.cache.implementation.AuthDaoServiceImpl
 import com.notesync.notes.framework.dataSource.cache.implementation.NoteDaoServiceImpl
 import com.notesync.notes.framework.dataSource.cache.mappers.CacheMapper
+import com.notesync.notes.framework.dataSource.cache.mappers.TrashCacheMapper
 import com.notesync.notes.framework.dataSource.cache.mappers.UserMapper
 import com.notesync.notes.framework.dataSource.network.abstraction.AuthFirestoreService
 import com.notesync.notes.framework.dataSource.network.abstraction.NoteFirestoreService
@@ -135,6 +136,13 @@ object AppModule {
     @JvmStatic
     @Singleton
     @Provides
+    fun provideTrashNoteCacheMapper(dateUtil: DateUtil): TrashCacheMapper {
+        return TrashCacheMapper(dateUtil)
+    }
+
+    @JvmStatic
+    @Singleton
+    @Provides
     fun provideNoteNetworkMapper(dateUtil: DateUtil): NetworkMapper {
         return NetworkMapper(dateUtil)
     }
@@ -173,9 +181,10 @@ object AppModule {
     fun provideNoteDaoService(
         noteDao: NoteDao,
         noteEntityMapper: CacheMapper,
+        trashCacheMapper: TrashCacheMapper,
         dateUtil: DateUtil
     ): NoteDaoService {
-        return NoteDaoServiceImpl(noteDao, noteEntityMapper, dateUtil)
+        return NoteDaoServiceImpl(noteDao, noteEntityMapper, trashCacheMapper, dateUtil)
     }
 
 
@@ -281,6 +290,27 @@ object AppModule {
             DeleteNote(noteCacheDataSource, noteNetworkDataSource, application),
             UpdateNote(noteCacheDataSource, noteNetworkDataSource, application),
             MakeACopy(noteCacheDataSource,noteFactory,application)
+        )
+    }
+
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun trashInteractors(
+        noteCacheDataSource: NoteCacheDataSource,
+        noteNetworkDataSource: NoteNetworkDataSource,
+        application: BaseApplication,
+        noteFactory: NoteFactory,
+    ): TrashInteractors {
+        return TrashInteractors(
+            DeleteMultipleTrashNote(noteCacheDataSource,application),
+            DeleteTrashNote(noteCacheDataSource,application),
+            GetTrashNotes(noteCacheDataSource),
+            RestoreDeletedTrashNote(noteCacheDataSource,application),
+            GetTrashNumNotes(noteCacheDataSource),
+            GetTrashNotesFromNetwork(noteCacheDataSource,noteNetworkDataSource),
+            EmptyTrash(noteCacheDataSource,application)
         )
     }
 

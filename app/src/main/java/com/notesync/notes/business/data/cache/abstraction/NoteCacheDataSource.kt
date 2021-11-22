@@ -9,6 +9,13 @@ interface NoteCacheDataSource {
 
     suspend fun deleteNote(primaryKey: String): Int
 
+
+    suspend fun deleteTrashNote(primaryKey: String): Int
+
+    suspend fun deleteTrashNotes(notes: List<Note>): Int
+
+    suspend fun emptyTrash(): Int
+
     suspend fun deleteNotes(notes: List<Note>): Int
 
     suspend fun updateNote(id: String, title: String, body: String, timestamp: String?): Int
@@ -20,8 +27,16 @@ interface NoteCacheDataSource {
 
     suspend fun getNumNotes(): Int
 
+    suspend fun getNumTrashNotes(): Int
+
     // Only used for testing purpose
     suspend fun insertNotes(notes: List<Note>): LongArray
 
+    suspend fun insertTrashNote(note:Note):Long
+
+    suspend fun insertTrashNotes(notes:List<Note>):LongArray
+
     fun getAllNotes(): Flow<List<Note>>
+
+    fun getTrashNotes(page:Int):Flow<List<Note>>
 }

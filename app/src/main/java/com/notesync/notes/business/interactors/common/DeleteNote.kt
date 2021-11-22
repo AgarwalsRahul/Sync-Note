@@ -6,12 +6,13 @@ import com.notesync.notes.business.data.cache.CacheResponseHandler
 import com.notesync.notes.business.data.cache.abstraction.NoteCacheDataSource
 import com.notesync.notes.business.data.network.abstraction.NoteNetworkDataSource
 import com.notesync.notes.business.data.util.GsonHelper
-import com.notesync.notes.business.data.util.safeApiCall
 import com.notesync.notes.business.data.util.safeCacheCall
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.model.User
 import com.notesync.notes.business.domain.state.*
-import com.notesync.notes.framework.workers.*
+import com.notesync.notes.framework.workers.DeleteNoteWorker
+import com.notesync.notes.framework.workers.DeleteUpdatedNoteFromOtherDevicesWorker
+import com.notesync.notes.framework.workers.InsertDeletedNoteWorker
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -41,6 +42,9 @@ class DeleteNote<ViewState>(
                                 ), null, stateEvent
                             )
                         }
+
+                        insertTrashNote(note, stateEvent)
+
                         return DataState.data(
                             response = Response(
                                 DELETE_SUCCESS,
@@ -56,6 +60,35 @@ class DeleteNote<ViewState>(
 
             updateNetwork(response?.stateMessage?.response?.message, note, user)
         }
+
+    private suspend fun insertTrashNote(note: Note, stateEvent: StateEvent): DataState<ViewState>? {
+        val insertTrashResult = safeCacheCall(IO) {
+            noteCacheDataSource.insertTrashNote(note)
+        }
+        val trashResponse =
+            object : CacheResponseHandler<ViewState, Long>(insertTrashResult, stateEvent) {
+                override suspend fun handleSuccess(resultObj: Long): DataState<ViewState>? {
+                    if (resultObj < 0) {
+                        return DataState.data(
+                            response = Response(
+                                INSERT_TRASH_FAILURE,
+                                UIComponentType.None(),
+                                MessageType.Success()
+                            ), null, stateEvent
+                        )
+                    }
+                    return DataState.data(
+                        response = Response(
+                            INSERT_TRASH_SUCCESS,
+                            UIComponentType.None(),
+                            MessageType.Success()
+                        ), null, stateEvent
+                    )
+                }
+
+            }.getResult()
+        return trashResponse
+    }
 
     private suspend fun updateNetwork(message: String?, note: Note, user: User) {
         if (message == DELETE_SUCCESS) {
@@ -107,5 +140,7 @@ class DeleteNote<ViewState>(
     companion object {
         const val DELETE_FAILURE = "Failed to delete a note"
         const val DELETE_SUCCESS = "Successfully delete a note"
+        const val INSERT_TRASH_SUCCESS = "Successfully insert a note to trash"
+        const val INSERT_TRASH_FAILURE = "Failed to insert a note to trash"
     }
 }

@@ -68,4 +68,10 @@
     <string name="delete_text">Delete</string>
     <string name="make_a_copy">Make a copy</string>
     <string name="share">Share</string>
+    <string name="open">open drawer</string>
+    <string name="close">close drawer</string>
+    <string name="notes">Notes</string>
+    <string name="trash">Trash</string>
+    <string name="no_browser">No browser found!</string>
+    <string name="empty_trash">Empty Trash</string>
 </resources>

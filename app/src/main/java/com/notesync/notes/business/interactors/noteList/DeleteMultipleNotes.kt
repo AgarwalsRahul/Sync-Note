@@ -56,6 +56,9 @@ class DeleteMultipleNotes(
                     if (resultObj < 0) { // if error
                         onDeleteError = true
                     } else {
+                        safeCacheCall(IO){
+                            noteCacheDataSource.insertTrashNote(note)
+                        }
                         successfulDeletes.add(note)
                     }
                     return null

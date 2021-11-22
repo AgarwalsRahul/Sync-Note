@@ -29,6 +29,7 @@ object ReleaseModule {
     fun provideNoteDb(app: BaseApplication): NoteDatabase {
         return Room
             .databaseBuilder(app, NoteDatabase::class.java, NoteDatabase.DATABASE_NAME)
+            .addMigrations(NoteDatabase.MIGRATION_1_2)
             .fallbackToDestructiveMigration()
             .build()
     }

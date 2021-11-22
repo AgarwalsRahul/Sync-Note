@@ -216,7 +216,7 @@ class NoteFirestoreServiceImpl @Inject constructor(
     }
 
 
-    override fun getDeletedNoteChanges(user: User): Flow<Note> {
+    override fun getDeletedNoteChanges(user: User): Flow<Pair<Note, Boolean>> {
         return callbackFlow {
 //            val result = MutableStateFlow<Note?>(null)
 
@@ -243,17 +243,20 @@ class NoteFirestoreServiceImpl @Inject constructor(
 //                                    result.update {
 //                                        note
 //                                    }
-                                trySend(note)
+                                trySend(Pair(note, false))
                             }
                             MODIFIED -> {
                                 val entity = dc.document.toObject(NoteNetworkEntity::class.java)
                                 val note = networkMapper.mapFromEntity(entity, user.sk)
-                                trySend(note)
+                                trySend(Pair(note, false))
 //                                    result.update {
 //                                        note
 //                                    }
                             }
                             else -> {
+                                val entity = dc.document.toObject(NoteNetworkEntity::class.java)
+                                val note = networkMapper.mapFromEntity(entity, user.sk)
+                                trySend(Pair(note, true))
                             }
 
                         }
@@ -269,6 +272,21 @@ class NoteFirestoreServiceImpl @Inject constructor(
 //                    printLogD("DELETE CHANGES", note.id)
 //                    emit(it)
 //                }
+            }
+        }
+    }
+
+    override suspend fun deleteAllTrashNotes(notes:List<Note>,user: User) {
+        if (notes.size > 500) {
+            throw Exception("Cannot deletes more than 500 notes at a time")
+        }
+        val collectionRef = firestore.collection(USERS_COLLECTION).document(user.id).collection(
+            DELETES_COLLECTION
+        )
+        firestore.runBatch { batch ->
+            for (note in notes) {
+                val documentRef = collectionRef.document(note.id)
+                batch.delete(documentRef)
             }
         }
     }

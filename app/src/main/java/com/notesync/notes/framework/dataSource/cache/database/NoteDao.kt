@@ -4,7 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.framework.dataSource.cache.model.NoteCacheEntity
+import com.notesync.notes.framework.dataSource.cache.model.TrashNoteCacheEntity
 import kotlinx.coroutines.flow.Flow
 
 
@@ -37,6 +39,9 @@ interface NoteDao {
 
     @Query("DELETE FROM notes")
     suspend fun deleteAllNotes()
+
+    @Query("DELETE FROM trashNotes")
+    suspend fun emptyTrash() : Int
 
     @Query(
         """
@@ -120,6 +125,29 @@ interface NoteDao {
 
     @Query("SELECT COUNT(*) FROM notes")
     suspend fun getNumNotes(): Int
+
+    @Query("DELETE FROM trashNotes WHERE id = :primaryKey")
+    suspend fun deleteTrashNote(primaryKey: String): Int
+
+    @Query("DELETE FROM trashNotes WHERE id IN (:ids)")
+    suspend fun deleteTrashNotes(ids: List<String>): Int
+
+    @Query("SELECT COUNT(*) FROM trashNotes")
+    suspend fun getNumTrashNotes(): Int
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTrashNote(note:TrashNoteCacheEntity):Long
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertTrashNotes(notes:List<TrashNoteCacheEntity>):LongArray
+
+    @Query(
+        """
+        SELECT * FROM trashNotes
+        ORDER BY updated_at DESC LIMIT (:page * :pageSize)
+        """
+    )
+    fun getTrashNotes(page:Int,pageSize: Int= NOTE_PAGINATION_PAGE_SIZE):Flow<List<Note>>
 }
 
 
@@ -164,4 +192,5 @@ interface NoteDao {
                 page = page
             )
     }
+
 }

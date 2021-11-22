@@ -7,6 +7,7 @@ import com.notesync.notes.business.domain.state.SessionManager
 import com.notesync.notes.business.interactors.noteDetail.NoteDetailInteractors
 import com.notesync.notes.business.interactors.noteList.NoteListInteractors
 import com.notesync.notes.business.interactors.splash.SyncDeletedNotes
+import com.notesync.notes.business.interactors.trash.TrashInteractors
 import com.notesync.notes.framework.presentation.common.NoteViewModelFactory
 import com.notesync.notes.framework.presentation.splash.NoteNetworkSyncManager
 import dagger.Module
@@ -28,6 +29,7 @@ object NoteViewModelModule {
     fun provideNoteViewModelFactory(
         noteListInteractors: NoteListInteractors,
         noteDetailInteractors: NoteDetailInteractors,
+        trashInteractors: TrashInteractors,
         noteFactory: NoteFactory,
         sharedPreferences: SharedPreferences,
         editor: SharedPreferences.Editor,
@@ -37,6 +39,7 @@ object NoteViewModelModule {
         return NoteViewModelFactory(
             noteListInteractors,
             noteDetailInteractors,
+            trashInteractors,
             noteFactory,
             editor,
             sharedPreferences,

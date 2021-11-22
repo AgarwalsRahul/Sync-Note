@@ -6,15 +6,19 @@
     android:background="@drawable/search_toolbar_background"
     android:layout_marginHorizontal="24dp"
     android:backgroundTint="?attr/card_color"
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp"
     android:elevation="0dp"
+    app:contentInsetStartWithNavigation="0dp"
+    app:contentInsetEndWithActions="0dp"
+    app:titleMarginStart="0dp"
     android:clipToPadding="false"
     app:layout_scrollFlags="scroll|enterAlways"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
 
 
@@ -23,15 +27,16 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             app:queryBackground="@null"
+            app:layout_constraintLeft_toLeftOf="parent"
             android:focusedByDefault="false"
-            android:paddingStart="-16dp"
+            android:layout_marginStart="0dp"
             app:iconifiedByDefault="false"
             android:imeOptions="flagNoExtractUi"
-            app:searchIcon="@drawable/ic_search_no_match"
             app:closeIcon="@null"
             app:queryHint="Search your notes"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:searchIcon="@null"
+            android:paddingStart="-16dp"
             app:layout_constraintRight_toLeftOf="@id/action_filter"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
@@ -48,7 +53,7 @@
             android:layout_gravity="end"
             android:id="@+id/action_filter"
             android:padding="3dp"
-            android:layout_marginEnd="@dimen/toolbar_item_margin"
+            android:layout_marginEnd="24dp"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
