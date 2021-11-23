@@ -740,10 +740,11 @@ constructor(
                             object : AreYouSureCallback {
                                 override fun proceed() {
                                     viewModel.deleteNotes()
+                                    viewModel.setToolbarState(SearchViewState())
                                 }
 
                                 override fun cancel() {
-                                    // do nothing
+                                    viewModel.setToolbarState(SearchViewState())
                                 }
                             }
                         ),
