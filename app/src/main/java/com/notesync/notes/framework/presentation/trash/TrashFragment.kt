@@ -423,10 +423,11 @@ class TrashFragment(
                             object : AreYouSureCallback {
                                 override fun proceed() {
                                     viewModel.deleteNotes()
+                                    viewModel.setToolbarState(TrashToolbarState.DefaultState())
                                 }
 
                                 override fun cancel() {
-                                    // do nothing
+                                    viewModel.setToolbarState(TrashToolbarState.DefaultState())
                                 }
                             }
                         ),
