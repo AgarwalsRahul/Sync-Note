@@ -2,14 +2,12 @@ package com.notesync.notes.framework.presentation.trash
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
@@ -28,6 +26,7 @@ import com.notesync.notes.business.interactors.common.DeleteNote
 import com.notesync.notes.business.interactors.noteList.DeleteMultipleNotes
 import com.notesync.notes.business.interactors.trash.EmptyTrash
 import com.notesync.notes.business.interactors.trash.GetTrashNotes
+import com.notesync.notes.business.interactors.trash.RestoreMultipleTrashNote
 import com.notesync.notes.framework.presentation.MainActivity
 import com.notesync.notes.framework.presentation.common.BaseNoteFragment
 import com.notesync.notes.framework.presentation.common.gone
@@ -378,11 +377,39 @@ class TrashFragment(
                 viewModel.setToolbarState(TrashToolbarState.DefaultState())
             }
 
+        parentView.findViewById<ImageView>(R.id.restore).setOnClickListener {
+            restoreNotes()
+        }
+
         parentView
             .findViewById<ImageView>(R.id.action_delete_notes)
             .setOnClickListener {
                 deleteNotes()
             }
+    }
+
+    private fun restoreNotes() {
+        viewModel.setStateEvent(
+            TrashStateEvent.CreateStateMessageEvent(
+                stateMessage = StateMessage(
+                    response = Response(
+                        message = RestoreMultipleTrashNote.RESTORE_NOTES_ARE_YOU_SURE,
+                        uiComponentType = UIComponentType.AreYouSureDialog(
+                            object : AreYouSureCallback {
+                                override fun proceed() {
+                                    viewModel.restoreNotes()
+                                }
+
+                                override fun cancel() {
+                                    // do nothing
+                                }
+                            }
+                        ),
+                        messageType = MessageType.Info()
+                    )
+                )
+            )
+        )
     }
 
     private fun deleteNotes() {

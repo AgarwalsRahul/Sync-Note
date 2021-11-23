@@ -142,5 +142,17 @@ sealed class NoteListStateEvent : StateEvent {
         override fun shouldDisplayProgressBar() = true
     }
 
+    object SyncNotes:NoteListStateEvent(){
+        override fun errorInfo(): String {
+            return "Error while syncing notes"
+        }
+
+        override fun eventName(): String {
+            return "SyncNotes"
+        }
+
+        override fun shouldDisplayProgressBar() = false
+    }
+
 
 }

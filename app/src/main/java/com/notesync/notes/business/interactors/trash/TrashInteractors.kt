@@ -17,6 +17,7 @@ class TrashInteractors(
     val restoreDeletedTrashNote: RestoreDeletedTrashNote,
     val getTrashNumNotes: GetTrashNumNotes,
     val getTrashNotesFromNetwork: GetTrashNotesFromNetwork,
-    val emptyTrash: EmptyTrash
+    val emptyTrash: EmptyTrash,
+    val restoreMultipleTrashNote: RestoreMultipleTrashNote
 ) {
 }

@@ -7,12 +7,11 @@ import com.notesync.notes.business.domain.model.NoteFactory
 import com.notesync.notes.business.domain.state.*
 import com.notesync.notes.business.interactors.noteList.DeleteMultipleNotes
 import com.notesync.notes.business.interactors.trash.EmptyTrash
+import com.notesync.notes.business.interactors.trash.RestoreMultipleTrashNote
 import com.notesync.notes.business.interactors.trash.TrashInteractors
 import com.notesync.notes.framework.presentation.common.BaseViewModel
 import com.notesync.notes.framework.presentation.notelist.DELETE_PENDING_ERROR
-import com.notesync.notes.framework.presentation.notelist.state.NoteListStateEvent
 import com.notesync.notes.framework.presentation.trash.state.TrashInteractionManager
-import com.notesync.notes.framework.presentation.trash.state.TrashStateEvent
 import com.notesync.notes.framework.presentation.trash.state.TrashStateEvent.*
 import com.notesync.notes.framework.presentation.trash.state.TrashToolbarState
 import com.notesync.notes.framework.presentation.trash.state.TrashViewState
@@ -102,14 +101,23 @@ class TrashViewModel(
                     )
                 }
 
-                is EmptyTrashEvent->{
+                is EmptyTrashEvent -> {
                     trashInteractors.emptyTrash.emptyTrash(
                         getCurrentViewStateOrNew().noteList!!,
-                        stateEvent,it)
+                        stateEvent, it
+                    )
                 }
 
-                is GetNumDeletedNotesInCacheEvent->{
+                is GetNumDeletedNotesInCacheEvent -> {
                     trashInteractors.getTrashNumNotes.getNumTrashNotes(stateEvent)
+                }
+
+                is RestoreMultipleTrashNoteEvent -> {
+                    trashInteractors.restoreMultipleTrashNote.restoreMultipleTrashNotes(
+                        stateEvent.notes,
+                        stateEvent,
+                        it
+                    )
                 }
 
 
@@ -321,14 +329,33 @@ class TrashViewModel(
         }
     }
 
-    private fun removeAllTrashNotes(){
+    fun restoreNotes() {
+        if (getSelectedNotes().size > 0) {
+            setStateEvent(RestoreMultipleTrashNoteEvent(getSelectedNotes()))
+            removeSelectedNotesFromList()
+        } else {
+            setStateEvent(
+                CreateStateMessageEvent(
+                    stateMessage = StateMessage(
+                        response = Response(
+                            message = RestoreMultipleTrashNote.RESTORE_NOTES_YOU_MUST_SELECT,
+                            uiComponentType = UIComponentType.Toast(),
+                            messageType = MessageType.Info()
+                        )
+                    )
+                )
+            )
+        }
+    }
+
+    private fun removeAllTrashNotes() {
         val update = getCurrentViewStateOrNew()
-        update.noteList=ArrayList<Note>()
+        update.noteList = ArrayList<Note>()
         setViewState(update)
     }
 
-    fun emptyTrash(){
-        if(getNumNotesInCache()>0){
+    fun emptyTrash() {
+        if (getNumNotesInCache() > 0) {
             setStateEvent(EmptyTrashEvent)
             removeAllTrashNotes()
         }else{

@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.os.Parcelable
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.model.NoteFactory
 import com.notesync.notes.business.domain.state.*
@@ -23,10 +24,8 @@ import com.notesync.notes.framework.presentation.notelist.state.NoteListToolbarS
 import com.notesync.notes.framework.presentation.notelist.state.NoteListViewState
 import com.notesync.notes.util.Constants.LIGHT_THEME
 import com.notesync.notes.util.printLogD
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -477,7 +476,13 @@ constructor(
     fun loadFirstPage() {
         setQueryExhausted(false)
         resetPage()
-        setStateEvent(SearchNotesEvent(showProgressBar = false))
+        viewModelScope.launch{
+            sessionManager.cachedUser.value?.let {
+                noteListInteractors.syncNotes.syncNotes(it)
+            }?:sessionManager.logout()
+        }.invokeOnCompletion {
+            setStateEvent(SearchNotesEvent(showProgressBar = false))
+        }
         printLogD(
             "NoteListViewModel",
             "loadFirstPage: ${getCurrentViewStateOrNew().searchQuery}"

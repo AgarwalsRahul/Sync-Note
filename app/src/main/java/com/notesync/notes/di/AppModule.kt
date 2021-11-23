@@ -243,12 +243,11 @@ object AppModule {
     fun provideSyncNotes(
         noteCacheDataSource: NoteCacheDataSource,
         noteNetworkDataSource: NoteNetworkDataSource,
-        dareUtil: DateUtil
     ): SyncNotes {
         return SyncNotes(
             noteCacheDataSource,
             noteNetworkDataSource,
-            dareUtil
+
         )
     }
 
@@ -310,7 +309,8 @@ object AppModule {
             RestoreDeletedTrashNote(noteCacheDataSource,application),
             GetTrashNumNotes(noteCacheDataSource),
             GetTrashNotesFromNetwork(noteCacheDataSource,noteNetworkDataSource),
-            EmptyTrash(noteCacheDataSource,application)
+            EmptyTrash(noteCacheDataSource,application),
+            RestoreMultipleTrashNote(noteCacheDataSource,application)
         )
     }
 
@@ -331,7 +331,8 @@ object AppModule {
             RestoreDeletedNote(noteCacheDataSource, noteNetworkDataSource, application),
             DeleteMultipleNotes(noteCacheDataSource, noteNetworkDataSource, application),
             GetAllNotesFromNetwork(noteCacheDataSource, noteNetworkDataSource),
-            GetUpdatedNotes(noteCacheDataSource, noteNetworkDataSource, application)
+            GetUpdatedNotes(noteCacheDataSource, noteNetworkDataSource, application),
+            SyncNotes(noteCacheDataSource,noteNetworkDataSource)
         )
     }
 

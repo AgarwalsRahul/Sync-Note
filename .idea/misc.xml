@@ -38,6 +38,7 @@
         <entry key="..\:/Android/NotesSync/app/src/main/res/drawable/shadow_background.xml" value="0.18703703703703703" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/drawable/textfield_rectangle.xml" value="0.2703125" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout-v23/fragment_login.xml" value="0.2513586956521739" />
+        <entry key="..\:/Android/NotesSync/app/src/main/res/layout-v26/layout_multiselection_trash_toolbar.xml" value="0.25" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/activity_auth.xml" value="0.21014492753623187" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/bottom_sheet_dialog_layout.xml" value="0.16077898550724637" />
@@ -55,7 +56,7 @@
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/layout_empty_list_item.xml" value="0.21014492753623187" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/layout_filter.xml" value="0.21014492753623187" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/layout_multiselection_toolbar.xml" value="0.2" />
-        <entry key="..\:/Android/NotesSync/app/src/main/res/layout/layout_multiselection_trash_toolbar.xml" value="0.12760416666666666" />
+        <entry key="..\:/Android/NotesSync/app/src/main/res/layout/layout_multiselection_trash_toolbar.xml" value="0.4" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/layout_no_search_result.xml" value="0.21014492753623187" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/layout_note_card_item.xml" value="0.4" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/layout_note_detail_toolbar.xml" value="0.21014492753623187" />
@@ -66,7 +67,7 @@
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/list.xml" value="0.2246376811594203" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/login.xml" value="0.18973561430793157" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/menu/drawer_menu.xml" value="0.25" />
-        <entry key="..\:/Android/NotesSync/app/src/main/res/menu/trash_menu.xml" value="0.12760416666666666" />
+        <entry key="..\:/Android/NotesSync/app/src/main/res/menu/trash_menu.xml" value="0.264" />
       </map>
     </option>
   </component>

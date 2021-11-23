@@ -1,4 +1,5 @@
-<androidx.appcompat.widget.Toolbar android:layout_width="match_parent"
+<androidx.appcompat.widget.Toolbar xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/card_color"
@@ -25,23 +26,18 @@
             />
 
         <TextView
+            android:id="@+id/tool_bar_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/action_exit_multiselect_state"
-            app:layout_constraintRight_toLeftOf="@id/action_delete_notes"
-            app:layout_constraintHorizontal_bias="0"
-            android:id="@+id/tool_bar_title"
-            android:textColor="@color/default_grey"
-
-            android:layout_marginStart="@dimen/toolbar_title_margin"
-            android:layout_marginEnd="@dimen/default_view_margin"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/page_title_size"
-            android:maxLines="1"
             android:ellipsize="end"
-            />
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textColor="@color/default_grey"
+            android:textSize="@dimen/page_title_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/restore"
+            app:layout_constraintLeft_toRightOf="@id/action_exit_multiselect_state"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <ImageView
@@ -56,6 +52,19 @@
             android:src="@drawable/ic_delete"
             android:padding="3dp"
             />
+
+        <ImageView
+            android:id="@+id/restore"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toStartOf="@+id/action_delete_notes"
+            app:srcCompat="@drawable/ic_baseline_restore_24"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tooltipText="Restore"
+            android:padding="3dp"
+            android:contentDescription="@string/restore"
+            tools:layout_editor_absoluteY="3dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
