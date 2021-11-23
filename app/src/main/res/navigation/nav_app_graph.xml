@@ -35,6 +35,5 @@
             />
     </fragment>
 
-    <include app:graph="@navigation/trash_nav_graph" />
 
 </navigation>

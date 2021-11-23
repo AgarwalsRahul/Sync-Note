@@ -148,6 +148,8 @@ class TrashFragment(
             navigationView.menu[1].isChecked = true
 
 
+
+
         }
     }
 

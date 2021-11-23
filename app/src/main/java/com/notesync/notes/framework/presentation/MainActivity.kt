@@ -33,6 +33,7 @@ import com.notesync.notes.business.domain.model.USER_BUNDLE_KEY
 import com.notesync.notes.business.domain.model.User
 import com.notesync.notes.business.domain.state.*
 import com.notesync.notes.framework.presentation.common.*
+import com.notesync.notes.framework.presentation.settings.SettingsActivity
 import com.notesync.notes.util.Constants
 import com.notesync.notes.util.TodoCallback
 import kotlinx.android.synthetic.main.activity_main.*
@@ -107,7 +108,7 @@ class MainActivity : BaseActivity(),
 
                 }
                 R.id.nav_settings -> {
-
+                    startActivity(Intent(this,SettingsActivity::class.java))
                 }
 
                 R.id.nav_notes -> {
