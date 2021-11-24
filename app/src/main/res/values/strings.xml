@@ -75,4 +75,10 @@
     <string name="no_browser">No browser found!</string>
     <string name="empty_trash">Empty Trash</string>
     <string name="restore">Restore</string>
+    <string name="preferences">Preferences</string>
+    <string name="change_password">Change Password</string>
+    <string name="others">Others</string>
+    <string name="about">About</string>
+    <string name="dark">Dark</string>
+    <string name="light">Light</string>
 </resources>

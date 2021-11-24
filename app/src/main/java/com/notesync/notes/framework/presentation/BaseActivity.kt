@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.navigation.findNavController
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.notesync.notes.R
@@ -36,6 +37,7 @@ abstract class BaseActivity : AppCompatActivity() {
     @Inject
     lateinit var themeManager: ThemeManager
 
+    var lastTheme:Int?=null
 
     @RequiresApi(Build.VERSION_CODES.M)
     @Suppress("Deprecated")
@@ -69,10 +71,11 @@ abstract class BaseActivity : AppCompatActivity() {
             }
         })
 
-
+        lastTheme = AppCompatDelegate.getDefaultNightMode()
         super.onCreate(savedInstanceState)
 
     }
+
 
     override fun recreate() {
         finish();

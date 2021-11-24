@@ -8,6 +8,7 @@ import com.notesync.notes.di.worker.WorkerBindingModule
 import com.notesync.notes.framework.presentation.BaseActivity
 import com.notesync.notes.framework.presentation.BaseApplication
 import com.notesync.notes.framework.presentation.notelist.NoteListFragment
+import com.notesync.notes.framework.presentation.settings.SettingsActivity
 import com.notesync.notes.framework.workers.CustomWorkerFactory
 import dagger.BindsInstance
 import dagger.Component
@@ -43,6 +44,8 @@ interface AppComponent {
 
     @DelicateCoroutinesApi
     fun inject(noteListFragment: NoteListFragment)
+
+    fun inject(settingsActivity: SettingsActivity)
 
     fun authComponent(): AuthComponent.Factory
 

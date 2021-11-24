@@ -16,6 +16,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -180,6 +181,16 @@ class MainActivity : BaseActivity(),
         return findNavController(R.id.nav_host_fragment)
             .navigateUp(appBarConfiguration as AppBarConfiguration)
 
+    }
+
+    override fun recreate() {
+        finish();
+        overridePendingTransition(R.anim.fade_in,
+            R.anim.fade_out);
+        startActivity(intent);
+        overridePendingTransition(R.anim.fade_in,
+            R.anim.fade_out);
+        super.recreate()
     }
 
 

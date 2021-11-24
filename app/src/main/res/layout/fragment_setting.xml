@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent">
+
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
     tools:context=".framework.presentation.settings.SettingFragment">
 
     <androidx.appcompat.widget.Toolbar android:layout_width="match_parent"
@@ -20,9 +27,130 @@
         app:layout_scrollFlags="scroll|enterAlways">
 
 
-
-
-
     </androidx.appcompat.widget.Toolbar>
 
-</FrameLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/gilroy_medium"
+        android:text="@string/preferences"
+        android:textColor="#818A9C"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:id="@+id/theme_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:focusable="true"
+        android:padding="16dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Theme"
+            android:fontFamily="@font/gilroy_medium"
+            android:textSize="16sp"
+            android:textColor="?attr/textColor"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/theme_text"
+            tools:text="Light"
+            android:fontFamily="@font/gilroy_medium"
+            android:textSize="16sp"
+            android:textColor="?attr/textColor"/>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/change_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:focusable="true"
+        android:padding="16dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/change_password"
+            android:fontFamily="@font/gilroy_medium"
+            android:textSize="16sp"
+            android:textColor="?attr/textColor"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/log_out"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:focusable="true"
+        android:padding="16dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Log Out"
+            android:fontFamily="@font/gilroy_medium"
+            android:textSize="16sp"
+            android:textColor="?attr/textColor"/>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/gilroy_medium"
+        android:text="@string/others"
+        android:textColor="#818A9C"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:id="@+id/about_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:focusable="true"
+        android:padding="16dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/about"
+            android:fontFamily="@font/gilroy_medium"
+            android:textSize="16sp"
+            android:textColor="?attr/textColor"/>
+
+
+    </LinearLayout>
+</LinearLayout>
+
+</ScrollView>

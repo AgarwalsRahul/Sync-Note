@@ -62,6 +62,11 @@ class ThemeManager @Inject constructor(
         saveTheme()
     }
 
+    fun setTheme(themeMode:Int){
+        _themeMode.value=themeMode
+        saveTheme()
+    }
+
 
     fun initTheme() {
         when (getSavedTheme()) {
