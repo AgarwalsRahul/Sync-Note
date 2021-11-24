@@ -1,6 +1,8 @@
 package com.notesync.notes.framework.presentation.settings
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.RadioGroup
 import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
@@ -9,6 +11,7 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.notesync.notes.R
 import com.notesync.notes.framework.presentation.BaseActivity
 import com.notesync.notes.framework.presentation.BaseApplication
+import com.notesync.notes.framework.presentation.auth.AuthActivity
 import com.notesync.notes.util.Constants.DARK_THEME
 import com.notesync.notes.util.Constants.LIGHT_THEME
 import kotlinx.android.synthetic.main.fragment_setting.*
@@ -34,7 +37,6 @@ class SettingsActivity : BaseActivity() {
     }
 
     override fun inject() {
-        (application as BaseApplication).appComponent.inject(this)
     }
 
 
@@ -53,8 +55,14 @@ class SettingsActivity : BaseActivity() {
                 }
             }
         })
-    }
+        sessionManager.cachedUser.observe(this, {
+            if (it == null) {
+                Log.d("SessionManager","LOGGING OUT")
+                finish()
 
+            }
+        })
+    }
 
     fun showThemeDialog() {
 
@@ -92,6 +100,10 @@ class SettingsActivity : BaseActivity() {
             dialog?.dismiss()
         }
         dialog?.show()
+    }
+
+    fun logOut(){
+        sessionManager.logout()
     }
 
     override fun onPause() {

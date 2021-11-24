@@ -23,22 +23,22 @@ abstract class CacheResponseHandler<ViewState, Data>(
                 )
             }
             is CacheResult.Success -> {
-                if (response.value == null) {
-                    DataState.error<ViewState>(
-                        response = Response(
-                            "${stateEvent?.errorInfo()}\n\nReason: ${CacheErrors.CACHE_DATA_NULL}",
-                            uiComponentType = UIComponentType.SnackBar(),
-                            messageType = MessageType.Error()
-                        ),
-                        stateEvent
-                    )
-                } else {
+//                if (response.value == null) {
+//                    DataState.error<ViewState>(
+//                        response = Response(
+//                            "${stateEvent?.errorInfo()}\n\nReason: ${CacheErrors.CACHE_DATA_NULL}",
+//                            uiComponentType = UIComponentType.SnackBar(),
+//                            messageType = MessageType.Error()
+//                        ),
+//                        stateEvent
+//                    )
+//                } else {
                     handleSuccess(response.value)
-                }
+//                }
 
             }
         }
     }
 
-    abstract suspend fun handleSuccess(resultObj: Data): DataState<ViewState>?
+    abstract suspend fun handleSuccess(resultObj: Data?): DataState<ViewState>?
 }

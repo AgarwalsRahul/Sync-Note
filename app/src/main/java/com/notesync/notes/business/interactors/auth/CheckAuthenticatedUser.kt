@@ -39,9 +39,11 @@ class CheckAuthenticatedUser(
             Log.d(TAG, "checkPreviousAuthUser: No previously authenticated user found.")
             emit(returnNoTokenFound(stateEvent))
         } else {
+            printLogD("CHECK PREVIOUS AUTH USER","$previousAuthUserEmail")
             val cacheResult = safeCacheCall(IO) {
                 cacheDataSource.retrieveUser(previousAuthUserEmail)
             }
+            printLogD("CHECK PREVIOUS AUTH USER","$cacheResult")
             emit(
                 object : CacheResponseHandler<AuthViewState, User?>(cacheResult, stateEvent) {
                     override suspend fun handleSuccess(resultObj: User?): DataState<AuthViewState>? {

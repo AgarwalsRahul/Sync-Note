@@ -30,7 +30,7 @@
         </activity>
         <activity
             android:name=".framework.presentation.MainActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"

@@ -45,8 +45,6 @@ interface AppComponent {
     @DelicateCoroutinesApi
     fun inject(noteListFragment: NoteListFragment)
 
-    fun inject(settingsActivity: SettingsActivity)
-
     fun authComponent(): AuthComponent.Factory
 
     fun mainComponent(): MainComponent.Factory

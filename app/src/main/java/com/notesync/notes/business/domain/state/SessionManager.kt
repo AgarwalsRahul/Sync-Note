@@ -5,7 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.notesync.notes.business.data.cache.abstraction.AuthCacheDataSource
 import com.notesync.notes.business.domain.model.User
+import com.notesync.notes.framework.dataSource.cache.database.NoteDatabase
 import com.notesync.notes.framework.presentation.BaseApplication
+import com.notesync.notes.util.printLogD
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -19,6 +21,7 @@ import javax.inject.Singleton
 class SessionManager
 @Inject constructor(
     private val authCacheDataSource: AuthCacheDataSource,
+    private val noteDatabase: NoteDatabase,
     val application: BaseApplication
 ) {
 
@@ -43,6 +46,7 @@ class SessionManager
             try {
                 _cachedUser.value?.let {
                     authCacheDataSource.deleteUser(it.id)
+                    noteDatabase.clearAllTables()
                 }
             } catch (e: CancellationException) {
                 Log.e(TAG, "LOGOUT: ${e.message}")
@@ -61,12 +65,13 @@ class SessionManager
     }
 
     fun setValue(newValue: User?) {
-//        GlobalScope.launch(Dispatchers.Main) {
+        GlobalScope.launch(Dispatchers.Main) {
             if (_cachedUser.value != newValue) {
+                printLogD("SessionManager","Setting value to null")
                 _cachedUser.value = newValue
             }
 
-//        }
+        }
     }
 
 }

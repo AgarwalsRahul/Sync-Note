@@ -16,7 +16,6 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -33,6 +32,7 @@ import com.notesync.notes.R
 import com.notesync.notes.business.domain.model.USER_BUNDLE_KEY
 import com.notesync.notes.business.domain.model.User
 import com.notesync.notes.business.domain.state.*
+import com.notesync.notes.framework.presentation.auth.AuthActivity
 import com.notesync.notes.framework.presentation.common.*
 import com.notesync.notes.framework.presentation.settings.SettingsActivity
 import com.notesync.notes.util.Constants
@@ -150,12 +150,28 @@ class MainActivity : BaseActivity(),
             }
         })
 
+        sessionManager.cachedUser.observe(this, {
+            if (it == null) {
+                Log.d("SessionManager","LOGGING OUT")
+                navAuthActivity()
+                finish()
+
+            }
+        })
+
 
 //        networkStatusHelper.observe(this, {
 //            if (it == null || it == NetworkStatus.Unavailable) {
 //                printLogD("NetworkStatusHelper", "UNAVAILABLE")
 //            }
 //        })
+    }
+
+    private fun navAuthActivity(){
+        val intent = Intent(this, AuthActivity::class.java)
+        startActivity(intent)
+        finish()
+        (application as BaseApplication).releaseMainComponent()
     }
 
 
