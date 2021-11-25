@@ -4,6 +4,8 @@ import android.content.SharedPreferences
 import androidx.lifecycle.ViewModelProvider
 import com.notesync.notes.business.domain.model.NoteFactory
 import com.notesync.notes.business.domain.state.SessionManager
+import com.notesync.notes.business.interactors.auth.AuthInteractors
+import com.notesync.notes.business.interactors.auth.ChangePassword
 import com.notesync.notes.business.interactors.noteDetail.NoteDetailInteractors
 import com.notesync.notes.business.interactors.noteList.NoteListInteractors
 import com.notesync.notes.business.interactors.splash.SyncDeletedNotes
@@ -34,7 +36,8 @@ object NoteViewModelModule {
         sharedPreferences: SharedPreferences,
         editor: SharedPreferences.Editor,
         sessionManager: SessionManager,
-        syncDeletedNotes: SyncDeletedNotes
+        syncDeletedNotes: SyncDeletedNotes,
+        changePassword: ChangePassword
     ): NoteViewModelFactory {
         return NoteViewModelFactory(
             noteListInteractors,
@@ -44,7 +47,8 @@ object NoteViewModelModule {
             editor,
             sharedPreferences,
             sessionManager,
-            syncDeletedNotes
+            syncDeletedNotes,
+            changePassword
         )
     }
 }

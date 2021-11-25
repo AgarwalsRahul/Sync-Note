@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/Android/NotesSync/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.18425925925925926" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/drawable/autofill_background.xml" value="0.2703125" />
+        <entry key="..\:/Android/NotesSync/app/src/main/res/drawable/back_button_background.xml" value="0.23425925925925925" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/drawable/background_round_padded.xml" value="0.2574074074074074" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/drawable/button_background.xml" value="0.2703125" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/drawable/button_background_color.xml" value="0.2703125" />
@@ -47,6 +48,7 @@
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/drawer_header_layout.xml" value="0.25" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/fragment.xml" value="0.12158054711246201" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/fragment_about.xml" value="0.22780797101449277" />
+        <entry key="..\:/Android/NotesSync/app/src/main/res/layout/fragment_change_password.xml" value="0.22826086956521738" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/fragment_forgot_password.xml" value="0.264" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/fragment_login.xml" value="0.25" />
         <entry key="..\:/Android/NotesSync/app/src/main/res/layout/fragment_note_detail.xml" value="0.2" />

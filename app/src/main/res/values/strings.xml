@@ -87,4 +87,7 @@
     <string name="rate_description">Leave a positive rating on Google Play if you liked Sync Note</string>
     <string name="developer_name">Rahul Agarwal</string>
     <string name="developer">Developer</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="submit">Submit</string>
 </resources>

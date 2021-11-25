@@ -38,4 +38,5 @@ interface NoteFirestoreService {
     fun getDeletedNoteChanges(user: User): Flow<Pair<Note, Boolean>>
 
     suspend fun deleteAllTrashNotes(notes:List<Note>,user: User)
+
 }

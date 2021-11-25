@@ -5,11 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.notesync.notes.business.domain.model.NoteFactory
 import com.notesync.notes.business.domain.state.SessionManager
+import com.notesync.notes.business.interactors.auth.ChangePassword
 import com.notesync.notes.business.interactors.noteDetail.NoteDetailInteractors
 import com.notesync.notes.business.interactors.noteList.NoteListInteractors
 import com.notesync.notes.business.interactors.splash.SyncDeletedNotes
 import com.notesync.notes.business.interactors.trash.TrashInteractors
 import com.notesync.notes.di.main.MainScope
+import com.notesync.notes.framework.presentation.changePassword.ChangePasswordViewModel
 import com.notesync.notes.framework.presentation.notedetail.NoteDetailViewModel
 import com.notesync.notes.framework.presentation.notelist.NoteListViewModel
 import com.notesync.notes.framework.presentation.splash.NoteNetworkSyncManager
@@ -35,7 +37,8 @@ constructor(
     private val editor: SharedPreferences.Editor,
     private val sharedPreferences: SharedPreferences,
     private val sessionManager: SessionManager,
-    private val syncDeletedNotes: SyncDeletedNotes
+    private val syncDeletedNotes: SyncDeletedNotes,
+    private val changePassword:ChangePassword,
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -64,6 +67,10 @@ constructor(
 
             TrashViewModel::class.java->{
                 TrashViewModel(noteFactory,sessionManager,trashInteractors) as T
+            }
+
+            ChangePasswordViewModel::class.java->{
+                ChangePasswordViewModel(changePassword) as T
             }
 
 

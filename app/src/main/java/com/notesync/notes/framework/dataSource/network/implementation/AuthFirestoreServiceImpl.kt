@@ -1,6 +1,7 @@
 package com.notesync.notes.framework.dataSource.network.implementation
 
 import com.google.firebase.auth.ActionCodeSettings
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.installations.FirebaseInstallations
 import com.notesync.notes.business.domain.model.User
@@ -36,7 +37,7 @@ class AuthFirestoreServiceImpl @Inject constructor(private val firebaseAuth: Fir
     }
 
     override suspend fun forgotPassword(email: String) {
-        firebaseAuth.sendPasswordResetEmail(email,ActionCodeSettings.zzb()).await()
+        firebaseAuth.sendPasswordResetEmail(email, ActionCodeSettings.zzb()).await()
     }
 
     override suspend fun logOut() {
@@ -46,4 +47,14 @@ class AuthFirestoreServiceImpl @Inject constructor(private val firebaseAuth: Fir
     override suspend fun getFirebaseInstallationId(): String {
         return FirebaseInstallations.getInstance().id.await()
     }
+
+    override suspend fun changePassword(oldPassword: String, newPassword: String) {
+        val user = firebaseAuth.currentUser
+        val email = user?.email!!
+        val credential = EmailAuthProvider.getCredential(email, oldPassword)
+        user.reauthenticate(credential).await()
+        user.updatePassword(newPassword).await()
+    }
+
+
 }

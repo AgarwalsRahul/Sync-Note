@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.notesync.notes.business.domain.util.DateUtil
 import com.notesync.notes.di.main.MainScope
+import com.notesync.notes.framework.presentation.changePassword.ChangePasswordFragment
 import com.notesync.notes.framework.presentation.notedetail.NoteDetailFragment
 import com.notesync.notes.framework.presentation.notelist.NoteListFragment
 import com.notesync.notes.framework.presentation.trash.TrashFragment
@@ -41,6 +42,10 @@ constructor(
             TrashFragment::class.java.name->{
                 val fragment = TrashFragment(viewModelFactory,dateUtil)
                 fragment
+            }
+
+            ChangePasswordFragment::class.java.name->{
+                ChangePasswordFragment(viewModelFactory)
             }
 
             else -> {

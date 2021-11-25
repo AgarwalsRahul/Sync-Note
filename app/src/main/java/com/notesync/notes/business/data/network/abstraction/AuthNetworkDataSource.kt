@@ -15,4 +15,6 @@ interface AuthNetworkDataSource {
     suspend fun logOut()
 
     suspend fun getFirebaseInstallationId():String
+
+    suspend fun changePassword(oldPassword:String,newPassword:String)
 }

@@ -32,4 +32,8 @@ class AuthNetworkDataSourceImpl @Inject constructor(private val authFirestoreSer
     override suspend fun getFirebaseInstallationId(): String {
        return  authFirestoreService.getFirebaseInstallationId()
     }
+
+    override suspend fun changePassword(oldPassword: String, newPassword: String) {
+        return authFirestoreService.changePassword(oldPassword,newPassword)
+    }
 }

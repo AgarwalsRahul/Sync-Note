@@ -53,7 +53,7 @@ suspend fun <T> safeApiCall(
                         "ERROR_OPERATION_NOT_ALLOWED" -> FirebaseErrors.ERROR_OPERATION_NOT_ALLOWED
                         "ERROR_WEAK_PASSWORD" -> FirebaseErrors.ERROR_WEAK_PASSWORD
                         "ERROR_EMAIL_ALREADY_IN_USE" -> FirebaseErrors.ERROR_EMAIL_ALREADY_IN_USE
-                        "ERROR_INVALID_CREDENTIAL" -> FirebaseErrors.ERROR_INVALID_CREDENTIAL
+                        "ERROR_INVALID_CREDENTIAL" -> throwable.message
                         else -> {
                             if (!throwable.message.isNullOrBlank()) {
                                 throwable.message

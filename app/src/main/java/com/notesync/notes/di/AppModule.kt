@@ -276,6 +276,18 @@ object AppModule {
         return NoteNetworkSyncManager(syncNotes, syncDeletedNotes)
     }
 
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun provideChangePassword(
+        authNetworkDataSource: AuthNetworkDataSource
+    ): ChangePassword {
+        return ChangePassword(authNetworkDataSource)
+    }
+
+
+
     @JvmStatic
     @Singleton
     @Provides
@@ -354,10 +366,9 @@ object AppModule {
                 sharedPrefsEditor
             ),
             ForgotPassword(authNetworkDataSource),
-            CheckAuthenticatedUser(authCacheDataSource, sharedPreferences)
+            CheckAuthenticatedUser(authCacheDataSource, sharedPreferences),
+            ChangePassword(authNetworkDataSource)
         )
     }
-
-
 
 }

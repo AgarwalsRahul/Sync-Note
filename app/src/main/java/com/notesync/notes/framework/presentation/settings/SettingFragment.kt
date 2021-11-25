@@ -68,6 +68,10 @@ class SettingFragment : Fragment() {
         about_option.setOnClickListener {
             findNavController().navigate(R.id.action_settingFragment_to_aboutFragment)
         }
+
+        change_password.setOnClickListener {
+            findNavController().navigate(R.id.action_settingFragment_to_changePasswordFragment)
+        }
     }
 
 
