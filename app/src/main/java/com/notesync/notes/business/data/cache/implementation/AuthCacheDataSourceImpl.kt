@@ -14,8 +14,8 @@ class AuthCacheDataSourceImpl @Inject constructor(private val authDaoService: Au
        return authDaoService.setUser(user)
     }
 
-    override suspend fun retrieveUser(email:String): User? {
-       return authDaoService.retrieveUser(email)
+    override suspend fun retrieveUser(email:String): User {
+       return authDaoService.retrieveUser(email)?: User.userNotFound()
     }
 
     override suspend fun deleteUser(id: String): Int {

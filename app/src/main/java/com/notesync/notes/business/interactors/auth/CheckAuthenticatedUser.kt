@@ -45,21 +45,22 @@ class CheckAuthenticatedUser(
             }
             printLogD("CHECK PREVIOUS AUTH USER","$cacheResult")
             emit(
-                object : CacheResponseHandler<AuthViewState, User?>(cacheResult, stateEvent) {
-                    override suspend fun handleSuccess(resultObj: User?): DataState<AuthViewState>? {
-                        if (resultObj != null) {
+                object : CacheResponseHandler<AuthViewState, User>(cacheResult, stateEvent) {
+                    override suspend fun handleSuccess(resultObj: User): DataState<AuthViewState>? {
+                        if (resultObj.id.isEmpty()) {
+                            return returnNoTokenFound(stateEvent)
+
+                        } else {
                             val result = User(
                                 email = resultObj.email,
                                 id = resultObj.id,
                                 deviceId = deviceId,
-                                sk=sk
+                                sk = sk
                             )
                             return DataState.data(
                                 Response(USER_FOUND, UIComponentType.None(), MessageType.Success()),
                                 AuthViewState(user = result), stateEvent
                             )
-                        } else {
-                            return returnNoTokenFound(stateEvent)
                         }
                     }
 

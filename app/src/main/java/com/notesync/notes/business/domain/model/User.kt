@@ -10,4 +10,9 @@ data class User(
     var id: String,
     var deviceId: String? = null,
     var sk: String? = null
-) : Parcelable
+) : Parcelable{
+
+    companion object{
+        fun userNotFound()=User("","")
+    }
+}
