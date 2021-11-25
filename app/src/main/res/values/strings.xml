@@ -81,4 +81,10 @@
     <string name="about">About</string>
     <string name="dark">Dark</string>
     <string name="light">Light</string>
+    <string name="app_version">1.2</string>
+    <string name="app_version_text">App Version</string>
+    <string name="rate">Rate</string>
+    <string name="rate_description">Leave a positive rating on Google Play if you liked Sync Note</string>
+    <string name="developer_name">Rahul Agarwal</string>
+    <string name="developer">Developer</string>
 </resources>

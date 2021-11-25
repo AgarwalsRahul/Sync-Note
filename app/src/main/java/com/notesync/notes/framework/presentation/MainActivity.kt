@@ -105,9 +105,6 @@ class MainActivity : BaseActivity(),
         nvView.setNavigationItemSelectedListener {
 
             when (it.itemId) {
-                R.id.nav_about -> {
-
-                }
                 R.id.nav_settings -> {
                     startActivity(Intent(this,SettingsActivity::class.java))
                 }

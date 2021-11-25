@@ -30,10 +30,7 @@
                     android:id="@+id/nav_rate"
                     android:icon="@drawable/ic_outline_star_rate_24"
                     android:title="Rate App" />
-                <item
-                    android:id="@+id/nav_about"
-                    android:icon="@drawable/ic_outline_info_24"
-                    android:title="About" />
+
 
     </group>
 

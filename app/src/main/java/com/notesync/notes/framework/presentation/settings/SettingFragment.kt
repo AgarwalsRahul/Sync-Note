@@ -64,6 +64,10 @@ class SettingFragment : Fragment() {
             Log.d("Setting","log out clicked")
             (activity as SettingsActivity).logOut()
         }
+
+        about_option.setOnClickListener {
+            findNavController().navigate(R.id.action_settingFragment_to_aboutFragment)
+        }
     }
 
 
