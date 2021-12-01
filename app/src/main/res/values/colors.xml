@@ -36,7 +36,7 @@
 
     <color name="card_background_color">#F8F8F8</color>
 
-    <color name="navigationItemColor">#DAE2FF</color>
+    <color name="navigationItemColor">#F9EDEB</color>
 
     <color name="back_button_background_color">#5B5B5B</color>
 </resources>

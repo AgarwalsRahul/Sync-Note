@@ -13,7 +13,7 @@
 
     <color name="card_background_color">#171C26</color>
 
-    <color name="navigationItemColor">@color/colorPrimary</color>
+    <color name="navigationItemColor">#555D50</color>
 
     <color name="back_button_background_color">#9f9f9f</color>
 </resources>
