@@ -54,7 +54,7 @@ class DateUtil @Inject constructor(private val dateFormat: SimpleDateFormat) {
 
     fun removeDateFromTimestamp(timeStamp: String): String {
         val time = timeStamp.substring(timeStamp.indexOf(" "))
-        return time.substring(0,6) + " "+ time.substring(10).uppercase()
+        return time.substring(0,6) + " "+    time.substring(10).uppercase()
     }
 
     fun getEditedDateTime(timestamp: String): String {

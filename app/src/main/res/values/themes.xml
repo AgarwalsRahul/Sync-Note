@@ -28,6 +28,7 @@
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
 
 
+
     </style>
 
     <style name="ButtonTheme" parent="Widget.MaterialComponents.Button">
@@ -88,8 +89,10 @@
 
     <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
-        <item name="color">@color/grey_dark</item>
+        <item name="color">@color/secondary_text_color</item>
     </style>
+
+
 
 
 </resources>

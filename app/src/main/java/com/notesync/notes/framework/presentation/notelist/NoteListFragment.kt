@@ -2,6 +2,7 @@ package com.notesync.notes.framework.presentation.notelist
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.ColorFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,8 +12,10 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat.setNestedScrollingEnabled
 import androidx.core.view.get
 import androidx.core.view.marginTop
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -157,7 +160,6 @@ constructor(
 
         val toolbar = toolbar_content_container
             .findViewById<Toolbar>(R.id.searchview_toolbar)
-
         toolbar?.let {
             mainActivity.setSupportActionBar(toolbar)
             val navController = NavHostFragment.findNavController(this)
@@ -602,6 +604,7 @@ constructor(
             multi_select_toolbar.visible()
             setupStatusBar()
             setupMultiSelectionToolbar(multi_select_toolbar)
+
         }
     }
 

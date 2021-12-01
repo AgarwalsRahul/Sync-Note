@@ -41,30 +41,30 @@
 
 
         <ImageView
+            android:id="@+id/action_delete_notes"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="@dimen/default_view_margin"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="3dp"
+            android:src="@drawable/ic_baseline_delete_outline_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/action_delete_notes"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_marginEnd="@dimen/default_view_margin"
-            android:src="@drawable/ic_delete"
-            android:padding="3dp"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/restore"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toStartOf="@+id/action_delete_notes"
-            app:srcCompat="@drawable/ic_baseline_restore_24"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:tooltipText="Restore"
-            android:padding="3dp"
             android:contentDescription="@string/restore"
-            tools:layout_editor_absoluteY="3dp" />
+            android:padding="3dp"
+            android:tooltipText="Restore"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/action_delete_notes"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_restore_24" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
@@ -134,6 +135,7 @@ class TrashFragment(
             .findViewById<Toolbar>(R.id.trash_toolbar)
 
         toolbar?.let {
+            it.overflowIcon?.setTint(ContextCompat.getColor(requireContext(), R.color.secondary_text_color))
             mainActivity.setSupportActionBar(toolbar)
             val navController = NavHostFragment.findNavController(this)
             val appBarConfiguration = mainActivity.appBarConfiguration
