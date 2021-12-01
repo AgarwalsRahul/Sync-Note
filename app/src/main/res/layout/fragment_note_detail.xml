@@ -135,7 +135,7 @@
             android:layout_weight="97"
             android:fontFamily="@font/gilroy_regular"
             android:textAlignment="center"
-            android:paddingLeft="46dp"
+            android:paddingLeft="30dp"
             tools:text="Edited 9:36PM"
             android:textColor="?attr/textColor"
             android:textSize="12sp" />
