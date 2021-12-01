@@ -1,40 +1,36 @@
 package com.notesync.notes.framework.presentation.notedetail
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment.findNavController
-import androidx.transition.TransitionInflater
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.notesync.notes.R
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.state.*
+import com.notesync.notes.business.domain.util.DateUtil
 import com.notesync.notes.business.interactors.common.DeleteNote.Companion.DELETE_SUCCESS
-import com.notesync.notes.business.interactors.noteDetail.UpdateNote.*
 import com.notesync.notes.business.interactors.noteDetail.UpdateNote.Companion.UPDATE_NOTE_FAILED_PK
 import com.notesync.notes.business.interactors.noteDetail.UpdateNote.Companion.UPDATE_NOTE_SUCCESS
 import com.notesync.notes.framework.presentation.common.*
-import com.notesync.notes.framework.presentation.notedetail.state.CollapsingToolbarState
-import com.notesync.notes.framework.presentation.notedetail.state.CollapsingToolbarState.*
+import com.notesync.notes.framework.presentation.notedetail.state.CollapsingToolbarState.Collapsed
+import com.notesync.notes.framework.presentation.notedetail.state.CollapsingToolbarState.Expanded
 import com.notesync.notes.framework.presentation.notedetail.state.NoteDetailStateEvent.*
 import com.notesync.notes.framework.presentation.notedetail.state.NoteDetailViewState
-import com.notesync.notes.framework.presentation.notedetail.state.NoteInteractionState
-import com.notesync.notes.framework.presentation.notedetail.state.NoteInteractionState.*
+import com.notesync.notes.framework.presentation.notedetail.state.NoteInteractionState.DefaultState
+import com.notesync.notes.framework.presentation.notedetail.state.NoteInteractionState.EditState
 import com.notesync.notes.framework.presentation.notelist.NOTE_PENDING_DELETE_BUNDLE_KEY
 import com.yydcdut.markdown.MarkdownProcessor
 import com.yydcdut.markdown.syntax.edit.EditFactory
@@ -58,7 +54,8 @@ const val NOTE_DETAIL_BOTTOM_SHEET_BUNDLE_KEY =
 @DelicateCoroutinesApi
 class NoteDetailFragment
 constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFactory: ViewModelProvider.Factory,
+    private val dateUtil: DateUtil
 ) : BaseNoteFragment(R.layout.fragment_note_detail) {
 
 
@@ -405,7 +402,7 @@ constructor(
     }
 
     private fun setNoteTimeStamp(timestamp:String){
-        updated_date_text.text = timestamp
+        updated_date_text.text = "Edited ${dateUtil.removeTimeFromDateString(timestamp)}"
     }
 
     private fun getSelectedNoteFromPreviousFragment(savedInstanceState: Bundle?) {

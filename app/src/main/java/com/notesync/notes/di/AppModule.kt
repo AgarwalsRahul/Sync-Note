@@ -61,8 +61,8 @@ object AppModule {
     @Singleton
     @Provides
     fun provideDateFormat(): SimpleDateFormat {
-        val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss a", Locale.ENGLISH)
-        sdf.timeZone = TimeZone.getTimeZone("UTC-7") // match firestore
+        val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss a", Locale.getDefault())
+//      / match firestore
         return sdf
     }
 

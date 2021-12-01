@@ -36,7 +36,7 @@ constructor(
             }
 
             NoteDetailFragment::class.java.name -> {
-                val fragment = NoteDetailFragment(viewModelFactory)
+                val fragment = NoteDetailFragment(viewModelFactory,dateUtil)
                 fragment
             }
             TrashFragment::class.java.name->{

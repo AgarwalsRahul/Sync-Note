@@ -134,9 +134,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="97"
             android:fontFamily="@font/gilroy_regular"
+            android:textAlignment="center"
             android:text="Edited 9:36PM"
             android:textColor="?attr/textColor"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
         <ImageView
             android:id="@+id/more_options"
