@@ -40,6 +40,8 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 const val NOTE_DETAIL_STATE_BUNDLE_KEY =
@@ -402,7 +404,7 @@ constructor(
     }
 
     private fun setNoteTimeStamp(timestamp:String){
-        updated_date_text.text = "Edited ${dateUtil.removeTimeFromDateString(timestamp)}"
+        updated_date_text.text = "Edited ${dateUtil.getEditedDateTime(timestamp)}"
     }
 
     private fun getSelectedNoteFromPreviousFragment(savedInstanceState: Bundle?) {
