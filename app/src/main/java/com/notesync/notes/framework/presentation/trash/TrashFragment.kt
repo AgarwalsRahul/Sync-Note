@@ -73,8 +73,6 @@ class TrashFragment(
         setHasOptionsMenu(true)
         viewModel.setupChannel()
         restoreInstanceState(savedInstanceState)
-
-
     }
 
 

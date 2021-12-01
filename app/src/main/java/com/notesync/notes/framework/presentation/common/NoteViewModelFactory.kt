@@ -27,7 +27,7 @@ import javax.inject.Inject
 @DelicateCoroutinesApi
 @MainScope
 @ObsoleteCoroutinesApi
-class NoteViewModelFactory
+class   NoteViewModelFactory
 @Inject
 constructor(
     private val noteListInteractors: NoteListInteractors,

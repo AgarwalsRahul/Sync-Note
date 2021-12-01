@@ -5,12 +5,14 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.get
+import androidx.core.view.marginTop
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -63,6 +65,7 @@ import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_note_list.*
 import kotlinx.android.synthetic.main.layout_note_list_item.*
 import kotlinx.android.synthetic.main.layout_searchview_toolbar.*
+import kotlinx.android.synthetic.main.layout_theme.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.*
@@ -596,8 +599,9 @@ constructor(
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
 
-            toolbar_content_container.addView(view)
-            setupMultiSelectionToolbar(view)
+            multi_select_toolbar.visible()
+            setupStatusBar()
+            setupMultiSelectionToolbar(multi_select_toolbar)
         }
     }
 
@@ -616,6 +620,7 @@ constructor(
     }
 
 
+
     private fun enableSearchViewToolbarState() {
         view?.let { v ->
             val view = View.inflate(
@@ -629,6 +634,8 @@ constructor(
             )
 
             toolbar_content_container.addView(view)
+            collapsing_toolbar.visible()
+            clearStatusbar()
             setupSearchView()
             setupFilterButton()
         }
@@ -636,18 +643,22 @@ constructor(
 
     private fun disableMultiSelectToolbarState() {
         view?.let {
-            val view = toolbar_content_container
-                .findViewById<Toolbar>(R.id.multiselect_toolbar)
-            toolbar_content_container.removeView(view)
+//            val view = toolbar_content_container
+//                .findViewById<Toolbar>(R.id.multiselect_toolbar)
+//            toolbar_content_container.removeView(view)
+            multi_select_toolbar.gone()
             viewModel.clearSelectedNotes()
         }
     }
 
     private fun disableSearchViewToolbarState() {
         view?.let {
-            val view = toolbar_content_container
-                .findViewById<Toolbar>(R.id.searchview_toolbar)
-            toolbar_content_container.removeView(view)
+//            val view = toolbar_content_container
+//                .findViewById<Toolbar>(R.id.searchview_toolbar)
+//            toolbar_content_container.removeView(view)
+
+            collapsing_toolbar.gone()
+
         }
     }
 

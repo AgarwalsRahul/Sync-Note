@@ -1,36 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/note_list_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/notes_title"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="25dp"-->
-    <!--        android:layout_marginTop="14dp"-->
-    <!--        android:fontFamily="@font/gilroy_extrabold"-->
-    <!--        android:text="Notes"-->
-    <!--        android:textColor="?attr/textColor"-->
-    <!--        android:textSize="30sp"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/night_mode"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginEnd="25dp"-->
-    <!--        android:background="?attr/selectableItemBackgroundBorderless"-->
-    <!--        app:layout_constraintBottom_toBottomOf="@+id/notes_title"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="@+id/notes_title"-->
-    <!--        app:srcCompat="@drawable/ic_night" />-->
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
@@ -43,7 +17,7 @@
 
 
             <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/app_bar"
+                android:id="@+id/appBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
@@ -58,7 +32,8 @@
                     android:layout_height="wrap_content"
                     android:background="@color/colorPrimaryDark"
                     app:expandedTitleGravity="top"
-
+                    android:id="@+id/collapsing_toolbar"
+                    android:layout_marginBottom="2dp"
                     app:layout_scrollFlags="scroll|enterAlways">
                     <androidx.appcompat.widget.Toolbar
                         android:layout_width="match_parent"
@@ -99,30 +74,36 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="@+id/notes_title"
                                 app:srcCompat="@drawable/ic_night" />
+
+                            <LinearLayout
+                                android:id="@+id/toolbar_content_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:layout_marginHorizontal="24dp"
+                                android:layout_marginTop="5dp"
+                                android:clipToPadding="false"
+                                android:elevation="10dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                app:elevation="10dp"
+                                app:layout_collapseMode="none"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/notes_title">
+
+
+                            </LinearLayout>
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.appcompat.widget.Toolbar>
 
 
-                    <LinearLayout
-                        android:id="@+id/toolbar_content_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="55dp"
-                        android:elevation="10dp"
-                        android:clipToPadding="false"
-                        android:layout_marginHorizontal="24dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        app:elevation="10dp"
-                        app:layout_collapseMode="none">
-
-
-                    </LinearLayout>
-
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-
+                <include
+                    android:id="@+id/multi_select_toolbar"
+                    layout="@layout/layout_multiselection_toolbar"
+                    android:visibility="gone" />
             </com.google.android.material.appbar.AppBarLayout>
 
 
@@ -132,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="5dp"
-            android:layout_marginVertical="5dp"
+
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -144,6 +125,7 @@
 
             <com.notesync.notes.framework.presentation.notelist.RecyclerViewEmptySupport
                 android:id="@+id/recycler_view"
+                android:layout_marginVertical="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
