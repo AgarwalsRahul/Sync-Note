@@ -59,7 +59,7 @@ fun View.fadeOut(todoCallback: TodoCallback? = null) {
             .setDuration(animationDuration.toLong())
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    invisible()
+                    gone()
                     todoCallback?.execute()
                 }
             })

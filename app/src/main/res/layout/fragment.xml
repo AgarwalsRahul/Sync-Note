@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/note_list_fragment_container"
     android:layout_width="match_parent"
+    android:animateLayoutChanges="true"
     android:layout_height="match_parent">
 
     <include
@@ -31,6 +32,7 @@
                 android:backgroundTint="@android:color/transparent"
                 android:elevation="10dp"
                 app:elevation="10dp"
+
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
               >
