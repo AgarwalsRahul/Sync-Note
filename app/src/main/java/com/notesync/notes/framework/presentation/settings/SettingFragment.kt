@@ -23,6 +23,7 @@ import com.notesync.notes.R
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_FILTER_DATE_CREATED
 import com.notesync.notes.framework.dataSource.cache.database.NOTE_FILTER_TITLE
 import com.notesync.notes.framework.presentation.MainActivity
+import com.notesync.notes.util.Constants
 import kotlinx.android.synthetic.main.fragment_setting.*
 import kotlinx.android.synthetic.main.fragment_trash.*
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -72,9 +73,25 @@ class SettingFragment : Fragment() {
         change_password.setOnClickListener {
             findNavController().navigate(R.id.action_settingFragment_to_changePasswordFragment)
         }
+        subscribeObserver()
     }
 
+    private fun subscribeObserver(){
+        (requireActivity() as SettingsActivity).themeManager.themeMode.observe(viewLifecycleOwner, {
+            it?.let { value ->
+                when (value) {
+                    Constants.DARK_THEME -> {
+                        theme_text.text = getString(R.string.dark)
 
+                    }
+                    Constants.LIGHT_THEME -> {
+                        theme_text.text = getString(R.string.light)
+
+                    }
+                }
+            }
+        })
+    }
 
     private fun setupToolbar() {
         setting_toolbar.title = "Settings"
