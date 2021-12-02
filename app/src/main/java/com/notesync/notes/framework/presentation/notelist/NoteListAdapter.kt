@@ -1,12 +1,7 @@
 package com.notesync.notes.framework.presentation.notelist
 
-import android.text.Editable
 import android.view.*
-import android.widget.EditText
 import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -16,7 +11,6 @@ import androidx.recyclerview.widget.DiffUtil
 import com.notesync.notes.R
 import com.notesync.notes.business.domain.model.Note
 import com.notesync.notes.business.domain.util.DateUtil
-import com.notesync.notes.framework.presentation.common.changeColor
 import com.notesync.notes.framework.presentation.common.gone
 import com.notesync.notes.framework.presentation.common.visible
 import com.notesync.notes.util.printLogD
@@ -66,7 +60,7 @@ class NoteListAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is NoteViewHolder -> {
-                holder.bind(differ.currentList[position],position)
+                holder.bind(differ.currentList[position])
             }
         }
     }
@@ -108,7 +102,7 @@ class NoteListAdapter(
         private val COLOR_PRIMARY = R.color.colorPrimary
         private lateinit var note: Note
 
-        fun bind(item: Note,position: Int) = with(itemView) {
+        fun bind(item: Note) = with(itemView) {
             setOnClickListener {
                 interaction?.onItemSelected(adapterPosition, note)
             }

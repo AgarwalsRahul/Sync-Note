@@ -490,14 +490,14 @@ constructor(
             view?.findViewById<TextView>(R.id.positive_button)?.setOnClickListener {
 
                 val newFilter =
-                    when (view?.findViewById<RadioGroup>(R.id.filter_group)?.checkedRadioButtonId) {
+                    when (view.findViewById<RadioGroup>(R.id.filter_group)?.checkedRadioButtonId) {
                         R.id.filter_title -> NOTE_FILTER_TITLE
                         R.id.filter_date -> NOTE_FILTER_DATE_CREATED
                         else -> NOTE_FILTER_DATE_CREATED
                     }
 
                 val newOrder =
-                    when (view?.findViewById<RadioGroup>(R.id.order_group)?.checkedRadioButtonId) {
+                    when (view.findViewById<RadioGroup>(R.id.order_group)?.checkedRadioButtonId) {
                         R.id.filter_desc -> "-"
                         else -> ""
                     }

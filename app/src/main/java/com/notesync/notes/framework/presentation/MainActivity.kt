@@ -192,7 +192,7 @@ class MainActivity : BaseActivity(),
 
     override fun onSupportNavigateUp(): Boolean {
         return findNavController(R.id.nav_host_fragment)
-            .navigateUp(appBarConfiguration as AppBarConfiguration)
+            .navigateUp(appBarConfiguration)
 
     }
 

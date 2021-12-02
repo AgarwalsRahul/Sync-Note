@@ -60,7 +60,7 @@ class TrashListAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is TrashViewHolder -> {
-                holder.bind(differ.currentList[position], position)
+                holder.bind(differ.currentList[position])
             }
         }
     }
@@ -101,7 +101,7 @@ class TrashListAdapter(
 
         private lateinit var note: Note
 
-        fun bind(item: Note, position: Int) = with(itemView) {
+        fun bind(item: Note) = with(itemView) {
             setOnClickListener {
                 interaction?.onItemSelected(adapterPosition, note)
             }

@@ -104,7 +104,7 @@ class SettingsActivity : BaseActivity(), UIController {
 
         }
         view?.findViewById<RadioGroup>(R.id.theme_group)
-            ?.setOnCheckedChangeListener { group, checkedId ->
+            ?.setOnCheckedChangeListener { _, checkedId ->
                 dialog?.dismiss()
                 when (checkedId) {
                     R.id.theme_dark -> {
