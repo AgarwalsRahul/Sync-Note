@@ -2,6 +2,8 @@
 **SyncNote** is a note-taking app built with Kotlin, where notes sync across all of the user’s devices so that their thoughts 
 or notes are always with them.
 
+<img src="/screenshots/feature_ss.png">
+
 ### Status: 🚧 In progress 🚧
 
 # Installation
