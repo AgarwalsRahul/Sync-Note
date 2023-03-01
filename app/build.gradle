@@ -147,6 +147,10 @@ dependencies {
 
     //WorkManager
     implementation Dependencies.work_manager
-    implementation "androidx.work:work-runtime:2.5.0"
+    implementation "androidx.work:work-runtime:2.7.1"
+
+    //Flipper
+    debugImplementation 'com.facebook.flipper:flipper:0.182.0'
+    debugImplementation 'com.facebook.soloader:soloader:0.10.4'
 
 }

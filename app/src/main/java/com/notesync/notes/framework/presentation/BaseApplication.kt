@@ -3,6 +3,12 @@ package com.notesync.notes.framework.presentation
 import android.app.Application
 import androidx.work.Configuration
 import androidx.work.WorkManager
+import com.facebook.flipper.android.AndroidFlipperClient
+import com.facebook.flipper.android.utils.FlipperUtils
+import com.facebook.flipper.plugins.inspector.DescriptorMapping
+import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
+import com.facebook.soloader.SoLoader
+import com.notesync.notes.BuildConfig
 import com.notesync.notes.di.AppComponent
 import com.notesync.notes.di.DaggerAppComponent
 import com.notesync.notes.di.auth.AuthComponent
@@ -33,6 +39,13 @@ open class BaseApplication : Application() {
             this,
             Configuration.Builder().setWorkerFactory(appComponent.workerFactory).build()
         )
+        SoLoader.init(this, false)
+
+        if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(this)) {
+            val client = AndroidFlipperClient.getInstance(this)
+            client.addPlugin(InspectorFlipperPlugin(this, DescriptorMapping.withDefaults()))
+            client.start()
+        }
     }
 
     open fun initAppComponent() {

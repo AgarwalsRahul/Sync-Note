@@ -42,6 +42,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
 
 
 const val NOTE_DETAIL_STATE_BUNDLE_KEY =
@@ -461,9 +462,10 @@ constructor(
         transitionToExpandedMode()
 
         app_bar.addOnOffsetChangedListener(
-            AppBarLayout.OnOffsetChangedListener { _, offset ->
-
-                if (offset < COLLAPSING_TOOLBAR_VISIBILITY_THRESHOLD) {
+            AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
+                if (offset == 0) { // expanded
+                    viewModel.setCollapsingToolbarState(Expanded())
+                } else if (abs(offset) >= appBarLayout.totalScrollRange) {
                     updateTitleInViewModel()
                     if (viewModel.isEditingTitle()) {
                         viewModel.exitEditState()
@@ -471,8 +473,7 @@ constructor(
                         updateNote()
                     }
                     viewModel.setCollapsingToolbarState(Collapsed())
-                } else {
-                    viewModel.setCollapsingToolbarState(Expanded())
+
                 }
             })
 
