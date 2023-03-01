@@ -22,7 +22,7 @@ fun validateEmailAddress(input: String): Validators<String> {
 }
 
 fun validatePassword(input: String): Validators<String> {
-    val regex = Regex("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@\$!%*#?&])[A-Za-z\\d@\$!%*#?&]{6,}$")
+    val regex = Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$")
     if (input.matches(regex)) {
         return Validators.Success(input)
     } else if (input.isEmpty()) {
